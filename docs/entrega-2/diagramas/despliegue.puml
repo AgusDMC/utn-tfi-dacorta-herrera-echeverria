@@ -1,0 +1,32 @@
+@startuml despliegue
+title Sistema Web de Gestión Inmobiliaria — Despliegue
+set separator none
+skinparam shadowing false
+skinparam defaultFontName Arial
+left to right direction
+
+actor "Visitante" as V
+actor "Administrador" as A
+
+node "Vercel" {
+  artifact "Frontend\nReact + TypeScript" as FE
+}
+node "Render" {
+  artifact "Backend\nSpring Boot (API REST)" as BE
+}
+node "Railway" {
+  database "PostgreSQL" as DB
+}
+cloud "Storage de imágenes\n(Cloudinary)" as ST
+cloud "Correo transaccional\n(Resend / Brevo)" as MAIL
+node "Casilla de la\ninmobiliaria" as INBOX
+
+V --> FE : HTTPS
+A --> FE : HTTPS
+FE --> BE : HTTPS / JSON (JWT en panel)
+BE --> DB : JDBC (SSL)
+BE --> ST : subir / borrar
+FE --> ST : muestra imágenes (URL pública)
+BE --> MAIL : API HTTP
+MAIL --> INBOX : aviso de nueva consulta
+@enduml

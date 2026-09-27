@@ -1,0 +1,89 @@
+@startuml paquetes
+' Diagrama de paquetes UML — Arquitectura en capas
+' Renderizar: https://www.plantuml.com/plantuml  o  java -jar plantuml.jar paquetes.puml
+title Sistema Web de Gestión Inmobiliaria — Diagrama de paquetes
+set separator none
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam ArrowColor #444444
+skinparam nodesep 25
+skinparam ranksep 45
+
+package "Frontend (React + TypeScript) - Vercel" as FE #F3F0FF {
+  rectangle "Catálogo público" as FE_CAT
+  rectangle "Panel administrativo" as FE_ADM
+  rectangle "Cliente API (JWT)" as FE_API
+}
+
+package "Backend (Spring Boot) - Render" as BE {
+
+  package "1. Presentación (controladores REST)" as L1 #E8F1FB {
+    rectangle "AuthController" as C1
+    rectangle "PropiedadController" as C2
+    rectangle "PublicacionController" as C3
+    rectangle "CatalogoController" as C4
+    rectangle "ConsultaController" as C5
+  }
+
+  package "2. Aplicación (casos de uso por módulo)" as L2 #E9F7EF {
+    rectangle "M1 Autenticación" as S1
+    rectangle "M2 Propiedades" as S2
+    rectangle "M3 Publicaciones" as S3
+    rectangle "M4 Catálogo" as S4
+    rectangle "M5 Consultas" as S5
+    rectangle "M6 Notificaciones" as S6
+  }
+
+  package "3. Dominio (entidades, reglas, interfaces)" as L3 #FFF6E5 {
+    rectangle "Usuario" as D1
+    rectangle "Propiedad / Imagen" as D2
+    rectangle "Publicacion" as D3
+    rectangle "Consulta" as D5
+    rectangle "Interfaces (puertos)" as DI
+  }
+
+  package "4. Infraestructura" as L4 #FBECEC {
+    rectangle "Persistencia (JPA + Flyway)" as I1
+    rectangle "Seguridad (Spring Security + JWT)" as I2
+    rectangle "Almacenamiento (Cloudinary)" as I3
+    rectangle "Correo (API HTTP)" as I4
+  }
+}
+
+database "PostgreSQL (Railway)" as DB
+
+FE_CAT ..> FE_API
+FE_ADM ..> FE_API
+FE_API ..> L1 : HTTPS / JSON
+
+L1 ..> L2 : delega
+L2 ..> L3 : usa entidades\ne interfaces
+L4 ..|> DI : implementa
+L1 ..> I2 : filtro JWT
+I1 ..> DB
+
+' Dependencias entre módulos de aplicación
+S4 ..> S3
+S4 ..> S2
+S5 ..> S3
+S5 ..> S6
+S3 ..> S2
+
+L1 -[hidden]down-> L2
+L2 -[hidden]down-> L3
+L3 -[hidden]down-> L4
+
+note right of S2
+  M2 publica el evento
+  PropiedadDadaDeBaja y
+  M3 lo escucha: no es una
+  dependencia de M2 hacia M3.
+end note
+
+note bottom of DI
+  RepositorioPropiedad, RepositorioPublicacion,
+  RepositorioConsulta, RepositorioUsuario,
+  AlmacenamientoArchivos, EnvioCorreo
+end note
+@enduml

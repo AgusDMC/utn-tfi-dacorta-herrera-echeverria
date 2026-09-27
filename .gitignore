@@ -3,7 +3,8 @@ node_modules/
 dist/
 build/
 .env
-.env.local
+.env.*
+!.env.example
 
 # Java / Spring Boot
 target/
@@ -11,9 +12,7 @@ target/
 *.jar
 !.mvn/wrapper/maven-wrapper.jar
 HELP.md
-.mvn/
-mvnw
-mvnw.cmd
+# El Maven Wrapper (mvnw, mvnw.cmd, .mvn/) SÍ se versiona: Render lo usa para compilar
 
 # IDE
 .idea/
