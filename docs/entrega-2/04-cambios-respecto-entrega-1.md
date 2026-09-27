@@ -18,6 +18,7 @@ El modelo presentado en la propuesta (1.ª entrega) era una primera aproximació
 | C10 | ImagenPropiedad: URL, texto alternativo, orden | + `storage_key`; el texto alternativo se llama `descripcion` | La `storage_key` identifica el archivo en el storage externo para poder borrarlo. Ver D8. |
 | C11 | "Un Usuario administrador gestiona propiedades y consultas" | Usuario sin relaciones | Con un solo rol y una sola inmobiliaria, la relación no aporta información. Ver D6. |
 | C12 | — | Reglas de negocio explícitas (R1 a R14) y restricciones en la base | La propuesta describía el comportamiento en prosa. Ahora cada regla está escrita y se indica si la garantiza la base o la aplicación. |
+| C13 | Flujo de publicación: "al quedar en estado disponible, se publica automáticamente en el catálogo" | Publicar es una acción explícita del administrador (la publicación pasa de `PAUSADA` a `ACTIVA`). `DISPONIBLE` pasa a ser solo el estado comercial. | Es consecuencia de C2: mostrar o no un aviso y su situación comercial ahora son cosas distintas. Además, así el administrador puede cargar la publicación completa (precio, fotos, descripción) antes de que aparezca en la web, sin que un aviso a medio cargar quede visible. |
 
 ## 4.2 Módulos
 

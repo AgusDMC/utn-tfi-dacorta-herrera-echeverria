@@ -129,7 +129,7 @@ Cada entidad tiene **un único módulo dueño**, que es el único que la escribe
 
 **Funcionalidades**
 - Formulario público de consulta desde el detalle de una publicación, con validación.
-- Registro de la consulta en estado `NUEVA` y aviso a la inmobiliaria.
+- Registro de la consulta en estado `NUEVA`, confirmación en pantalla al visitante de que su consulta fue recibida y aviso a la inmobiliaria.
 - Bandeja del panel: listado de consultas filtrado por estado, de la más nueva a la más vieja.
 - Cambio de estado de una consulta según el flujo definido (R11).
 
