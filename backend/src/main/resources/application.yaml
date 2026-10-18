@@ -1,3 +1,15 @@
 spring:
   application:
     name: inmobiliaria-api
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inmobiliaria
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    locations: filesystem:../database/migrations
