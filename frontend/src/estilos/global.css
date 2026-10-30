@@ -19,6 +19,10 @@
   --color-sobre-acento: #ffffff;     /* 4.8:1 sobre terracota */
   --color-error: #b42318;
 
+  /* Tratamiento común de las fotos de demo: bajan la saturación y entibian el tono para que
+     fotos de lugares distintos se lean como una sola colección. Con fotos reales, poner `none`. */
+  --filtro-foto: saturate(0.7) sepia(0.12) contrast(1.03);
+
   /* Tipografía: Newsreader (títulos) y Public Sans (interfaz), servidas localmente */
   --fuente-titulos: 'Newsreader Variable', ui-serif, Georgia, serif;
   --fuente-texto: 'Public Sans Variable', ui-sans-serif, system-ui, sans-serif;
@@ -184,6 +188,31 @@ a {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* Las secciones aparecen con un fade corto al entrar en pantalla (8 px de subida: se lee como
+   fade, no como deslizamiento). Visibles desde el principio si no hay soporte o se pidió menos
+   movimiento. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .aparece {
+      animation: aparecer linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
 }
 
 /* Cifras de ancho fijo para precios y medidas */

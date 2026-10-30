@@ -33,6 +33,13 @@ export const ETIQUETA_TIPO: Record<TipoPropiedad, string> = {
   DUPLEX: 'Dúplex',
 }
 
+export const ETIQUETA_TIPO_PLURAL: Record<TipoPropiedad, string> = {
+  CASA: 'Casas',
+  DEPARTAMENTO: 'Departamentos',
+  PH: 'PH',
+  DUPLEX: 'Dúplex',
+}
+
 // Una publicación tal como se muestra en el listado del catálogo.
 // Combina datos de la publicación y de su propiedad.
 export interface PublicacionCatalogo {

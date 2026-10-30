@@ -2,9 +2,22 @@
   padding-top: var(--espacio-8);
 }
 
-.titulo {
+.cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--espacio-1) var(--espacio-8);
   margin-bottom: var(--espacio-6);
+}
+
+.titulo {
   font-size: var(--titulo-md);
   font-weight: 400;
   letter-spacing: -0.02em;
+}
+
+.detalle {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
 }

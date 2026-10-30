@@ -1,0 +1,115 @@
+/* La tira se sale del contenedor por la derecha hasta el borde de la pantalla: insinúa que sigue */
+.tira {
+  position: relative;
+  margin-top: var(--espacio-8);
+}
+
+.pista {
+  margin-inline: calc(-1 * var(--margen-lateral));
+  padding-inline: var(--margen-lateral);
+  overflow-x: auto;
+  scroll-padding-inline: var(--margen-lateral);
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.pista::-webkit-scrollbar {
+  display: none;
+}
+
+.pista[data-arrastrando] {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.pista:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: -2px;
+}
+
+/* Con mouse la tira se mueve libre (arrastre con inercia); el snap queda para el dedo */
+@media (hover: hover) and (pointer: fine) {
+  .pista {
+    scroll-snap-type: none;
+  }
+}
+
+/* El padding superior deja lugar a la tarjeta que sube 2 px al pasar el puntero */
+.lista {
+  display: flex;
+  gap: var(--espacio-6);
+  width: max-content;
+  margin: 0;
+  padding: var(--espacio-1) 0 var(--espacio-2);
+  list-style: none;
+}
+
+.item {
+  flex: none;
+  width: min(78vw, 20rem);
+  scroll-snap-align: start;
+}
+
+/* Los clics del arrastre no deben abrir una tarjeta: el enlace lo recibe la tarjeta, no la imagen */
+.item img {
+  pointer-events: none;
+}
+
+.controles {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--espacio-2);
+  margin-top: var(--espacio-6);
+}
+
+.flecha {
+  display: grid;
+  place-items: center;
+  width: var(--alto-tactil);
+  height: var(--alto-tactil);
+  padding: 0;
+  border: 1px solid var(--color-texto);
+  border-radius: var(--radio-sm);
+  background: transparent;
+  color: var(--color-texto);
+  cursor: pointer;
+  transition:
+    background-color var(--duracion-rapida) var(--curva),
+    opacity var(--duracion-rapida) var(--curva),
+    transform 120ms var(--curva);
+}
+
+.flecha svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.flecha:active {
+  transform: scale(0.96);
+}
+
+.flecha[aria-disabled='true'] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .flecha:not([aria-disabled='true']):hover {
+    background: var(--color-arena);
+  }
+}
+
+@media (min-width: 1024px) {
+  /* En escritorio la pista arranca en el margen del contenedor y sigue hasta el borde derecho de la pantalla */
+  .pista {
+    margin-inline: 0 calc(-1 * max(var(--margen-lateral), (100vw - var(--ancho-max)) / 2));
+    padding-inline: 0 max(var(--margen-lateral), (100vw - var(--ancho-max)) / 2);
+    scroll-padding-inline: 0;
+  }
+
+  .item {
+    width: 22rem;
+  }
+}

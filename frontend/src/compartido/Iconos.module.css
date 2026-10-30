@@ -1,0 +1,43 @@
+/* Tamaños de los íconos propios (SVG en línea con currentColor) */
+.icono {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.iconoChico {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Ícono dentro de un redondel arena: para listas y datos de contacto */
+.redondel {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--color-arena);
+  color: var(--color-primario);
+}
+
+.redondel svg {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+/* En un enlace, el redondel pasa a pino al pasar el puntero: acompaña el cambio de color del texto */
+@media (hover: hover) and (pointer: fine) {
+  a:hover > .redondel {
+    background: var(--color-primario);
+    color: var(--color-sobre-primario);
+  }
+}
+
+.redondel {
+  transition:
+    background-color var(--duracion-rapida) var(--curva),
+    color var(--duracion-rapida) var(--curva);
+}
