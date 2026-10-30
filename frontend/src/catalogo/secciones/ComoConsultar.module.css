@@ -2,53 +2,53 @@
   margin-top: var(--espacio-seccion);
 }
 
+/* Cada paso abre con un filete: número en serif, dibujo al lado y texto debajo */
 .pasos {
   display: grid;
-  gap: var(--espacio-6);
   margin: var(--espacio-8) 0 0;
   padding: 0;
   list-style: none;
 }
 
-/* Cada paso: el dibujo sobre arena, y debajo el número, el título y el texto */
 .paso {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas:
-    'dibujo dibujo'
-    'numero titulo'
-    'numero texto';
+    'numero dibujo'
+    'titulo titulo'
+    'texto texto';
   column-gap: var(--espacio-4);
-  row-gap: var(--espacio-1);
+  padding-block: var(--espacio-6);
+  border-top: 1px solid var(--color-borde);
 }
 
-.dibujo {
-  grid-area: dibujo;
-  display: grid;
-  place-items: center;
-  margin-bottom: var(--espacio-4);
-  padding: var(--espacio-6);
-  border-radius: var(--radio-md);
-  background: var(--color-arena);
-  color: var(--color-primario);
-}
-
-.dibujo svg {
-  width: 6rem;
+.pasos li:first-child {
+  border-top-color: var(--color-texto);
 }
 
 .numero {
   grid-area: numero;
+  align-self: center;
   color: var(--color-primario);
   font-family: var(--fuente-titulos);
-  font-size: 1.75rem;
-  line-height: 1.2;
+  font-size: clamp(2.5rem, 2rem + 1.4vw, 3.25rem);
+  line-height: 1;
   font-variant-numeric: lining-nums;
+}
+
+.dibujo {
+  grid-area: dibujo;
+  justify-self: end;
+  color: var(--color-primario);
+}
+
+.dibujo svg {
+  width: 3.5rem;
 }
 
 .titulo {
   grid-area: titulo;
-  align-self: end;
+  margin-top: var(--espacio-4);
   font-family: var(--fuente-texto);
   font-size: var(--texto-lg);
   font-weight: 600;
@@ -59,6 +59,7 @@
 .texto {
   grid-area: texto;
   max-width: 28rem;
+  margin-top: var(--espacio-2);
   color: var(--color-texto-suave);
   font-size: var(--texto-base);
 }
@@ -67,5 +68,14 @@
   .pasos {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     column-gap: var(--espacio-8);
+  }
+
+  .paso {
+    border-top-color: var(--color-texto);
+    padding-block: var(--espacio-6) 0;
+  }
+
+  .dibujo svg {
+    width: 4rem;
   }
 }

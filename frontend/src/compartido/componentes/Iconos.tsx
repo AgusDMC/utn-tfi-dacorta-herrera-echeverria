@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { TipoPropiedad } from '../catalogo/tipos.ts'
+import type { TipoPropiedad } from '../../catalogo/tipos.ts'
 
 // Íconos propios de 24 px: trazo de 1,5 px y color heredado (currentColor). Son decorativos: el
 // texto que los acompaña ya dice lo mismo.

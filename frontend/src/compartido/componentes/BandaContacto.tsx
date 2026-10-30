@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 import { CONTACTO } from '../../config.ts'
-import { IlustracionPuerta } from '../../compartido/Ilustraciones.tsx'
+import { IlustracionPuerta } from './Ilustraciones.tsx'
 import estilos from './BandaContacto.module.css'
 
 // Cierre de página: una banda pino que lleva a Contacto, con una puerta dibujada en línea

@@ -3,9 +3,9 @@ import { buscarPublicaciones } from '../catalogo.ts'
 import { urlCatalogo } from '../filtros.ts'
 import { ETIQUETA_TIPO_PLURAL, TIPOS_PROPIEDAD, type TipoOperacion } from '../tipos.ts'
 import CabeceraListado from '../componentes/CabeceraListado.tsx'
-import { IconoTipo } from '../../compartido/Iconos.tsx'
-import { IlustracionCasa, IlustracionEdificio } from '../../compartido/Ilustraciones.tsx'
-import iconos from '../../compartido/Iconos.module.css'
+import { IconoTipo } from '../../compartido/componentes/Iconos.tsx'
+import { IlustracionCasa, IlustracionEdificio } from '../../compartido/componentes/Ilustraciones.tsx'
+import iconos from '../../compartido/componentes/Iconos.module.css'
 import estilos from './EntradasHome.module.css'
 
 const ENTRADAS: { operacion: TipoOperacion; titulo: string; texto: string }[] = [

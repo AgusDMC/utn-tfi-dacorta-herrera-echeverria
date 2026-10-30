@@ -1,5 +1,5 @@
 import CabeceraListado from '../componentes/CabeceraListado.tsx'
-import { IlustracionPaso } from '../../compartido/Ilustraciones.tsx'
+import { IlustracionPaso } from '../../compartido/componentes/Ilustraciones.tsx'
 import estilos from './ComoConsultar.module.css'
 
 const PASOS = [
@@ -9,7 +9,7 @@ const PASOS = [
   },
   {
     titulo: 'Enviá tu consulta',
-    texto: 'Desde la ficha de la propiedad, dejá tu mensaje y tus datos de contacto.',
+    texto: 'Desde la ficha de la propiedad podés hacer tu consulta.',
   },
   {
     titulo: 'Te respondemos',
@@ -17,7 +17,7 @@ const PASOS = [
   },
 ] as const
 
-// Los tres pasos del camino de una consulta, cada uno con su dibujo. Es una secuencia: van numerados.
+// Los tres pasos de una consulta, numerados porque son una secuencia
 export default function ComoConsultar() {
   return (
     <section className={`contenedor aparece ${estilos.seccion}`} aria-labelledby="titulo-como-consultar">

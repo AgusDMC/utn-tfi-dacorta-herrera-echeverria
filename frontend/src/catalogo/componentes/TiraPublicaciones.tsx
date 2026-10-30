@@ -12,13 +12,10 @@ const VELOCIDAD = 30 // px por segundo del desplazamiento continuo
 const FRICCION = 0.95
 const UMBRAL_ARRASTRE = 6 // px que separan un clic de un arrastre
 
-// Marquesina de tarjetas: se desplaza despacio y sin parar de derecha a izquierda. La lista
-// está duplicada, así que al terminar la primera vuelta sigue por la segunda sin que se note el
-// corte. Se frena mientras el puntero está encima, al tocarla, al arrastrarla o si está fuera
-// de la pantalla; con el mouse o el dedo se arrastra y sigue por inercia. Mueve la lista con
-// transform (admite decimales, al contrario que scrollLeft, y es más barato). Las copias quedan
-// fuera del orden de tabulación y de los lectores de pantalla. El desplazamiento es tan lento
-// que se mantiene aunque el sistema pida menos movimiento.
+// Marquesina de tarjetas que avanza despacio y se frena con el puntero encima o con foco adentro.
+// La lista va duplicada para que la vuelta no se note; la copia queda inert y oculta a lectores
+// de pantalla. Se mueve con transform porque scrollLeft no admite decimales. Con movimiento
+// reducido no avanza sola ni sigue por inercia: solo se mueve al arrastrarla.
 export default function TiraPublicaciones({ publicaciones, etiqueta }: Props) {
   const pistaRef = useRef<HTMLDivElement>(null)
   const listaRef = useRef<HTMLUListElement>(null)
@@ -39,6 +36,7 @@ export default function TiraPublicaciones({ publicaciones, etiqueta }: Props) {
     let tAnterior = 0
     let cuadro = 0
     let ultimo = 0
+    const movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)')
 
     // Una vuelta completa es la mitad del ancho de la lista: al pasarla se vuelve al inicio
     function vuelta() {
@@ -63,7 +61,7 @@ export default function TiraPublicaciones({ publicaciones, etiqueta }: Props) {
         if (Math.abs(velocidad) > 0.1) {
           desplazamiento += velocidad
           velocidad *= FRICCION
-        } else if (!enPausa && !document.hidden) {
+        } else if (!enPausa && !document.hidden && !movimientoReducido.matches) {
           desplazamiento += VELOCIDAD * delta
         }
         pintar()
@@ -102,7 +100,7 @@ export default function TiraPublicaciones({ publicaciones, etiqueta }: Props) {
       if (!arrastrando) return
       arrastrando = false
       delete pista!.dataset.arrastrando
-      if (!movido) velocidad = 0
+      if (!movido || movimientoReducido.matches) velocidad = 0
     }
 
     // Soltar después de arrastrar no tiene que abrir la tarjeta que quedó debajo

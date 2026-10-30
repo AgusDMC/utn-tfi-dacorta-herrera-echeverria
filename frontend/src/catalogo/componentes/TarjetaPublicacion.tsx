@@ -34,8 +34,8 @@ export default function TarjetaPublicacion({ publicacion, copia = false }: Props
 
   return (
     <article className={estilos.tarjeta}>
-      {/* La foto viaja a la ficha de la propiedad (y vuelve con Atrás) en lugar de cortarse. Cada
-          nombre de transición tiene que ser único en la página: las copias van sin ella. */}
+      {/* La foto viaja a la ficha de la propiedad en lugar de cortarse. Cada nombre de
+          transición tiene que ser único en la página: las copias van sin ella. */}
       {copia ? (
         foto
       ) : (

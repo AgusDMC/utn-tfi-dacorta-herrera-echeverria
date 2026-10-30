@@ -56,6 +56,22 @@
   cursor: zoom-in;
 }
 
+/* "Fotografías ilustrativas": un crédito chico dentro de la foto, abajo a la derecha. El fondo
+   translúcido solo asegura que se lea sobre cualquier imagen */
+.nota {
+  position: absolute;
+  right: var(--espacio-3);
+  bottom: var(--espacio-3);
+  margin: 0;
+  padding: 0.125rem 0.375rem;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 0.4);
+  color: var(--color-sobre-primario);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
 .contador {
   grid-column: 2 / -2;
   grid-row: 1;
@@ -109,6 +125,12 @@
 /* En el celular se abre tocando una foto; el botón queda para teclado y lectores de pantalla
    y se muestra solo cuando recibe el foco */
 @media (max-width: 767.98px) {
+  /* Con varias fotos, abajo a la derecha está el contador: la nota sube */
+  .item[data-ampliable] .nota {
+    top: var(--espacio-3);
+    bottom: auto;
+  }
+
   .verFotos:not(:focus-visible) {
     width: 1px;
     height: 1px;
@@ -149,7 +171,7 @@
   }
 }
 
-/* Escritorio: la foto principal ocupa toda la primera pantalla */
+/* Escritorio: la foto principal ocupa el alto del hero, que lo da el panel de datos */
 @media (min-width: 1024px) {
   /* Cruza el plano pino: arranca y termina 1,5 rem más abajo que él */
   .item[data-principal] {

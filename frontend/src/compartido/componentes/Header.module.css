@@ -104,12 +104,21 @@
   }
 }
 
-/* El botón a todas las propiedades solo aparece donde hay lugar */
+/* Solo aparece donde hay lugar; mismo alto y letra que los enlaces */
 .todas {
   display: none;
-  min-height: 2.5rem;
+  min-height: var(--alto-tactil);
   padding-inline: var(--espacio-4);
   font-size: var(--texto-ui);
+  font-weight: 500;
+}
+
+/* Foco: el mismo contorno en los enlaces y en el botón */
+.enlace:focus-visible,
+.todas:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: -2px;
+  border-radius: var(--radio-sm);
 }
 
 @media (min-width: 640px) {

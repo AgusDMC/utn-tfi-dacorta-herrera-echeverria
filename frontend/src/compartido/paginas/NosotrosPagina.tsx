@@ -3,10 +3,10 @@ import { NOMBRE_INMOBILIARIA, tituloPagina } from '../../config.ts'
 import { buscarPublicaciones, obtenerLocalidades } from '../../catalogo/catalogo.ts'
 import { urlCatalogo } from '../../catalogo/filtros.ts'
 import { ETIQUETA_TIPO_PLURAL, TIPOS_PROPIEDAD } from '../../catalogo/tipos.ts'
-import BandaContacto from '../../catalogo/secciones/BandaContacto.tsx'
-import { IconoCartel, IconoMensaje, IconoTipo, IconoUbicacion } from '../Iconos.tsx'
-import { IlustracionBarrio } from '../Ilustraciones.tsx'
-import iconos from '../Iconos.module.css'
+import BandaContacto from '../componentes/BandaContacto.tsx'
+import { IconoCartel, IconoMensaje, IconoTipo, IconoUbicacion } from '../componentes/Iconos.tsx'
+import { IlustracionBarrio } from '../componentes/Ilustraciones.tsx'
+import iconos from '../componentes/Iconos.module.css'
 import estilos from './Institucional.module.css'
 
 const VALORES = [
@@ -18,7 +18,7 @@ const VALORES = [
   {
     icono: <IconoMensaje />,
     titulo: 'Respondemos cada consulta',
-    texto: 'Desde la ficha de una propiedad nos dejás tu consulta y nos comunicamos con vos por el medio que elijas.',
+    texto: 'Desde la ficha de una propiedad podés hacer tu consulta y nos comunicamos con vos por el medio que elijas.',
   },
   {
     icono: <IconoUbicacion />,
