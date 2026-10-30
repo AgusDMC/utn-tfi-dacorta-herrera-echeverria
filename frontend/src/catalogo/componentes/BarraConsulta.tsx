@@ -1,5 +1,5 @@
 import { useEffect, useState, type RefObject } from 'react'
-import { useMediaQuery } from '../../compartido/useMediaQuery.ts'
+import { useMediaQuery } from '../../compartido/hooks/useMediaQuery.ts'
 import { partirPrecio } from '../formato.ts'
 import type { PublicacionDetalle } from '../tipos.ts'
 import estilos from './BarraConsulta.module.css'

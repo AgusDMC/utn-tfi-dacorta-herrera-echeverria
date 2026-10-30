@@ -1,7 +1,11 @@
+/* --ancho-pagina: ancho disponible sin la barra de scroll, para lo que sangra hasta el borde */
 .layout {
+  --ancho-pagina: 100cqw;
+
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
+  container-type: inline-size;
 }
 
 .principal {

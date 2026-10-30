@@ -204,7 +204,6 @@ export const DETALLES_DEMO: Record<number, DetalleDemo> = {
     cantDormitorios: 1,
     cantBanios: 1,
     tienePatio: false,
-    // "A estrenar": el año de construcción es el actual, así la antigüedad (0) es coherente con el título
-    anioConstruccion: new Date().getFullYear(),
+    anioConstruccion: 2024,
   },
 }

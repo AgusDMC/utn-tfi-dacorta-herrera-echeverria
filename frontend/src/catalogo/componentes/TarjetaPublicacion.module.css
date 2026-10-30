@@ -26,8 +26,7 @@
   transition: transform var(--duracion-media) var(--ease-out);
 }
 
-/* El zoom es solo para puntero fino: en pantallas táctiles quedaría "pegado" después del toque */
-/* Al pasar el puntero la tarjeta sube 2 px y la foto se acerca apenas: respuesta, no movimiento */
+/* Solo con puntero fino: en pantallas táctiles el hover queda "pegado" después del toque */
 @media (hover: hover) and (pointer: fine) {
   .tarjeta:hover {
     transform: translateY(-2px);

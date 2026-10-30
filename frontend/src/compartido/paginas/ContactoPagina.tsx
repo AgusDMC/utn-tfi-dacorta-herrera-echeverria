@@ -1,7 +1,7 @@
 import { CONTACTO, tituloPagina } from '../../config.ts'
-import { IconoCorreo, IconoMatricula, IconoReloj, IconoTelefono, IconoUbicacion } from '../Iconos.tsx'
-import { IlustracionPuerta } from '../Ilustraciones.tsx'
-import iconos from '../Iconos.module.css'
+import { IconoCorreo, IconoMatricula, IconoReloj, IconoTelefono, IconoUbicacion } from '../componentes/Iconos.tsx'
+import { IlustracionPuerta } from '../componentes/Ilustraciones.tsx'
+import iconos from '../componentes/Iconos.module.css'
 import estilos from './Institucional.module.css'
 
 export default function ContactoPagina() {

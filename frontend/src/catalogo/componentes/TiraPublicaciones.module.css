@@ -1,11 +1,11 @@
-/* La pista se sale del contenedor por los dos lados hasta el borde de la pantalla: las tarjetas
-   entran por la derecha y salen por la izquierda */
-/* La pista es una ventana sin scroll: la lista se mueve con transform (TiraPublicaciones.tsx).
-   touch-action deja el scroll vertical de la página al dedo y toma el horizontal para arrastrar. */
+/* La pista sangra hasta el borde de la pantalla y no tiene scroll: la lista se mueve con
+   transform desde TiraPublicaciones.tsx. touch-action deja el scroll vertical al dedo. */
 .pista {
+  --sangrado: var(--margen-lateral);
+
   margin-top: var(--espacio-8);
-  margin-inline: calc(-1 * var(--margen-lateral));
-  padding-inline: var(--margen-lateral);
+  margin-inline: calc(-1 * var(--sangrado));
+  padding-inline: var(--sangrado);
   overflow: hidden;
   touch-action: pan-y;
   cursor: grab;
@@ -16,16 +16,12 @@
   user-select: none;
 }
 
-.lista {
-  will-change: transform;
-}
-
 .pista:focus-visible {
   outline: 2px solid var(--color-primario);
   outline-offset: -2px;
 }
 
-/* El padding superior deja lugar a la tarjeta que sube 2 px al pasar el puntero */
+/* El padding superior deja lugar a la tarjeta que sube 2 px con el hover */
 .lista {
   display: flex;
   gap: var(--espacio-6);
@@ -33,6 +29,7 @@
   margin: 0;
   padding: var(--espacio-1) 0 var(--espacio-2);
   list-style: none;
+  will-change: transform;
 }
 
 .item {
@@ -40,15 +37,16 @@
   width: min(78vw, 20rem);
 }
 
-/* Los clics del arrastre no deben abrir una tarjeta: el enlace lo recibe la tarjeta, no la imagen */
+/* Así el clic que termina un arrastre no abre la tarjeta */
 .item img {
   pointer-events: none;
 }
 
+/* En escritorio el sangrado es el espacio libre al costado del contenedor. Se calcula con
+   --ancho-pagina y no con 100vw, que incluye la barra de scroll y genera scroll horizontal. */
 @media (min-width: 1024px) {
   .pista {
-    margin-inline: calc(-1 * max(var(--margen-lateral), (100vw - var(--ancho-max)) / 2));
-    padding-inline: max(var(--margen-lateral), (100vw - var(--ancho-max)) / 2);
+    --sangrado: max(var(--margen-lateral), (var(--ancho-pagina, 100%) - var(--ancho-max)) / 2);
   }
 
   .item {

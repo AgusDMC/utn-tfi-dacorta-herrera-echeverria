@@ -34,6 +34,12 @@
   transition: background-color var(--duracion-media) var(--ease-out);
 }
 
+.dibujo svg {
+  transition:
+    transform var(--duracion-media) var(--ease-out),
+    stroke-width var(--duracion-media) var(--ease-out);
+}
+
 .texto {
   display: grid;
   gap: var(--espacio-1);
@@ -70,11 +76,22 @@
 
 @media (hover: hover) and (pointer: fine) {
   .entrada:hover .dibujo {
-    background: #e9e3d9;
+    background: var(--color-borde);
+  }
+
+  .entrada:hover .dibujo svg {
+    transform: translateY(-3px);
+    stroke-width: 1.75;
   }
 
   .entrada:hover .cantidad svg {
     transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrada:hover .dibujo svg {
+    transform: none;
   }
 }
 

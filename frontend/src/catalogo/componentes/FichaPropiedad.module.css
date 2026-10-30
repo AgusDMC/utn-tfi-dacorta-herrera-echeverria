@@ -1,53 +1,50 @@
-/* ---------- Cifras principales: ícono, número y etiqueta, sobre el plano pino ---------- */
+/* ---------- Cifras principales: dos líneas de texto sobre el plano pino ---------- */
 
-/* La franja sale 0,5 rem a la izquierda para que el texto de la primera cifra quede en el borde
-   del contenido; su filete izquierdo queda fuera de la franja y se recorta. Los filetes son
-   de hueso al 30 %: arriba de cada cifra y entre cifras. Si no entran todas en una fila,
-   pasan a una segunda sin partir ningún texto. */
+/* Sin celdas ni divisores: número en serif y etiqueta atenuada, separados solo por espacio.
+   Si las dos líneas entran en una fila (tablet), quedan una al lado de la otra. */
 .cifras {
   display: flex;
   flex-wrap: wrap;
-  margin: 0 0 0 calc(-1 * var(--espacio-2));
-  clip-path: inset(0 0 0 var(--espacio-2)); /* el filete de arriba empieza en el borde del contenido */
+  gap: var(--espacio-3) var(--espacio-8);
   color: var(--color-sobre-primario);
 }
 
-.cifra {
-  display: grid;
-  flex: 1 1 0; /* se reparten el ancho; si no entran, pasan a otra fila sin partir palabras */
-  grid-template-rows: auto auto auto;
-  align-content: start;
-  justify-items: start;
-  margin-left: -1px;
-  padding: var(--espacio-4) var(--espacio-2);
-  border-top: 1px solid rgb(250 248 245 / 0.3);
-  border-left: 1px solid rgb(250 248 245 / 0.3);
-}
-
-.icono {
-  width: 1.5rem;
-  height: 1.5rem;
-  margin-bottom: var(--espacio-3);
-}
-
-.valor {
-  grid-row: 2;
+.linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--espacio-2) var(--espacio-6);
   margin: 0;
-  font-family: var(--fuente-titulos);
-  font-size: clamp(1.75rem, 1.2rem + 1vw, 2rem);
-  font-variant-numeric: lining-nums tabular-nums;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  font-optical-sizing: auto;
+}
+
+.cifra {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
   white-space: nowrap;
 }
 
+.valor {
+  order: -1;
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.625rem, 1.3rem + 0.7vw, 2rem);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
 .etiqueta {
-  grid-row: 3;
-  margin-top: var(--espacio-2);
   color: var(--color-sobre-primario-suave);
-  font-size: var(--texto-sm);
+  font-size: 1rem;
+}
+
+/* En el panel de escritorio, siempre los espacios en una línea y las medidas en la otra */
+@media (min-width: 1024px) {
+  .cifras {
+    flex-direction: column;
+  }
 }
 
 /* ---------- Características: dos columnas con filete entre ítems ---------- */

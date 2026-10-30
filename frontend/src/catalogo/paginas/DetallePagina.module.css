@@ -6,8 +6,7 @@
    La página es una grilla (12 columnas en escritorio, 8 en tablet). La foto principal y el
    recorrido de fotos (GaleriaPropiedad y Recorrido) son celdas de esta grilla. Filas:
      1 volver / foto principal · 2 cabecera · 3 cifras · 4 precio y CTA · 5 descripción ·
-     6 recorrido de fotos · 7 cartel de fotos ilustrativas · 8 características ·
-     9 otras propiedades · 10 consulta (cierre pino)
+     6 recorrido de fotos · 8 características · 9 otras propiedades · 10 consulta (cierre pino)
    Las filas sin contenido miden cero.
    ====================================================================== */
 
@@ -84,21 +83,6 @@
   }
 }
 
-/* Cartel de fotos ilustrativas. En celular va arriba a la derecha del bloque pino, bajo la foto;
-   desde tablet va bajo el recorrido de fotos */
-.cartel {
-  position: relative;
-  z-index: 1;
-  grid-column: var(--col-texto);
-  grid-row: 2;
-  justify-self: end;
-  align-self: start;
-  margin-top: var(--espacio-2);
-  color: var(--color-sobre-primario-suave);
-  font-size: 0.8125rem;
-  line-height: 1.2;
-}
-
 /* Lo que va sobre el plano está en hueso; el z-index lo deja por encima del plano animado */
 .cabecera {
   position: relative;
@@ -109,13 +93,16 @@
   color: var(--color-sobre-primario);
 }
 
-/* Cifras principales: entre el título y el precio, sobre el plano */
+/* Cifras principales: entre el título y el precio, sobre el plano. Su filete es el único que
+   divide el panel: arriba el título, abajo los datos, el precio y el CTA */
 .cifras {
   position: relative;
   z-index: 1;
   grid-column: var(--col-texto);
   grid-row: 3;
+  margin-top: var(--espacio-6);
   padding-top: var(--espacio-6);
+  border-top: 1px solid rgb(250 248 245 / 0.3);
   color: var(--color-sobre-primario);
 }
 
@@ -141,7 +128,7 @@
 }
 
 .titulo {
-  margin-top: var(--espacio-2);
+  margin-top: var(--espacio-3);
   color: inherit;
   font-size: clamp(2.25rem, 1rem + 4.2vw, 4.75rem); /* hasta 76 px a 1440 */
   font-weight: 350;
@@ -278,8 +265,10 @@
   margin-top: var(--espacio-6);
 }
 
+/* Después del hero, un aire menor que entre secciones: la descripción continúa la ficha */
 .descripcion {
   grid-row: 5;
+  margin-top: var(--espacio-16);
 }
 
 .caracteristicas {
@@ -310,7 +299,78 @@
 }
 
 .consulta .texto {
+  margin-top: 0;
   color: var(--color-sobre-primario-suave);
+}
+
+/* Teléfono y correo, con los mismos botones que la banda de contacto */
+.medios {
+  display: grid;
+  gap: var(--espacio-4);
+  margin: var(--espacio-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.medio {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.medioEtiqueta {
+  color: var(--color-sobre-primario-suave);
+  font-size: var(--texto-sm);
+}
+
+.medioValor {
+  color: var(--color-sobre-primario);
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.75rem);
+  line-height: 1.15;
+  font-variant-numeric: lining-nums;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.medioValor:focus-visible {
+  outline-color: var(--color-fondo);
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-6);
+}
+
+.llamar {
+  background: var(--color-fondo);
+  color: var(--color-primario);
+}
+
+.escribir {
+  border-color: rgb(250 248 245 / 0.5);
+  color: var(--color-sobre-primario);
+}
+
+.llamar:focus-visible,
+.escribir:focus-visible {
+  outline-color: var(--color-fondo);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .medioValor:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .llamar:hover {
+    background: var(--color-arena);
+  }
+
+  .escribir:hover {
+    background: rgb(250 248 245 / 0.12);
+  }
 }
 
 /* ---------- Propiedad inexistente ---------- */
@@ -375,13 +435,6 @@
     padding: var(--espacio-8) 0;
   }
 
-  .cartel {
-    grid-row: 7;
-    align-self: start;
-    margin-top: var(--espacio-4);
-    color: var(--color-texto-suave);
-  }
-
   .reserva {
     grid-column: 7 / 10;
     grid-row: 2;
@@ -412,36 +465,29 @@
 @media (min-width: 1024px) {
   .pagina {
     --columnas: 12;
-    --alto-hero: clamp(32.5rem, calc(100vh - var(--alto-header) - 3.5rem), 53.75rem);
+    /* El alto del hero lo da el contenido del panel; esto es solo un piso para la foto
+       (520 a 600 px según el ancho), no depende del alto de la ventana */
+    --alto-hero: clamp(32.5rem, 40vw, 37.5rem);
     --col-hero: 1 / 9;
     --col-datos: 9 / -2;
 
     --sangria: var(--espacio-4); /* aire entre la foto y los datos */
-
-    grid-template-rows: auto auto minmax(auto, 1fr) auto;
-  }
-
-  /* Alto de la primera pantalla: 100svh menos el header y 56 px */
-  @supports (height: 100svh) {
-    .pagina {
-      --alto-hero: clamp(32.5rem, calc(100svh - var(--alto-header) - 3.5rem), 53.75rem);
-    }
   }
 
   .plano {
     grid-column: 8 / -1;
     grid-row: 1 / 5;
     align-self: stretch;
-    min-height: var(--alto-hero); /* crece si los datos necesitan más alto */
+    min-height: var(--alto-hero);
     margin-top: 0;
   }
 
-  /* Datos sobre el plano: el título arriba y el precio abajo, con las cifras en el medio */
+  /* Datos sobre el plano, de arriba hacia abajo: volver, título, cifras, precio y CTA */
   .volver {
     grid-column: var(--col-datos);
     grid-row: 1;
     z-index: 1;
-    margin: var(--espacio-6) 0 0 var(--sangria);
+    margin: var(--espacio-8) 0 0 var(--sangria);
     padding-inline: 0;
     background: transparent;
     color: var(--color-sobre-primario-suave);
@@ -468,23 +514,27 @@
     grid-column: var(--col-datos);
     grid-row: 2;
     margin-left: var(--sangria);
-    padding: var(--espacio-6) 0 0;
+    padding: var(--espacio-4) 0 0;
   }
 
   .cifras {
     grid-column: var(--col-datos);
     grid-row: 3;
-    align-self: center;
-    margin-left: var(--sangria);
-    padding: var(--espacio-6) 0;
+    margin: var(--espacio-8) 0 0 var(--sangria);
+    padding: var(--espacio-6) 0 0;
+  }
+
+  /* La foto termina 1,5 rem debajo de su fila (GaleriaPropiedad.module.css): desde su borde
+     quedan 48 px hasta la descripción */
+  .descripcion {
+    margin-top: calc(var(--espacio-6) + var(--espacio-12));
   }
 
   .reserva {
     grid-column: var(--col-datos);
     grid-row: 4;
     margin-left: var(--sangria);
-    padding: var(--espacio-6) 0 var(--espacio-6);
-    border-top: 1px solid rgb(250 248 245 / 0.3);
+    padding: var(--espacio-6) 0 var(--espacio-12);
   }
 
   .consulta {

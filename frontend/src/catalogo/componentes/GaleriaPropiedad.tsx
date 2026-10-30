@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, ViewTransition } from 'react'
-import { useMediaQuery } from '../../compartido/useMediaQuery.ts'
+import { useMediaQuery } from '../../compartido/hooks/useMediaQuery.ts'
 import type { ImagenPublicacion } from '../tipos.ts'
 import FotoPropiedad from './FotoPropiedad.tsx'
 import Recorrido from './Recorrido.tsx'
@@ -10,12 +10,13 @@ interface Props {
   id: number
   titulo: string
   imagenes: ImagenPublicacion[]
+  ilustrativas?: boolean // muestra la nota "Fotografías ilustrativas" sobre la foto principal
 }
 
-// En el celular todas las fotos van en un carrusel. Desde tablet la foto principal ocupa la
-// primera pantalla (es hija directa de la grilla de la página, por eso .galeria es
-// display: contents) y las demás van en el recorrido, más abajo.
-export default function GaleriaPropiedad({ id, titulo, imagenes }: Props) {
+// En el celular todas las fotos van en un carrusel. Desde tablet la foto principal es la del
+// hero (es hija directa de la grilla de la página, por eso .galeria es display: contents) y
+// las demás van en el recorrido, más abajo.
+export default function GaleriaPropiedad({ id, titulo, imagenes, ilustrativas = false }: Props) {
   const total = imagenes.length
   const [visor, setVisor] = useState<number | null>(null)
   const [actual, setActual] = useState(0)
@@ -91,9 +92,10 @@ export default function GaleriaPropiedad({ id, titulo, imagenes }: Props) {
               <div className={estilos.foto}>
                 <FotoPropiedad imagen={imagen} alt={altDe(i)} prioridad={i === 0} />
               </div>
+              {i === 0 && ilustrativas && <p className={estilos.nota}>Fotografías ilustrativas</p>}
             </li>
           )
-          // La foto principal viaja desde la tarjeta del catálogo (y vuelve con Atrás)
+          // La foto principal viaja desde la tarjeta del catálogo
           return i === 0 ? (
             <ViewTransition key={imagen.url + i} name={`foto-${id}`} enter="none" exit="none" update="none" share="foto-compartida">
               {item}

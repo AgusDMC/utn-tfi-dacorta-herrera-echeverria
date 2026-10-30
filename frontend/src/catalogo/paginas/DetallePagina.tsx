@@ -1,6 +1,6 @@
 import { useRef, type CSSProperties, type MouseEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
-import { tituloPagina } from '../../config.ts'
+import { CONTACTO, tituloPagina } from '../../config.ts'
 import { useDescripcionPagina } from '../../compartido/useDescripcionPagina.ts'
 import { buscarPublicaciones, obtenerPublicacion } from '../catalogo.ts'
 import { urlCatalogo } from '../filtros.ts'
@@ -51,7 +51,7 @@ function Detalle({ publicacion }: { publicacion: PublicacionDetalle }) {
   // El resumen abre la descripción, salvo que sea el mismo texto (o uno empiece con el otro)
   const resumenRepetido =
     publicacion.descripcion.startsWith(publicacion.resumen) || publicacion.resumen.startsWith(publicacion.descripcion)
-  // Las fotos de /demo son ilustrativas (ver CREDITOS.md): con fotos reales del storage el cartel desaparece
+  // Las fotos de /demo son ilustrativas (ver CREDITOS.md): con fotos reales del storage la nota desaparece
   const fotosIlustrativas = publicacion.imagenes.some((imagen) => imagen.url.startsWith('/demo/'))
 
   // Otras propiedades del catálogo, con las de la misma operación primero
@@ -61,6 +61,11 @@ function Detalle({ publicacion }: { publicacion: PublicacionDetalle }) {
     .slice(0, 3)
 
   const parrafos = publicacion.descripcion.split('\n\n')
+
+  const { telefono, email } = CONTACTO
+  const telefonoLimpio = telefono?.replace(/[^\d+]/g, '')
+  // El correo ya sale con la propiedad en el asunto
+  const correo = email && `mailto:${email}?subject=${encodeURIComponent(`Consulta por ${titulo}`)}`
 
   useDescripcionPagina(parrafos[0])
 
@@ -119,9 +124,12 @@ function Detalle({ publicacion }: { publicacion: PublicacionDetalle }) {
           <CifrasPrincipales publicacion={publicacion} />
         </section>
 
-        <GaleriaPropiedad id={publicacion.id} titulo={titulo} imagenes={publicacion.imagenes} />
-
-        {fotosIlustrativas && <p className={estilos.cartel}>Fotografías ilustrativas</p>}
+        <GaleriaPropiedad
+          id={publicacion.id}
+          titulo={titulo}
+          imagenes={publicacion.imagenes}
+          ilustrativas={fotosIlustrativas}
+        />
 
         <div className={estilos.reserva}>
           <p className={`precio ${estilos.precio} ${estilos.entra}`} style={entrada(1)}>
@@ -181,14 +189,44 @@ function Detalle({ publicacion }: { publicacion: PublicacionDetalle }) {
           </section>
         )}
 
-        {/* Lugar del formulario de consulta (se construye en otro bloque) */}
+        {/* Hasta que exista el formulario, la consulta se hace por teléfono o correo */}
         <section id="consulta" className={estilos.consulta} aria-labelledby="titulo-consulta">
           <h2 id="titulo-consulta" tabIndex={-1} className={estilos.tituloSeccion}>
             Consultar por esta propiedad
           </h2>
-          <p className={`${estilos.cuerpo} ${estilos.texto}`}>
-            Muy pronto vas a poder enviarnos tu consulta desde esta página.
-          </p>
+          <div className={estilos.cuerpo}>
+            <p className={estilos.texto}>Llamanos o escribinos y te contamos todo sobre esta propiedad.</p>
+            <ul role="list" className={estilos.medios}>
+              {telefono && (
+                <li className={estilos.medio}>
+                  <span className={estilos.medioEtiqueta}>Teléfono</span>
+                  <a href={`tel:${telefonoLimpio}`} className={estilos.medioValor}>
+                    {telefono}
+                  </a>
+                </li>
+              )}
+              {correo && (
+                <li className={estilos.medio}>
+                  <span className={estilos.medioEtiqueta}>Correo electrónico</span>
+                  <a href={correo} className={estilos.medioValor}>
+                    {email}
+                  </a>
+                </li>
+              )}
+            </ul>
+            <div className={estilos.acciones}>
+              {telefono && (
+                <a href={`tel:${telefonoLimpio}`} className={`boton ${estilos.llamar}`}>
+                  Llamar
+                </a>
+              )}
+              {correo && (
+                <a href={correo} className={`boton ${estilos.escribir}`}>
+                  Escribir
+                </a>
+              )}
+            </div>
+          </div>
         </section>
       </article>
 
