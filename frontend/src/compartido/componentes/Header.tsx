@@ -8,7 +8,7 @@ import estilos from './Header.module.css'
 export default function Header() {
   const { pathname } = useLocation()
   const [params] = useSearchParams()
-  const operacionActual = pathname === '/' ? leerFiltros(params).operacion : undefined
+  const operacionActual = pathname === '/propiedades' ? leerFiltros(params).operacion : undefined
 
   // Al despegarse de la parte superior, el filete de abajo se marca para separar el
   // header del contenido que pasa por detrás (sin cambiar la altura, que movería la página)
@@ -26,7 +26,7 @@ export default function Header() {
         <Marca />
 
         {/* Comprar / Alquilar aplican el filtro de operación del catálogo */}
-        <nav aria-label="Principal">
+        <nav aria-label="Principal" className={estilos.navegacion}>
           <ul className={estilos.menu}>
             {TIPOS_OPERACION.map((operacion) => (
               <li key={operacion}>
@@ -39,7 +39,21 @@ export default function Header() {
                 </Link>
               </li>
             ))}
+            {/* Nosotros y Contacto solo entran en la barra desde tablet; en el celular están en el pie */}
+            <li className={estilos.institucional}>
+              <Link to="/nosotros" className={estilos.enlace} aria-current={pathname === '/nosotros' ? 'page' : undefined}>
+                Nosotros
+              </Link>
+            </li>
+            <li className={estilos.institucional}>
+              <Link to="/contacto" className={estilos.enlace} aria-current={pathname === '/contacto' ? 'page' : undefined}>
+                Contacto
+              </Link>
+            </li>
           </ul>
+          <Link to={urlCatalogo({})} className={`boton boton-secundario ${estilos.todas}`}>
+            Ver propiedades
+          </Link>
         </nav>
       </div>
     </header>

@@ -1,0 +1,74 @@
+/* ---------- Cifras principales: ícono, número y etiqueta, sobre el plano pino ---------- */
+
+/* La franja sale 0,5 rem a la izquierda para que el texto de la primera cifra quede en el borde
+   del contenido; su filete izquierdo queda fuera de la franja y se recorta. Los filetes son
+   de hueso al 30 %: arriba de cada cifra y entre cifras. Si no entran todas en una fila,
+   pasan a una segunda sin partir ningún texto. */
+.cifras {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 0 0 calc(-1 * var(--espacio-2));
+  clip-path: inset(0 0 0 var(--espacio-2)); /* el filete de arriba empieza en el borde del contenido */
+  color: var(--color-sobre-primario);
+}
+
+.cifra {
+  display: grid;
+  flex: 1 1 0; /* se reparten el ancho; si no entran, pasan a otra fila sin partir palabras */
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  justify-items: start;
+  margin-left: -1px;
+  padding: var(--espacio-4) var(--espacio-2);
+  border-top: 1px solid rgb(250 248 245 / 0.3);
+  border-left: 1px solid rgb(250 248 245 / 0.3);
+}
+
+.icono {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-bottom: var(--espacio-3);
+}
+
+.valor {
+  grid-row: 2;
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.75rem, 1.2rem + 1vw, 2rem);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-optical-sizing: auto;
+  white-space: nowrap;
+}
+
+.etiqueta {
+  grid-row: 3;
+  margin-top: var(--espacio-2);
+  color: var(--color-sobre-primario-suave);
+  font-size: var(--texto-sm);
+}
+
+/* ---------- Características: dos columnas con filete entre ítems ---------- */
+
+.caracteristicas {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.caracteristicas li {
+  padding-block: var(--espacio-4);
+  border-top: 1px solid var(--color-borde);
+  font-size: var(--texto-lg);
+  line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+  .caracteristicas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--espacio-6);
+  }
+}

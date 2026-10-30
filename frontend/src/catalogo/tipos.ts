@@ -21,6 +21,11 @@ export const ACCION_OPERACION: Record<TipoOperacion, string> = {
   ALQUILER: 'Alquilar',
 }
 
+export const ETIQUETA_ESTADO: Record<EstadoComercialVisible, string> = {
+  DISPONIBLE: 'Disponible',
+  RESERVADA: 'Reservada',
+}
+
 export const ETIQUETA_TIPO: Record<TipoPropiedad, string> = {
   CASA: 'Casa',
   DEPARTAMENTO: 'Departamento',
@@ -43,6 +48,23 @@ export interface PublicacionCatalogo {
   cantAmbientes: number
   superficieTotal: number // m²
   portada: { url: string; descripcion: string | null } | null // imagen de orden 1
+}
+
+export interface ImagenPublicacion {
+  url: string
+  descripcion: string | null // texto alternativo (imagen_propiedad.descripcion)
+}
+
+// Una publicación con todo lo que muestra su ficha. La galería viene ordenada
+// (imagen de orden 1 primero) y la descripción es la de la publicación.
+export interface PublicacionDetalle extends PublicacionCatalogo {
+  resumen: string // propiedad.resumen: la entrada que abre la descripción
+  descripcion: string
+  imagenes: ImagenPublicacion[]
+  cantDormitorios: number
+  cantBanios: number
+  tienePatio: boolean
+  anioConstruccion: number | null
 }
 
 export interface FiltrosCatalogo {

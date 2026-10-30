@@ -6,7 +6,7 @@ import {
   type TipoPropiedad,
 } from './tipos.ts'
 
-// Filtros del catálogo en la URL: /?operacion=VENTA&tipo=CASA&localidad=Santa+Rosa
+// Filtros del catálogo en la URL: /propiedades?operacion=VENTA&tipo=CASA&localidad=Santa+Rosa
 // Así una búsqueda se puede compartir y el botón Atrás vuelve a la anterior.
 
 function esOperacion(valor: string | null): valor is TipoOperacion {
@@ -38,7 +38,7 @@ export function urlCatalogo(filtros: FiltrosCatalogo): string {
   if (filtros.localidad) params.set('localidad', filtros.localidad)
 
   const query = params.toString()
-  return query ? `/?${query}` : '/'
+  return query ? `/propiedades?${query}` : '/propiedades'
 }
 
 export function hayFiltros(filtros: FiltrosCatalogo): boolean {

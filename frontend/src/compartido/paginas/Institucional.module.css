@@ -1,0 +1,105 @@
+/* Páginas de texto (Nosotros y Contacto): un título, una entrada y un cuerpo corto */
+
+.pagina {
+  padding-block: var(--espacio-12) var(--espacio-seccion);
+}
+
+.titulo {
+  font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4rem);
+  font-weight: 350;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  font-variation-settings: 'opsz' 72;
+}
+
+.entrada {
+  max-width: 40rem;
+  margin-top: var(--espacio-6);
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.375rem, 1.1rem + 1vw, 1.75rem);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.cuerpo {
+  display: grid;
+  gap: var(--espacio-8);
+  margin-top: var(--espacio-12);
+  padding-top: var(--espacio-6);
+  border-top: 1px solid var(--color-texto);
+}
+
+.bloque h2 {
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-lg);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.bloque p {
+  max-width: 28rem;
+  margin-top: var(--espacio-2);
+  color: var(--color-texto-suave);
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-12);
+}
+
+/* ---------- Datos de contacto ---------- */
+
+.datos {
+  margin: var(--espacio-12) 0 0;
+  padding-top: var(--espacio-2);
+  border-top: 1px solid var(--color-texto);
+}
+
+.dato {
+  display: grid;
+  gap: var(--espacio-1);
+  padding-block: var(--espacio-4);
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.dato dt {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.dato dd {
+  margin: 0;
+  font-size: var(--texto-lg);
+  font-weight: 500;
+}
+
+.dato a {
+  color: var(--color-texto);
+  text-underline-offset: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dato a:hover {
+    color: var(--color-primario);
+  }
+}
+
+@media (min-width: 768px) {
+  .cuerpo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--espacio-8);
+  }
+
+  .dato {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: baseline;
+  }
+
+  .datos {
+    max-width: 44rem;
+  }
+}

@@ -10,7 +10,7 @@
   padding-top: var(--espacio-4);
 }
 
-/* El filete superior se traza de izquierda a derecha cuando la sección entra en pantalla */
+/* Filete superior de la sección */
 .cabecera::before {
   content: '';
   position: absolute;
@@ -19,13 +19,6 @@
   left: 0;
   height: 1px;
   background: var(--color-texto);
-  transform-origin: left;
-  transition: transform 700ms var(--ease-in-out);
-}
-
-:global([data-entrada='pendiente']) .cabecera::before {
-  transform: scaleX(0);
-  transition: none;
 }
 
 .titulo {

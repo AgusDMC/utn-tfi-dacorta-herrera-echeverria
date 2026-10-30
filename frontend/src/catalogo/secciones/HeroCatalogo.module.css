@@ -1,69 +1,12 @@
 /* =====================================================================
    Hero "ventana Nexo": una placa verde pino sostiene el titular y la foto
-   la pisa como una ventana recortada en el verde. Un marco de línea fina,
-   desplazado hacia arriba y a la izquierda, solo se ve sobre la placa (es del
-   color del fondo: fuera del verde desaparece), así foto y placa leen como
-   una sola pieza. El buscador cruza la costura.
+   la pisa como una ventana recortada en el verde. El buscador cruza la costura.
 
-   Una única secuencia de entrada al cargar: la placa avanza desde la izquierda
-   y la foto desde la derecha (se encuentran en el medio), después el texto,
-   el marco y el buscador.
+   Movimiento (al final del archivo): en la carga directa de la home el plano se abre desde
+   la izquierda, la foto se asienta y después entran el titular, la bajada y el buscador. Al
+   scrollear, plano y foto se desplazan a distinta velocidad. Es el mismo lenguaje que la
+   ficha de propiedad, con sus animaciones copiadas acá.
    ===================================================================== */
-
-/* Solo transform y opacity: son las únicas propiedades que animan sin repintar */
-@keyframes crecerPlaca {
-  from {
-    transform: scaleX(0);
-  }
-
-  to {
-    transform: none;
-  }
-}
-
-@keyframes entrarFoto {
-  from {
-    opacity: 0;
-    transform: translateX(2rem);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes asentarFoto {
-  from {
-    transform: scale(1.05);
-  }
-
-  to {
-    transform: none;
-  }
-}
-
-@keyframes subir {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes encender {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
 
 /* ---------- Mobile: el bloque de texto es la placa, a sangre; la foto se corre a la derecha ---------- */
 
@@ -76,8 +19,8 @@
   display: none;
 }
 
-/* El padding inferior deja pasar la foto que pisa la placa (-2.5rem) y el marco que
-   sobresale 12 px de la foto, con aire hasta la última línea de texto */
+/* El padding inferior deja pasar la foto que pisa la placa (-2.5rem), con aire hasta la
+   última línea de texto */
 .texto {
   position: relative;
   isolation: isolate;
@@ -95,17 +38,15 @@
   inset: 0;
   z-index: -1;
   background: var(--color-primario);
-  transform-origin: left;
-  animation: crecerPlaca 500ms var(--curva) both;
 }
 
 .titulo {
   color: inherit;
   font-size: clamp(2.25rem, 14.5cqi, 3.25rem);
-  font-weight: 400;
+  font-weight: 350;
   line-height: 1;
-  letter-spacing: -0.03em;
-  animation: subir var(--duracion-lenta) var(--curva) 160ms both;
+  letter-spacing: -0.02em;
+  font-variation-settings: 'opsz' 72; /* el diseño óptico más fino de Newsreader, como el título de la ficha */
 }
 
 /* Cada línea del titular es un bloque que no se parte */
@@ -120,7 +61,6 @@
   color: var(--color-sobre-primario-suave);
   font-size: var(--texto-base);
   text-wrap: balance; /* dos líneas parejas, sin una palabra suelta al final */
-  animation: subir var(--duracion-lenta) var(--curva) 240ms both;
 }
 
 .foto {
@@ -129,28 +69,17 @@
   aspect-ratio: 4 / 3;
 }
 
-/* Marco de línea fina: es del color del fondo, así que solo se ve sobre el verde */
-.marco {
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgb(250 248 245 / 0.55);
-  transform: translate(-12px, -12px);
-  animation: encender 400ms var(--curva) 560ms both;
-}
-
 .recorte {
   position: absolute;
   inset: 0;
   overflow: hidden;
   background: var(--color-arena);
-  animation: entrarFoto 550ms var(--curva) 80ms both;
 }
 
 .recorte img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: asentarFoto 900ms var(--curva) 80ms both;
 }
 
 /* El buscador cruza el borde inferior de la foto */
@@ -158,7 +87,6 @@
   position: relative;
   z-index: 2;
   margin-top: calc(-1 * var(--espacio-12));
-  animation: subir var(--duracion-lenta) var(--curva) 380ms both;
 }
 
 .pie {
@@ -234,8 +162,6 @@
     grid-column: 1 / 8;
     margin: -0.25rem 0 0 -1rem;
     background: var(--color-primario);
-    transform-origin: left;
-    animation: crecerPlaca 500ms var(--curva) both;
   }
 
   .texto {
@@ -284,12 +210,11 @@
 }
 
 /* ---------- Profundidad ----------
-   Cuatro planos, de lejos a cerca: placa y texto impresos (5 px), la ventana de la foto
-   (12 px) y el marco de línea (20 px). El buscador no se mueve. Lo escribe useProfundidadHero
-   con la propiedad `translate`, que se compone con los transform de las entradas. */
+   Tres planos, de lejos a cerca: placa y texto (5 px) y la ventana de la foto (12 px). El
+   buscador no se mueve. Lo escribe useProfundidadHero con la propiedad `translate`, que se
+   compone con los `transform` de las entradas. */
 @media (hover: hover) and (pointer: fine) and (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-  /* La ventana se mueve desde JS en cada cuadro y contiene la foto, el único repintado caro:
-     como capa propia solo se recompone. La placa (color plano) y el marco (una línea) no lo necesitan. */
+  /* La ventana se mueve desde JS en cada cuadro y contiene la foto: como capa propia solo se recompone */
   .recorte {
     will-change: translate;
   }
@@ -300,33 +225,104 @@
   }
 }
 
-/* ---------- Scroll ----------
-   La foto se queda atrás respecto de la página al bajar (más lenta que el scroll) y su
-   escala deja margen para que no asome el fondo. Va atada al scroll con CSS puro: corre
-   fuera del hilo principal. Sin soporte, la foto simplemente queda quieta. */
-@keyframes derivaFoto {
-  to {
-    translate: 0 var(--deriva);
-  }
-}
+/* ---------- Movimiento: "la ventana se abre" ----------
+   Mismo lenguaje que la ficha de propiedad. Solo transform, opacity y clip-path (la máscara del
+   plano), y solo sin movimiento reducido. Con la profundidad por puntero de arriba conviven sin
+   pisarse: ese usa la propiedad `translate` y esto usa `transform`. */
 
-.recorte {
-  --deriva: 0.75rem; /* cuánto se retrasa la foto al bajar; menos que el margen que da la escala */
-}
-
-@media (min-width: 1024px) {
-  .recorte {
-    --deriva: 1.25rem;
-  }
+.hero {
+  --llegada: cubic-bezier(0.16, 1, 0.3, 1); /* curva de las llegadas: arranca rápido y asienta suave */
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
-    .recorte img {
-      scale: 1.1;
+  @keyframes abrirPlano {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes asentarFoto {
+    from {
+      transform: scale(1.08);
+    }
+
+    to {
+      transform: none;
+    }
+  }
+
+  @keyframes entrar {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Solo en la carga directa de la home (data-carga-directa lo pone HeroCatalogo): al volver con
+     Atrás o al limpiar filtros el hero aparece ya armado */
+  .hero[data-carga-directa] .placa,
+  .hero[data-carga-directa] .texto::before {
+    animation: abrirPlano 450ms var(--llegada) backwards;
+  }
+
+  .hero[data-carga-directa] .recorte img {
+    animation: asentarFoto 900ms var(--llegada) backwards;
+  }
+
+  /* Después del plano, de a 70 ms */
+  .hero[data-carga-directa] .titulo {
+    animation: entrar 320ms var(--llegada) 380ms backwards;
+  }
+
+  .hero[data-carga-directa] .bajada {
+    animation: entrar 320ms var(--llegada) 450ms backwards;
+  }
+
+  .hero[data-carga-directa] .buscador {
+    animation: entrar 320ms var(--llegada) 520ms backwards;
+  }
+}
+
+/* Profundidad al scrollear: el plano se queda atrás (+12 px) y la foto se adelanta (-12 px).
+   Sin soporte de scroll-driven animations queda todo quieto. */
+@supports (animation-timeline: scroll()) {
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    @keyframes derivaCapa {
+      to {
+        transform: translateY(var(--deriva));
+      }
+    }
+
+    .recorte {
+      --deriva: -12px;
+      animation: derivaCapa linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 36rem;
+    }
+  }
+
+  /* El plano es un elemento propio desde escritorio */
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .placa {
+      --deriva: 12px;
+      animation: derivaCapa linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 36rem;
+    }
+
+    .hero[data-carga-directa] .placa {
       animation:
-        asentarFoto 900ms var(--curva) 80ms both,
-        derivaFoto linear both;
+        abrirPlano 450ms var(--llegada) backwards,
+        derivaCapa linear both;
       animation-timeline: auto, scroll(root);
       animation-range: normal, 0 36rem;
     }

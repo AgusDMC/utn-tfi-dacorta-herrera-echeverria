@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { Outlet, useLocation, useNavigationType } from 'react-router'
 import Header from './Header.tsx'
 import Footer from './Footer.tsx'
@@ -10,7 +10,9 @@ export default function LayoutPublico() {
 
   // Al entrar a otra página (no al cambiar filtros) se vuelve al principio.
   // Con Atrás/Adelante (POP) el navegador restaura la posición anterior.
-  useEffect(() => {
+  // Es un efecto de layout para que la página nueva ya esté arriba cuando la transición
+  // de la foto (catálogo → detalle) mide dónde queda.
+  useLayoutEffect(() => {
     if (tipoNavegacion !== 'POP') window.scrollTo(0, 0)
   }, [pathname, tipoNavegacion])
 

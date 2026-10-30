@@ -4,25 +4,18 @@ import { formatearPrecio, formatearSuperficie } from '../formato.ts'
 import { ETIQUETA_OPERACION, ETIQUETA_TIPO, type PublicacionCatalogo } from '../tipos.ts'
 import estilos from './TarjetaPublicacion.module.css'
 
-// destacada: protagonista de la home (foto grande con los datos pegados debajo)
-// compacta:  secundaria de la home (fila foto + datos, en todos los anchos)
-// ficha:     único resultado (foto y datos lado a lado desde tablet)
-// Sin variante: tarjeta vertical común (pares y grilla de resultados)
-export type VarianteTarjeta = 'destacada' | 'compacta' | 'ficha'
-
 interface Props {
   publicacion: PublicacionCatalogo
-  variante?: VarianteTarjeta
 }
 
-export default function TarjetaPublicacion({ publicacion, variante }: Props) {
+// Tarjeta de una publicación: la misma en la home y en los resultados
+export default function TarjetaPublicacion({ publicacion }: Props) {
   const { id, titulo, portada, cantAmbientes } = publicacion
   const operacion = ETIQUETA_OPERACION[publicacion.tipoOperacion].toLowerCase()
 
   return (
-    <article className={`${estilos.tarjeta} ${variante ? estilos[variante] : ''}`}>
-      {/* Al cambiar de estado (home ⇄ resultados) la foto de una misma propiedad viaja a su
-          nueva posición en lugar de desaparecer y reaparecer */}
+    <article className={estilos.tarjeta}>
+      {/* La foto viaja a la ficha de la propiedad (y vuelve con Atrás) en lugar de cortarse */}
       <ViewTransition name={`foto-${id}`} enter="none" exit="none" update="none" share="foto-compartida">
         <div className={estilos.foto}>
           {portada ? (
@@ -31,7 +24,7 @@ export default function TarjetaPublicacion({ publicacion, variante }: Props) {
               alt={portada.descripcion ?? `Foto de ${titulo}`}
               width={800}
               height={600}
-              loading={variante === 'ficha' ? 'eager' : 'lazy'}
+              loading="lazy"
               decoding="async"
             />
           ) : (
@@ -45,9 +38,7 @@ export default function TarjetaPublicacion({ publicacion, variante }: Props) {
         {/* El precio lidera: es lo primero que se mira en una propiedad */}
         <p className={`precio ${estilos.precio}`}>{formatearPrecio(publicacion.precio, publicacion.moneda)}</p>
         {publicacion.expensas !== null && (
-          <p className={`numeros ${estilos.expensas}`}>
-            + {formatearPrecio(publicacion.expensas, 'PESOS')} de expensas
-          </p>
+          <p className={`numeros ${estilos.expensas}`}>+ {formatearPrecio(publicacion.expensas, 'PESOS')} de expensas</p>
         )}
 
         {/* El enlace del título se extiende a toda la tarjeta: una sola parada de tabulación */}
