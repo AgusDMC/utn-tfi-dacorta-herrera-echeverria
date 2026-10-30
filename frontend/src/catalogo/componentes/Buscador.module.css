@@ -1,0 +1,412 @@
+/* =====================================================================
+   Barra de búsqueda. Cada celda tiene una etiqueta pequeña arriba y el valor debajo. Una celda
+   con un filtro activo muestra un filete verde en su base, como la operación activa del header.
+   En mobile las celdas se apilan; en desktop forman una fila con el botón como bloque verde.
+   ===================================================================== */
+
+.buscador {
+  --px: var(--espacio-4);
+
+  overflow: hidden;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background: var(--color-superficie);
+}
+
+/* ---------- Celdas ---------- */
+
+.operacion,
+.campo {
+  position: relative;
+  display: block;
+  min-height: 4.25rem;
+  border-bottom: 1px solid var(--color-borde);
+  transition: background-color var(--duracion-rapida) var(--ease-out);
+}
+
+.etiqueta {
+  position: absolute;
+  top: 0.5rem;
+  left: var(--px);
+  z-index: 1;
+  color: var(--color-texto-suave);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  pointer-events: none; /* los toques pasan al control que está debajo */
+  transition: color var(--duracion-rapida) var(--ease-out);
+}
+
+/* ---------- Operación (radios nativos presentados como opciones de texto) ---------- */
+
+.operacion {
+  padding: 1.5rem var(--px) 0;
+}
+
+.opciones {
+  display: flex;
+  gap: var(--espacio-6);
+}
+
+.opcion {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-tactil);
+  color: var(--color-texto-suave);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color var(--duracion-rapida) var(--ease-out),
+    transform var(--duracion-rapida) var(--ease-out);
+}
+
+/* Al tocar una opción cede apenas: confirma el toque antes de que cambie el estado */
+.opcion:active {
+  transform: scale(0.97);
+}
+
+.opcion input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* La opción elegida se marca con texto verde y un filete (no solo con color).
+   El filete entra por la izquierda y se retira por la derecha: la selección "pasa" de una
+   opción a la otra en lugar de apagarse y encenderse. */
+.opcion::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0.4rem;
+  left: 0;
+  height: 2px;
+  background: var(--color-primario);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--duracion-media) var(--ease-out);
+}
+
+.opcion:has(input:checked) {
+  color: var(--color-primario);
+}
+
+.opcion:has(input:checked)::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.opcion:has(input:focus-visible) {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+  border-radius: var(--radio-sm);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .opcion:hover {
+    color: var(--color-texto);
+  }
+
+  .opcion:has(input:checked):hover {
+    color: var(--color-primario);
+  }
+}
+
+/* ---------- Campos con select nativo ---------- */
+
+/* El select ocupa toda la celda; el texto se acomoda debajo de la etiqueta */
+.selector {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 1.5rem 2.5rem 0.25rem var(--px);
+  border: 0;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%231f4d3f' stroke-width='1.5'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E")
+    no-repeat right var(--px) center / 0.875rem;
+  color: var(--color-texto);
+  font-family: var(--fuente-texto);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  appearance: none;
+}
+
+/* La lista desplegable usa colores explícitos (en algunos sistemas hereda los del tema del SO) */
+.selector option {
+  background-color: var(--color-superficie);
+  color: var(--color-texto);
+  font-family: var(--fuente-texto);
+}
+
+/* El foco se muestra en toda la celda */
+.selector:focus-visible {
+  outline: none;
+}
+
+/* Desplegable propio (select personalizable). Los navegadores sin soporte siguen con el
+   popup nativo de arriba: nada de este bloque se aplica fuera de @supports. */
+@supports (appearance: base-select) {
+  .selector,
+  .selector::picker(select) {
+    appearance: base-select;
+  }
+
+  /* La flecha de fondo se reemplaza por ::picker-icon */
+  .selector {
+    padding-right: var(--px); /* la flecha ya no es un fondo: ocupa su propio lugar */
+    background: transparent;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--espacio-3);
+  }
+
+  /* El botón del select ocupa la celda y la opción elegida se corta con puntos suspensivos
+     para que la flecha nunca quede fuera */
+  .selector > button {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--espacio-3);
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .selector selectedcontent {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .selector::picker-icon {
+    flex-shrink: 0;
+    align-self: center;
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-top: 0.75rem;
+    content: '';
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%231f4d3f' stroke-width='1.5'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E")
+      no-repeat center / contain;
+    transition: rotate var(--duracion-media) var(--ease-out);
+  }
+
+  .selector:open::picker-icon {
+    rotate: 180deg;
+  }
+
+  /* El popup sale del buscador (capa superior): no lo recorta el overflow y mide como la celda */
+  .selector::picker(select) {
+    min-width: anchor-size(width);
+    max-width: calc(100vw - 2rem); /* un valor largo pasa a dos líneas en vez de salirse de la pantalla */
+    margin-top: var(--espacio-1);
+    /* Se abre hacia abajo y solo se da vuelta si no entra (por defecto elige el lado con más espacio y
+       puede tapar el título del hero) */
+    position-try: normal flip-block;
+    padding: 0;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-md);
+    background: var(--color-superficie);
+    box-shadow: 0 8px 24px rgb(28 27 25 / 0.08); /* elevación real: el popup flota sobre la página */
+
+    /* Salida: un poco más rápida que la entrada */
+    opacity: 0;
+    translate: 0 -4px;
+    transition:
+      opacity 120ms var(--ease-out),
+      translate 120ms var(--ease-out),
+      display 120ms allow-discrete,
+      overlay 120ms allow-discrete;
+  }
+
+  .selector:open::picker(select) {
+    opacity: 1;
+    translate: 0 0;
+    transition-duration: 160ms;
+  }
+
+  @starting-style {
+    .selector:open::picker(select) {
+      opacity: 0;
+      translate: 0 -4px;
+    }
+  }
+
+  .selector option {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-3);
+    min-height: 3rem; /* también es el alto táctil */
+    padding: 0.5rem var(--px);
+    background: var(--color-superficie);
+    color: var(--color-texto);
+    font-family: var(--fuente-texto);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    white-space: normal; /* un nombre largo pasa a dos líneas, nunca se corta */
+    cursor: pointer;
+  }
+
+  /* La tilde va a la derecha */
+  .selector option::checkmark {
+    order: 1;
+    margin-left: auto;
+  }
+
+  /* La opción elegida va en pino */
+  .selector option:checked {
+    background: var(--color-primario);
+    color: var(--color-sobre-primario);
+  }
+
+  /* Foco con teclado (↑ ↓ recorren las opciones) */
+  .selector option:focus-visible {
+    background: var(--color-fondo);
+    outline: 2px solid var(--color-primario);
+    outline-offset: -2px;
+  }
+
+  .selector option:checked:focus-visible {
+    background: var(--color-primario);
+    outline-color: var(--color-fondo);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .selector option:hover:not(:checked) {
+      background: var(--color-fondo);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .selector::picker(select),
+    .selector:open::picker(select) {
+      translate: none;
+      transition: opacity 120ms linear;
+    }
+
+    .selector::picker-icon {
+      transition: none;
+    }
+  }
+}
+
+/* Con el select abierto (o enfocado con el mouse o el dedo) la etiqueta toma el verde */
+.campo:has(.selector:focus) .etiqueta {
+  color: var(--color-primario);
+}
+
+.campo:has(.selector:focus-visible) {
+  box-shadow: inset 0 0 0 2px var(--color-primario);
+}
+
+/* Filete verde en la base cuando el campo tiene un valor distinto del predeterminado */
+.campo::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--color-primario);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--duracion-media) var(--ease-out);
+  pointer-events: none;
+}
+
+.campo:has(option:checked:not([value='']))::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Toda la celda responde al tocarla; el hover solo donde existe un puntero */
+.campo:active {
+  background: var(--color-arena);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .campo:hover {
+    background: var(--color-fondo);
+  }
+}
+
+/* ---------- Botón ---------- */
+
+.campos {
+  display: grid;
+}
+
+.acciones {
+  display: flex;
+  padding: var(--espacio-3) var(--px) var(--px);
+}
+
+.botonBuscar {
+  flex: 1;
+  min-height: 3.25rem;
+  padding-inline: var(--espacio-8);
+  font-size: var(--texto-lg);
+}
+
+/* ---------- Tablet: las celdas de campos en una fila bajo la operación ---------- */
+@media (min-width: 640px) {
+  .buscador {
+    --px: var(--espacio-6);
+  }
+
+  .campos {
+    grid-template-columns: 1fr 1fr auto;
+  }
+
+  .campo {
+    border-bottom: 0;
+    border-right: 1px solid var(--color-borde);
+  }
+
+  .acciones {
+    align-items: stretch;
+    padding: 0;
+  }
+
+  /* El botón es un bloque verde de altura completa, sin radio propio */
+  .botonBuscar {
+    min-height: 100%;
+    border-radius: 0;
+  }
+}
+
+/* ---------- Desktop ancho: todo en una sola fila ---------- */
+@media (min-width: 1280px) {
+  .buscador {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr auto;
+    align-items: stretch;
+  }
+
+  .campos {
+    display: contents;
+  }
+
+  .operacion {
+    padding-right: var(--espacio-6);
+    border-right: 1px solid var(--color-borde);
+    border-bottom: 0;
+  }
+}

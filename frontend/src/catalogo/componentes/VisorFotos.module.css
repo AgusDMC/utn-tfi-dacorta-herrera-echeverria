@@ -1,0 +1,208 @@
+/* Visor a pantalla completa sobre el negro cálido del texto. Los controles viven fuera de la
+   foto: contador y Cerrar en la barra de arriba, flechas en los márgenes laterales. */
+
+/* El scroll de la página se bloquea mientras el visor está abierto. El hueco de la barra de
+   scroll (scrollbar-gutter) queda fuera del <dialog>: se pinta del mismo color. */
+:global(html.visor-abierto) {
+  overflow: hidden;
+  background: var(--color-texto);
+}
+
+.visor {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-texto);
+  color: var(--color-fondo);
+  opacity: 0;
+  scale: 0.98;
+  transition:
+    opacity 220ms var(--ease-out),
+    scale 220ms var(--ease-out),
+    display 220ms allow-discrete,
+    overlay 220ms allow-discrete;
+}
+
+.visor[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  opacity: 1;
+  scale: 1;
+}
+
+@starting-style {
+  .visor[open] {
+    opacity: 0;
+    scale: 0.98;
+  }
+}
+
+.visor::backdrop {
+  background: var(--color-texto);
+}
+
+/* Sobre fondo oscuro el foco se dibuja en crema */
+.visor :focus-visible {
+  outline-color: var(--color-fondo);
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 4rem;
+  padding-inline: var(--margen-lateral);
+}
+
+.contador {
+  font-family: var(--fuente-titulos);
+  font-size: 1.375rem;
+  font-variant-numeric: lining-nums tabular-nums;
+  line-height: 1;
+}
+
+.cerrar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-height: var(--alto-tactil);
+  padding-inline: var(--espacio-4);
+  border: 1px solid rgb(250 248 245 / 0.35);
+  border-radius: var(--radio-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--texto-ui);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--duracion-rapida) var(--curva),
+    border-color var(--duracion-rapida) var(--curva),
+    transform 120ms var(--curva);
+}
+
+.cerrar svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.cerrar:active {
+  background: rgb(250 248 245 / 0.14);
+  transform: scale(0.98);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cerrar:hover {
+    border-color: var(--color-fondo);
+    background: rgb(250 248 245 / 0.1);
+  }
+}
+
+.escenario {
+  position: relative;
+  min-height: 0;
+}
+
+/* Una sola pista para todo: el dedo la desliza y las flechas la mueven con scrollTo */
+.pista {
+  display: flex;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.pista::-webkit-scrollbar {
+  display: none;
+}
+
+.diapositiva {
+  flex: 0 0 100%;
+  min-width: 0;
+  padding: 0 var(--margen-lateral) var(--margen-lateral);
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+/* Con puntero preciso las flechas ocupan los márgenes: la foto no pasa por debajo */
+@media (pointer: fine) {
+  .diapositiva {
+    padding-inline: 5.5rem;
+  }
+}
+
+.flecha {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-top: -1.75rem;
+  padding: 0;
+  border: 1px solid rgb(250 248 245 / 0.35);
+  border-radius: var(--radio-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    background-color var(--duracion-rapida) var(--curva),
+    border-color var(--duracion-rapida) var(--curva),
+    opacity var(--duracion-rapida) var(--curva);
+}
+
+.flecha svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.anterior {
+  left: var(--margen-lateral);
+}
+
+.siguiente {
+  right: var(--margen-lateral);
+}
+
+.flecha[aria-disabled='true'] {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.flecha:active:not([aria-disabled='true']) {
+  background: rgb(250 248 245 / 0.14);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .flecha:hover:not([aria-disabled='true']) {
+    border-color: var(--color-fondo);
+    background: rgb(250 248 245 / 0.1);
+  }
+}
+
+/* En pantallas táctiles se desliza con el dedo: las flechas quedan solo para el teclado
+   y los lectores de pantalla (aparecen únicamente con el foco) */
+@media (pointer: coarse) {
+  .flecha:not(:focus-visible) {
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    border: 0;
+    clip-path: inset(50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visor {
+    transition: none;
+    scale: 1;
+  }
+}

@@ -1,0 +1,53 @@
+.cabecera {
+  position: relative;
+  display: grid;
+  grid-template-areas:
+    'titulo controles'
+    'detalle detalle';
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--espacio-2) var(--espacio-4);
+  padding-top: var(--espacio-4);
+}
+
+/* Filete superior de la sección */
+.cabecera::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--color-texto);
+}
+
+.titulo {
+  grid-area: titulo;
+  font-size: var(--titulo-md);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.detalle {
+  grid-area: detalle;
+  max-width: 28rem;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+/* Desktop: la bajada se ubica a la derecha del título, alineada a su base.
+   Flex en lugar de grid para que no quede hueco cuando no hay controles. */
+@media (min-width: 1024px) {
+  .cabecera {
+    display: flex;
+    column-gap: var(--espacio-8);
+  }
+
+  .titulo {
+    flex: 1;
+  }
+
+  .detalle {
+    text-align: right;
+  }
+}

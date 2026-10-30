@@ -1,0 +1,344 @@
+/* =====================================================================
+   Estilos globales: tokens de diseño, reset mínimo y utilidades comunes.
+   Los componentes usan CSS Modules y solo leen estas variables.
+   ===================================================================== */
+
+:root {
+  /* Colores (contraste AA verificado sobre --color-fondo) */
+  --color-fondo: #faf8f5;            /* hueso */
+  --color-superficie: #ffffff;
+  --color-arena: #f1ede6;            /* footer y espacios para fotos */
+  --color-borde: #e6e1d9;
+  --color-texto: #1c1b19;            /* 16.2:1 */
+  --color-texto-suave: #5f5b54;      /* 6.4:1 (5.8:1 sobre arena) */
+  --color-primario: #1f4d3f;         /* verde pino, 9.0:1 */
+  --color-primario-hover: #173c31;
+  --color-sobre-primario: #faf8f5;
+  --color-sobre-primario-suave: #c2d1c8; /* texto secundario sobre pino, 6.0:1 */
+  --color-acento: #b5562f;           /* terracota: solo detalles puntuales y sobre --color-fondo (4.6:1) */
+  --color-sobre-acento: #ffffff;     /* 4.8:1 sobre terracota */
+  --color-error: #b42318;
+
+  /* Tratamiento común de las fotos de demo: bajan la saturación y entibian el tono para que
+     fotos de lugares distintos se lean como una sola colección. Con fotos reales, poner `none`. */
+  --filtro-foto: saturate(0.7) sepia(0.12) contrast(1.03);
+
+  /* Tipografía: Newsreader (títulos) y Public Sans (interfaz), servidas localmente */
+  --fuente-titulos: 'Newsreader Variable', ui-serif, Georgia, serif;
+  --fuente-texto: 'Public Sans Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --texto-etiqueta: 0.6875rem;       /* descriptor del logotipo */
+  --texto-xs: 0.75rem;
+  --texto-sm: 0.875rem;
+  --texto-ui: 0.9375rem;             /* navegación y pestañas */
+  --texto-base: 1rem;
+  --texto-lg: 1.125rem;
+  --titulo-sm: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  --titulo-md: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+  --titulo-lg: clamp(2.5rem, 1.2rem + 4.6vw, 5.5rem);
+  --precio: clamp(1.625rem, 1.4rem + 0.8vw, 2rem); /* el precio es el titular de cada propiedad */
+
+  /* Espaciado: escala amplia, mucho aire */
+  --espacio-1: 0.25rem;
+  --espacio-2: 0.5rem;
+  --espacio-3: 0.75rem;
+  --espacio-4: 1rem;
+  --espacio-6: 1.5rem;
+  --espacio-8: 2rem;
+  --espacio-12: 3rem;
+  --espacio-16: 4rem;
+  --espacio-24: 6rem;
+  --espacio-seccion: clamp(4rem, 3rem + 4vw, 7rem);
+
+  /* Layout */
+  --ancho-max: 75rem;                /* 1200px */
+  --margen-lateral: 1rem;
+  --alto-header: 4rem;
+  --alto-tactil: 2.75rem;            /* objetivo táctil mínimo de 44px */
+  --radio-sm: 2px;
+  --radio-md: 4px;
+
+  /* Movimiento. Curvas fuertes (las integradas de CSS son demasiado débiles):
+     entrar y responder → ease-out; moverse por la pantalla → ease-in-out. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --curva: var(--ease-out);          /* nombre ya usado en los componentes */
+  --duracion-rapida: 150ms;          /* presionar, colores */
+  --duracion-media: 300ms;           /* interfaz */
+}
+
+@media (min-width: 640px) {
+  :root {
+    --margen-lateral: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --margen-lateral: 2rem;
+    --alto-header: 4.5rem;
+  }
+}
+
+/* ---------- Reset mínimo ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scrollbar-gutter: stable;          /* evita que el layout salte entre páginas con y sin scroll */
+  scroll-padding-top: calc(var(--alto-header) + var(--espacio-4)); /* el header fijo no tapa el foco */
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+figure {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--fuente-titulos);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--color-primario);
+}
+
+/* Toque: sin la espera del doble toque y sin el destello gris del navegador.
+   Cada elemento tocable tiene su propio :active, que es la respuesta que ve la persona. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a,
+button,
+select,
+label {
+  touch-action: manipulation;
+}
+
+/* Lo que es un control no se selecciona al mantener apretado (el texto de contenido sí) */
+button,
+.boton,
+label,
+a {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+::selection {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+/* Foco visible solo con teclado */
+:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 3px;
+  border-radius: var(--radio-sm);
+}
+
+/* ---------- Utilidades comunes ---------- */
+
+.contenedor {
+  width: min(100% - 2 * var(--margen-lateral), var(--ancho-max));
+  margin-inline: auto;
+}
+
+/* Oculta visualmente pero mantiene el contenido para lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Las secciones aparecen con un fade corto al entrar en pantalla (8 px de subida: se lee como
+   fade, no como deslizamiento). Visibles desde el principio si no hay soporte o se pidió menos
+   movimiento. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .aparece {
+      animation: aparecer linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+
+/* Cifras de ancho fijo para precios y medidas */
+.numeros {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Línea breve sobre un título (sección, número de propiedad, código de error) */
+.antetitulo {
+  display: block;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+}
+
+/* Precio en serif: la cifra lidera cada propiedad */
+.precio {
+  font-family: var(--fuente-titulos);
+  font-size: var(--precio);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+  min-height: var(--alto-tactil);
+  padding: var(--espacio-2) var(--espacio-6);
+  border: 1px solid transparent;
+  border-radius: var(--radio-sm);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--duracion-rapida) var(--curva),
+    border-color var(--duracion-rapida) var(--curva),
+    color var(--duracion-rapida) var(--curva),
+    transform var(--duracion-rapida) var(--curva);
+}
+
+/* Respuesta al presionar: el botón se hunde (escala también el texto) */
+.boton:active {
+  transform: scale(0.97);
+}
+
+.boton-primario {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+.boton-secundario {
+  border-color: var(--color-borde);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+}
+
+/* Hover solo con un puntero preciso; en touch quedaría marcado después del toque */
+@media (hover: hover) and (pointer: fine) {
+  .boton-primario:hover {
+    background: var(--color-primario-hover);
+  }
+
+  .boton-secundario:hover {
+    border-color: var(--color-primario);
+    color: var(--color-primario);
+  }
+}
+
+/* ---------- Transiciones compartidas entre páginas ----------
+   El buscador y la foto de cada propiedad viajan de una página a la otra en lugar de
+   desaparecer y reaparecer. Los pares los define React con <ViewTransition name>. */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: var(--ease-out);
+}
+
+::view-transition-group(.foto-compartida),
+::view-transition-group(.buscador-compartido) {
+  animation-duration: 450ms;
+  animation-timing-function: var(--ease-in-out);
+  overflow: clip;
+  border-radius: var(--radio-md);
+}
+
+/* Las fotos cambian de proporción al viajar: se recortan, no se deforman */
+::view-transition-old(.foto-compartida),
+::view-transition-new(.foto-compartida) {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* La barra cambia de ancho: su imagen conserva el tamaño y no estira el texto */
+::view-transition-old(.buscador-compartido),
+::view-transition-new(.buscador-compartido) {
+  height: 100%;
+  object-fit: none;
+  object-position: left center;
+}
+
+/* Movimiento reducido: se van los desplazamientos, la profundidad y las entradas; se conservan
+   los cambios de color y opacidad que ayudan a entender el estado (foco, hover, filtro activo). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-property: color, background-color, border-color, text-decoration-color, opacity !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Lo compartido deja de viajar (movimiento); el cross-fade de la página (opacidad) se conserva */
+  ::view-transition-group(.foto-compartida),
+  ::view-transition-old(.foto-compartida),
+  ::view-transition-new(.foto-compartida),
+  ::view-transition-group(.buscador-compartido),
+  ::view-transition-old(.buscador-compartido),
+  ::view-transition-new(.buscador-compartido) {
+    animation: none !important;
+  }
+}

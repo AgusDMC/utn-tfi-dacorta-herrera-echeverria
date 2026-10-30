@@ -1,0 +1,36 @@
+.pagina {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: var(--espacio-8) var(--margen-lateral);
+  background: var(--color-arena);
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--espacio-8);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background: var(--color-superficie);
+}
+
+@media (min-width: 640px) {
+  .tarjeta {
+    padding: var(--espacio-12);
+  }
+}
+
+.titulo {
+  margin-top: var(--espacio-8);
+  font-size: var(--titulo-sm);
+}
+
+.texto {
+  margin-top: var(--espacio-3);
+  margin-bottom: var(--espacio-8);
+  color: var(--color-texto-suave);
+}
