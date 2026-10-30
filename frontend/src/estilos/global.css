@@ -48,9 +48,6 @@
 
   /* Layout */
   --ancho-max: 75rem;                /* 1200px */
-  /* Estructura de dos columnas que comparten la grilla de propiedades y el footer */
-  --columnas-editorial: minmax(0, 7fr) minmax(0, 5fr);
-  --separacion-editorial: 2rem;
   --margen-lateral: 1rem;
   --alto-header: 4rem;
   --alto-tactil: 2.75rem;            /* objetivo táctil mínimo de 44px */
@@ -64,7 +61,6 @@
   --curva: var(--ease-out);          /* nombre ya usado en los componentes */
   --duracion-rapida: 150ms;          /* presionar, colores */
   --duracion-media: 300ms;           /* interfaz */
-  --duracion-lenta: 450ms;           /* solo secuencias de entrada que se ven una vez */
 }
 
 @media (min-width: 640px) {
@@ -261,8 +257,8 @@ a {
   }
 }
 
-/* ---------- Transiciones compartidas entre estados (home ⇄ resultados) ----------
-   El buscador y la foto de cada propiedad viajan de un estado al otro en lugar de
+/* ---------- Transiciones compartidas entre páginas ----------
+   El buscador y la foto de cada propiedad viajan de una página a la otra en lugar de
    desaparecer y reaparecer. Los pares los define React con <ViewTransition name>. */
 
 ::view-transition-old(root),
@@ -294,9 +290,8 @@ a {
   object-position: left center;
 }
 
-/* Movimiento reducido (criterio de Emil Kowalski: menos y más suave, no cero).
-   Se van los desplazamientos, la profundidad y las entradas; se conservan los cambios de
-   color y opacidad que ayudan a entender el estado (foco, hover, filtro activo). */
+/* Movimiento reducido: se van los desplazamientos, la profundidad y las entradas; se conservan
+   los cambios de color y opacidad que ayudan a entender el estado (foco, hover, filtro activo). */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

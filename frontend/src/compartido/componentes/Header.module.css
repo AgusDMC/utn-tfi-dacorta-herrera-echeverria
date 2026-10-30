@@ -8,7 +8,7 @@
 
 .barra {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: space-between;
   gap: var(--espacio-4);
   min-height: var(--alto-header);
@@ -32,23 +32,18 @@
   opacity: 1;
 }
 
-/* Los dos destinos son celdas de una misma barra, entre filetes verticales:
-   el mismo lenguaje de celdas con filete del buscador */
+.navegacion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
 .menu {
   display: flex;
-  align-self: stretch;
+  align-items: center;
   margin: 0;
   padding: 0;
-  border-left: 1px solid var(--color-borde);
   list-style: none;
-}
-
-.menu li {
-  display: flex;
-}
-
-.menu li + li {
-  border-left: 1px solid var(--color-borde);
 }
 
 .enlace {
@@ -56,7 +51,7 @@
   display: inline-flex;
   align-items: center;
   min-height: var(--alto-tactil);
-  padding-inline: var(--espacio-4);
+  padding-inline: var(--espacio-3);
   color: var(--color-texto-suave);
   font-size: var(--texto-ui);
   font-weight: 500;
@@ -64,13 +59,13 @@
   transition: color var(--duracion-rapida) var(--curva);
 }
 
-/* La operación activa lleva un filete verde en la base de la barra */
+/* La operación activa lleva un filete verde debajo del texto */
 .enlace::after {
   content: '';
   position: absolute;
-  right: 0;
-  bottom: -1px;
-  left: 0;
+  right: var(--espacio-3);
+  bottom: 0.375rem;
+  left: var(--espacio-3);
   height: 2px;
   background: var(--color-primario);
   transform: scaleX(0);
@@ -99,8 +94,39 @@
   }
 }
 
+.institucional {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .institucional {
+    display: block;
+  }
+}
+
+/* El botón a todas las propiedades solo aparece donde hay lugar */
+.todas {
+  display: none;
+  min-height: 2.5rem;
+  padding-inline: var(--espacio-4);
+  font-size: var(--texto-ui);
+}
+
 @media (min-width: 640px) {
+  .todas {
+    display: inline-flex;
+  }
+
+  .navegacion {
+    gap: var(--espacio-4);
+  }
+
   .enlace {
-    padding-inline: var(--espacio-6);
+    padding-inline: var(--espacio-4);
+  }
+
+  .enlace::after {
+    right: var(--espacio-4);
+    left: var(--espacio-4);
   }
 }

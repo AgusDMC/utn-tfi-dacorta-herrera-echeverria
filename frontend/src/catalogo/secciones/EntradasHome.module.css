@@ -1,0 +1,146 @@
+.seccion {
+  margin-top: var(--espacio-seccion);
+}
+
+/* ---------- Comprar y alquilar: una foto y el destino ---------- */
+
+.operaciones {
+  display: grid;
+  gap: var(--espacio-8);
+  margin: var(--espacio-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entrada {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--espacio-4);
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.foto {
+  grid-column: 1 / -1;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radio-md);
+  background: var(--color-arena);
+}
+
+.foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duracion-media) var(--ease-out);
+}
+
+.texto {
+  display: flex;
+  flex-direction: column;
+}
+
+.nombre {
+  font-size: var(--texto-lg);
+  font-weight: 600;
+}
+
+.cantidad {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.entrada svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-primario);
+  transition: transform var(--duracion-media) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .entrada:hover .foto img {
+    transform: scale(1.04);
+  }
+
+  .entrada:hover svg {
+    transform: translateX(4px);
+  }
+}
+
+.entrada:active .foto img {
+  transform: scale(1.02);
+}
+
+/* ---------- Por tipo de propiedad: una fila de enlaces separados por filetes ---------- */
+
+.tipos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: var(--espacio-8) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--color-borde);
+  list-style: none;
+}
+
+.tipos li {
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.tipo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  min-height: 3.5rem;
+  padding-inline: 0 var(--espacio-4);
+  color: var(--color-texto);
+  font-size: var(--texto-base);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--duracion-rapida) var(--curva);
+}
+
+.total {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 400;
+}
+
+.tipo:active {
+  color: var(--color-primario);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tipo:hover {
+    color: var(--color-primario);
+  }
+}
+
+@media (min-width: 640px) {
+  .operaciones {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--espacio-6);
+  }
+
+  .tipos {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    border-bottom: 1px solid var(--color-borde);
+  }
+
+  .tipos li {
+    border-bottom: 0;
+  }
+
+  .tipos li + li {
+    border-left: 1px solid var(--color-borde);
+  }
+
+  .tipo {
+    padding-inline: var(--espacio-6);
+  }
+
+  .tipos li:first-child .tipo {
+    padding-left: 0;
+  }
+}

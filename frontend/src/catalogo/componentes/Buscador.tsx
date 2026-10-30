@@ -40,7 +40,7 @@ export default function Buscador({ filtros, localidades }: Props) {
   }
 
   return (
-    // Es la misma barra en la home y en los resultados: al cambiar de estado viaja de un
+    // Es la misma barra en la home y en el catálogo: al cambiar de página viaja de un
     // lugar al otro en lugar de desaparecer y reaparecer
     <ViewTransition name="buscador" enter="none" exit="none" update="none" share="buscador-compartido">
       <form
@@ -79,6 +79,10 @@ export default function Buscador({ filtros, localidades }: Props) {
           <label className={estilos.campo}>
             <span className={estilos.etiqueta}>Tipo de propiedad</span>
             <select name="tipo" defaultValue={filtros.tipo ?? ''} className={estilos.selector}>
+              {/* Select personalizable: este botón muestra la opción elegida. Sin soporte, se ignora */}
+              <button type="button">
+                <selectedcontent />
+              </button>
               <option value="">Todos los tipos</option>
               {TIPOS_PROPIEDAD.map((tipo) => (
                 <option key={tipo} value={tipo}>
@@ -91,6 +95,10 @@ export default function Buscador({ filtros, localidades }: Props) {
           <label className={estilos.campo}>
             <span className={estilos.etiqueta}>Ubicación</span>
             <select name="localidad" defaultValue={filtros.localidad ?? ''} className={estilos.selector}>
+              {/* Select personalizable: este botón muestra la opción elegida. Sin soporte, se ignora */}
+              <button type="button">
+                <selectedcontent />
+              </button>
               <option value="">Todas las localidades</option>
               {localidades.map((localidad) => (
                 <option key={localidad} value={localidad}>
