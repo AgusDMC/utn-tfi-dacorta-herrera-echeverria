@@ -10,8 +10,14 @@
   transition: color var(--duracion-rapida) var(--curva);
 }
 
-.volver:hover {
+.volver:active {
   color: var(--color-primario);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .volver:hover {
+    color: var(--color-primario);
+  }
 }
 
 .encabezado {

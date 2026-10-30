@@ -1,29 +1,24 @@
-/* Footer liviano: fondo arena con filete superior */
+/* Cierre en arena. Un filete oscuro lo abre, igual que a cada sección de la página, y
+   la estructura de dos columnas es la de la grilla de propiedades. */
 .footer {
-  margin-top: var(--espacio-seccion);
-  padding-block: var(--espacio-8) var(--espacio-6);
-  border-top: 1px solid var(--color-borde);
+  margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+  border-top: 1px solid var(--color-texto);
   background: var(--color-arena);
 }
 
-.principal {
+.rejilla {
+  display: grid;
+}
+
+.marca {
+  padding-block: var(--espacio-6) var(--espacio-4);
+}
+
+.lateral {
   display: flex;
   flex-direction: column;
-  gap: var(--espacio-4);
-}
-
-@media (min-width: 768px) {
-  .principal {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-}
-
-.descripcion {
-  margin-top: var(--espacio-1);
-  color: var(--color-texto-suave);
-  font-size: var(--texto-sm);
+  padding-bottom: var(--espacio-4);
+  border-top: 1px solid var(--color-borde);
 }
 
 .enlaces {
@@ -41,16 +36,24 @@
   align-items: center;
   min-height: var(--alto-tactil);
   color: var(--color-texto-suave);
-  font-size: var(--texto-sm);
+  font-size: var(--texto-ui);
   text-decoration: none;
   transition: color var(--duracion-rapida) var(--curva);
 }
 
-.enlaces a:hover,
-.legal a:hover {
+/* Hover solo con puntero fino; al tocar (:active) el enlace se oscurece mientras se presiona */
+.enlaces a:active,
+.legal a:active {
   color: var(--color-texto);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .enlaces a:hover,
+  .legal a:hover {
+    color: var(--color-texto);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
 }
 
 .legal {
@@ -59,8 +62,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 0 var(--espacio-6);
-  margin-top: var(--espacio-6);
-  padding-top: var(--espacio-2);
   border-top: 1px solid var(--color-borde);
   color: var(--color-texto-suave);
   font-size: 0.8125rem;
@@ -68,4 +69,27 @@
 
 .legal a {
   font-size: 0.8125rem;
+}
+
+@media (min-width: 1024px) {
+  .rejilla {
+    grid-template-columns: var(--columnas-editorial);
+  }
+
+  .marca {
+    padding-block: var(--espacio-8);
+    padding-right: var(--separacion-editorial);
+  }
+
+  /* El filete vertical continúa el de la grilla de propiedades */
+  .lateral {
+    justify-content: space-between;
+    padding: var(--espacio-4) 0 var(--espacio-4) var(--separacion-editorial);
+    border-top: 0;
+    border-left: 1px solid var(--color-borde);
+  }
+
+  .legal {
+    margin-top: var(--espacio-8);
+  }
 }

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router'
 import { leerFiltros, urlCatalogo } from '../../catalogo/filtros.ts'
 import { ACCION_OPERACION, TIPOS_OPERACION } from '../../catalogo/tipos.ts'
@@ -9,8 +10,18 @@ export default function Header() {
   const [params] = useSearchParams()
   const operacionActual = pathname === '/' ? leerFiltros(params).operacion : undefined
 
+  // Al despegarse de la parte superior, el filete de abajo se marca para separar el
+  // header del contenido que pasa por detrás (sin cambiar la altura, que movería la página)
+  const [adherido, setAdherido] = useState(false)
+  useEffect(() => {
+    const actualizar = () => setAdherido(window.scrollY > 8)
+    actualizar()
+    window.addEventListener('scroll', actualizar, { passive: true })
+    return () => window.removeEventListener('scroll', actualizar)
+  }, [])
+
   return (
-    <header className={estilos.header}>
+    <header className={estilos.header} data-adherido={adherido || undefined}>
       <div className={`contenedor ${estilos.barra}`}>
         <Marca />
 

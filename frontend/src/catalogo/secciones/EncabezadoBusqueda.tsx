@@ -11,11 +11,10 @@ interface Props {
 export default function EncabezadoBusqueda({ titulo, children }: Props) {
   return (
     <section className={`contenedor ${estilos.encabezado}`} aria-labelledby="titulo-catalogo">
-      <p className="antetitulo aparecer">Catálogo</p>
-      <h1 id="titulo-catalogo" className={`aparecer ${estilos.titulo}`}>
+      <h1 id="titulo-catalogo" className={estilos.titulo}>
         {titulo}
       </h1>
-      <div className={`aparecer ${estilos.buscador}`}>{children}</div>
+      {children}
     </section>
   )
 }

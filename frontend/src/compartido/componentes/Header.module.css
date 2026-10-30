@@ -8,24 +8,47 @@
 
 .barra {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
   gap: var(--espacio-4);
   min-height: var(--alto-header);
 }
 
+/* Filete oscuro que aparece al hacer scroll (solo opacidad: no mueve el contenido) */
+.header::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--color-texto);
+  opacity: 0;
+  transition: opacity var(--duracion-media) var(--curva);
+  pointer-events: none;
+}
+
+.header[data-adherido]::after {
+  opacity: 1;
+}
+
+/* Los dos destinos son celdas de una misma barra, entre filetes verticales:
+   el mismo lenguaje de celdas con filete del buscador */
 .menu {
   display: flex;
-  gap: 1.25rem;
+  align-self: stretch;
   margin: 0;
   padding: 0;
+  border-left: 1px solid var(--color-borde);
   list-style: none;
 }
 
-@media (min-width: 640px) {
-  .menu {
-    gap: var(--espacio-8);
-  }
+.menu li {
+  display: flex;
+}
+
+.menu li + li {
+  border-left: 1px solid var(--color-borde);
 }
 
 .enlace {
@@ -33,6 +56,7 @@
   display: inline-flex;
   align-items: center;
   min-height: var(--alto-tactil);
+  padding-inline: var(--espacio-4);
   color: var(--color-texto-suave);
   font-size: var(--texto-ui);
   font-weight: 500;
@@ -40,26 +64,43 @@
   transition: color var(--duracion-rapida) var(--curva);
 }
 
-/* Subrayado que crece desde la izquierda al pasar el mouse o en la operación activa */
+/* La operación activa lleva un filete verde en la base de la barra */
 .enlace::after {
   content: '';
   position: absolute;
   right: 0;
-  bottom: 0.55rem;
+  bottom: -1px;
   left: 0;
-  height: 1px;
-  background: currentColor;
+  height: 2px;
+  background: var(--color-primario);
   transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--duracion-media) var(--curva);
+  transform-origin: right;
+  transition: transform var(--duracion-media) var(--ease-out);
 }
 
-.enlace:hover,
 .enlace[aria-current='page'] {
+  color: var(--color-primario);
+}
+
+/* El filete entra por la izquierda y sale por la derecha, como en el buscador */
+.enlace[aria-current='page']::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.enlace:active {
   color: var(--color-texto);
 }
 
-.enlace:hover::after,
-.enlace[aria-current='page']::after {
-  transform: scaleX(1);
+/* El hover solo donde hay puntero: en touch quedaría marcado después del toque */
+@media (hover: hover) and (pointer: fine) {
+  .enlace:hover {
+    color: var(--color-texto);
+  }
+}
+
+@media (min-width: 640px) {
+  .enlace {
+    padding-inline: var(--espacio-6);
+  }
 }
