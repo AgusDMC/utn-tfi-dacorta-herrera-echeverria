@@ -4,18 +4,16 @@ import { buscarPublicaciones, obtenerLocalidades } from '../catalogo.ts'
 import { urlCatalogo } from '../filtros.ts'
 import Buscador from '../componentes/Buscador.tsx'
 import CabeceraListado from '../componentes/CabeceraListado.tsx'
-import GrillaPublicaciones from '../componentes/GrillaPublicaciones.tsx'
+import TiraPublicaciones from '../componentes/TiraPublicaciones.tsx'
+import BandaContacto from '../secciones/BandaContacto.tsx'
 import ComoConsultar from '../secciones/ComoConsultar.tsx'
 import EntradasHome from '../secciones/EntradasHome.tsx'
 import HeroCatalogo from '../secciones/HeroCatalogo.tsx'
 import estilos from './HomePagina.module.css'
 
-// Las propiedades recientes que se muestran en la home; el resto está en el catálogo
-const CANTIDAD_RECIENTES = 6
-
 // Home: el hero con el buscador, las entradas al catálogo, las propiedades más nuevas y cómo consultar
 export default function HomePagina() {
-  const recientes = buscarPublicaciones({}).slice(0, CANTIDAD_RECIENTES)
+  const recientes = buscarPublicaciones({})
 
   return (
     <>
@@ -28,7 +26,7 @@ export default function HomePagina() {
       <EntradasHome />
 
       {recientes.length > 0 && (
-        <section className={`contenedor ${estilos.seccion}`} aria-labelledby="titulo-recientes">
+        <section className={`contenedor aparece ${estilos.seccion}`} aria-labelledby="titulo-recientes">
           <CabeceraListado
             idTitulo="titulo-recientes"
             titulo="Propiedades recientes"
@@ -38,11 +36,13 @@ export default function HomePagina() {
               </Link>
             }
           />
-          <GrillaPublicaciones publicaciones={recientes} />
+          <TiraPublicaciones publicaciones={recientes} etiqueta="Propiedades recientes" />
         </section>
       )}
 
       <ComoConsultar />
+
+      <BandaContacto />
     </>
   )
 }

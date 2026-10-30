@@ -3,17 +3,20 @@ import estilos from './EncabezadoBusqueda.module.css'
 
 interface Props {
   titulo: string
+  detalle?: ReactNode // la cantidad de resultados, a la derecha del título
   children: ReactNode // el buscador
 }
 
-// Encabezado compacto que reemplaza al hero cuando hay filtros activos,
-// para que los resultados queden a la vista.
-export default function EncabezadoBusqueda({ titulo, children }: Props) {
+// Encabezado del catálogo: el título con la cantidad de resultados y, debajo, el buscador
+export default function EncabezadoBusqueda({ titulo, detalle, children }: Props) {
   return (
     <section className={`contenedor ${estilos.encabezado}`} aria-labelledby="titulo-catalogo">
-      <h1 id="titulo-catalogo" className={estilos.titulo}>
-        {titulo}
-      </h1>
+      <div className={estilos.cabecera}>
+        <h1 id="titulo-catalogo" className={estilos.titulo}>
+          {titulo}
+        </h1>
+        {detalle && <p className={estilos.detalle}>{detalle}</p>}
+      </div>
       {children}
     </section>
   )

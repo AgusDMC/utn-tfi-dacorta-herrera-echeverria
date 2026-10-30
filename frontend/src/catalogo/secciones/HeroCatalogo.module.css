@@ -80,6 +80,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: var(--filtro-foto);
 }
 
 /* El buscador cruza el borde inferior de la foto */
@@ -141,10 +142,10 @@
       repeat(12, minmax(0, calc(var(--ancho-max) / 12)))
       minmax(var(--margen-lateral), 1fr);
     grid-template-rows:
-      [placa-inicio] var(--espacio-12)
+      [placa-inicio] var(--espacio-8)
       [foto-inicio] 1fr
       [buscador] auto
-      [placa-fin] var(--espacio-16)
+      [placa-fin] var(--espacio-12)
       [foto-fin] auto;
     padding-inline: 0;
   }
@@ -169,7 +170,7 @@
     grid-column: 2 / 7;
     align-self: center;
     margin: 0;
-    padding: var(--espacio-12) var(--espacio-6) var(--espacio-12) 0;
+    padding: var(--espacio-8) var(--espacio-6) var(--espacio-8) 0;
   }
 
   /* En desktop la placa es el elemento propio de arriba, no el fondo del texto */
@@ -185,7 +186,7 @@
     z-index: 1;
     grid-row: foto-inicio / foto-fin;
     grid-column: 7 / -1;
-    min-height: 34rem;
+    min-height: 28rem;
     margin: 0;
     aspect-ratio: auto;
   }
@@ -205,7 +206,7 @@
 
 @media (min-width: 1280px) {
   .foto {
-    min-height: 38rem;
+    min-height: 31rem;
   }
 }
 

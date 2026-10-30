@@ -1,4 +1,5 @@
 import CabeceraListado from '../componentes/CabeceraListado.tsx'
+import { IlustracionPaso } from '../../compartido/Ilustraciones.tsx'
 import estilos from './ComoConsultar.module.css'
 
 const PASOS = [
@@ -14,17 +15,20 @@ const PASOS = [
     titulo: 'Te respondemos',
     texto: 'Recibimos tu consulta y nos comunicamos con vos para coordinar los pasos a seguir.',
   },
-]
+] as const
 
-// Los tres pasos del camino de una consulta: es una secuencia, por eso van numerados
+// Los tres pasos del camino de una consulta, cada uno con su dibujo. Es una secuencia: van numerados.
 export default function ComoConsultar() {
   return (
-    <section className={`contenedor ${estilos.seccion}`} aria-labelledby="titulo-como-consultar">
+    <section className={`contenedor aparece ${estilos.seccion}`} aria-labelledby="titulo-como-consultar">
       <CabeceraListado idTitulo="titulo-como-consultar" titulo="Cómo consultar" />
 
       <ol role="list" className={estilos.pasos}>
         {PASOS.map(({ titulo, texto }, indice) => (
           <li key={titulo} className={estilos.paso}>
+            <span className={estilos.dibujo}>
+              <IlustracionPaso paso={(indice + 1) as 1 | 2 | 3} />
+            </span>
             <span className={estilos.numero} aria-hidden="true">
               {indice + 1}
             </span>

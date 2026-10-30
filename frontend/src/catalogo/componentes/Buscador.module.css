@@ -217,6 +217,9 @@
     min-width: anchor-size(width);
     max-width: calc(100vw - 2rem); /* un valor largo pasa a dos líneas en vez de salirse de la pantalla */
     margin-top: var(--espacio-1);
+    /* Se abre hacia abajo y solo se da vuelta si no entra (por defecto elige el lado con más espacio y
+       puede tapar el título del hero) */
+    position-try: normal flip-block;
     padding: 0;
     border: 1px solid var(--color-borde);
     border-radius: var(--radio-md);

@@ -1,18 +1,11 @@
 import { Link } from 'react-router'
 import { CONTACTO, NOMBRE_INMOBILIARIA } from '../../config.ts'
 import { urlCatalogo } from '../../catalogo/filtros.ts'
-import { ACCION_OPERACION, TIPOS_OPERACION, TIPOS_PROPIEDAD, type TipoPropiedad } from '../../catalogo/tipos.ts'
+import { ACCION_OPERACION, ETIQUETA_TIPO_PLURAL, TIPOS_OPERACION, TIPOS_PROPIEDAD } from '../../catalogo/tipos.ts'
 import Marca from './Marca.tsx'
 import estilos from './Footer.module.css'
 
 const anio = new Date().getFullYear()
-
-const PLURAL_TIPO: Record<TipoPropiedad, string> = {
-  CASA: 'Casas',
-  DEPARTAMENTO: 'Departamentos',
-  PH: 'PH',
-  DUPLEX: 'Dúplex',
-}
 
 // Pie de página: la marca con sus datos de contacto, tres columnas de navegación y la línea legal
 export default function Footer() {
@@ -62,7 +55,7 @@ export default function Footer() {
           <ul className={estilos.enlaces}>
             {TIPOS_PROPIEDAD.map((tipo) => (
               <li key={tipo}>
-                <Link to={urlCatalogo({ tipo })}>{PLURAL_TIPO[tipo]}</Link>
+                <Link to={urlCatalogo({ tipo })}>{ETIQUETA_TIPO_PLURAL[tipo]}</Link>
               </li>
             ))}
           </ul>

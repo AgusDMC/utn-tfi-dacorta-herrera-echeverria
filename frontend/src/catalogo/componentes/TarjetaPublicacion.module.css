@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  transition: transform var(--duracion-media) var(--ease-out);
 }
 
 .foto {
@@ -21,11 +22,17 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: var(--filtro-foto);
   transition: transform var(--duracion-media) var(--ease-out);
 }
 
 /* El zoom es solo para puntero fino: en pantallas táctiles quedaría "pegado" después del toque */
+/* Al pasar el puntero la tarjeta sube 2 px y la foto se acerca apenas: respuesta, no movimiento */
 @media (hover: hover) and (pointer: fine) {
+  .tarjeta:hover {
+    transform: translateY(-2px);
+  }
+
   .tarjeta:hover .foto img {
     transform: scale(1.04);
   }

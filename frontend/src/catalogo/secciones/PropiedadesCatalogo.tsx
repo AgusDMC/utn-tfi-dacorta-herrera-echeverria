@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigationType } from 'react-router'
+import { buscarPublicaciones } from '../catalogo.ts'
 import { pideEnfocarResultados, urlCatalogo } from '../filtros.ts'
-import type { PublicacionCatalogo } from '../tipos.ts'
+import { ACCION_OPERACION, TIPOS_OPERACION, type PublicacionCatalogo } from '../tipos.ts'
 import GrillaPublicaciones from '../componentes/GrillaPublicaciones.tsx'
 import estilos from './PropiedadesCatalogo.module.css'
 
@@ -14,7 +15,7 @@ function textoCantidad(cantidad: number) {
   return `${cantidad} ${cantidad === 1 ? 'propiedad encontrada' : 'propiedades encontradas'}`
 }
 
-// Resultados del catálogo: la cantidad, la grilla de tarjetas y el estado vacío
+// Resultados del catálogo: la grilla de tarjetas o, si no hay, un estado vacío con salidas
 export default function PropiedadesCatalogo({ publicaciones, filtrado }: Props) {
   const seccionRef = useRef<HTMLElement>(null)
   const { key, state } = useLocation()
@@ -47,26 +48,20 @@ export default function PropiedadesCatalogo({ publicaciones, filtrado }: Props) 
       {cantidad === 0 ? (
         <div className={estilos.vacio}>
           <p className={estilos.vacioTitulo}>No encontramos propiedades con esos filtros</p>
-          <p className={estilos.vacioTexto}>Probá con otro tipo de propiedad u otra ubicación.</p>
-          <Link to={urlCatalogo({})} className={`boton boton-secundario ${estilos.vacioAccion}`}>
-            Ver todas las propiedades
-          </Link>
+          <p className={estilos.vacioTexto}>Probá con otro tipo de propiedad u otra ubicación, o mirá todo lo que tenemos.</p>
+          <div className={estilos.vacioAcciones}>
+            <Link to={urlCatalogo({})} className="boton boton-primario">
+              Ver todas las propiedades
+            </Link>
+            {TIPOS_OPERACION.map((operacion) => (
+              <Link key={operacion} to={urlCatalogo({ operacion })} className="boton boton-secundario">
+                {ACCION_OPERACION[operacion]} ({buscarPublicaciones({ operacion }).length})
+              </Link>
+            ))}
+          </div>
         </div>
       ) : (
-        <>
-          <p className={estilos.cantidad}>
-            {textoCantidad(cantidad)}
-            {filtrado && (
-              <>
-                {' '}
-                <Link to={urlCatalogo({})} className={estilos.limpiar}>
-                  Limpiar filtros
-                </Link>
-              </>
-            )}
-          </p>
-          <GrillaPublicaciones publicaciones={publicaciones} />
-        </>
+        <GrillaPublicaciones publicaciones={publicaciones} />
       )}
     </section>
   )
