@@ -1,47 +1,18 @@
-/* Cabecera de sección: filete superior, título, bajada y controles */
-.cabecera {
-  display: grid;
-  grid-template-areas:
-    'titulo controles'
-    'detalle detalle';
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: var(--espacio-2) var(--espacio-4);
-  padding-top: var(--espacio-4);
-  border-top: 1px solid var(--color-texto);
-}
-
-.titulo {
-  grid-area: titulo;
-  font-size: var(--titulo-md);
-}
-
-.detalle {
-  grid-area: detalle;
-}
-
-/* Desktop: la bajada se ubica a la derecha del título, alineada a su base.
-   Flex en lugar de grid para que no quede hueco cuando no hay controles. */
-@media (min-width: 1024px) {
-  .cabecera {
-    display: flex;
-    column-gap: var(--espacio-8);
-  }
-
-  .titulo {
-    flex: 1;
-  }
-}
+/* ---------- Controles (desde tablet; en teléfonos el gesto es el swipe) ---------- */
 
 .controles {
-  display: flex;
+  display: none;
   grid-area: controles;
   gap: var(--espacio-2);
 }
 
-.control {
-  --empuje: 0px;
+@media (min-width: 640px) {
+  .controles {
+    display: flex;
+  }
+}
 
+.control {
   display: grid;
   place-items: center;
   width: var(--alto-tactil);
@@ -53,13 +24,14 @@
   color: var(--color-texto);
   cursor: pointer;
   transition:
-    border-color var(--duracion-rapida) var(--curva),
-    color var(--duracion-rapida) var(--curva);
+    border-color var(--duracion-rapida) var(--ease-out),
+    color var(--duracion-rapida) var(--ease-out),
+    transform var(--duracion-rapida) var(--ease-out);
 }
 
-.control:hover:not(:disabled) {
-  border-color: var(--color-primario);
-  color: var(--color-primario);
+.control:active:not(:disabled) {
+  background: var(--color-arena);
+  transform: scale(0.97);
 }
 
 .control:disabled {
@@ -73,19 +45,26 @@
   transition: transform var(--duracion-rapida) var(--curva);
 }
 
-/* La flecha se adelanta apenas en la dirección en la que mueve */
-.anterior:hover:not(:disabled) svg {
-  transform: translateX(-2px);
-}
+/* Hover solo con puntero fino; la flecha se adelanta apenas en la dirección en la que mueve */
+@media (hover: hover) and (pointer: fine) {
+  .control:hover:not(:disabled) {
+    border-color: var(--color-primario);
+    color: var(--color-primario);
+  }
 
-.siguiente:hover:not(:disabled) svg {
-  transform: translateX(2px);
+  .anterior:hover:not(:disabled) svg {
+    transform: translateX(-2px);
+  }
+
+  .siguiente:hover:not(:disabled) svg {
+    transform: translateX(2px);
+  }
 }
 
 /* ---------- Pista con scroll-snap ---------- */
 
 .pista {
-  --separacion: var(--espacio-6);
+  --separacion: var(--espacio-4);
 
   display: flex;
   gap: var(--separacion);
@@ -105,13 +84,35 @@
 
 /* Mobile: una tarjeta protagonista y parte de la siguiente */
 .item {
-  flex: 0 0 82%;
+  flex: 0 0 80%;
   scroll-snap-align: start;
 }
 
+/* Indicador de posición: filete con un segmento verde del ancho de la parte visible */
+.progreso {
+  height: 2px;
+  margin-top: var(--espacio-2);
+  overflow: hidden;
+  background: var(--color-borde);
+}
+
+.progresoBarra {
+  display: block;
+  height: 100%;
+  background: var(--color-primario);
+}
+
 @media (min-width: 640px) {
+  .pista {
+    --separacion: var(--espacio-6);
+  }
+
   .item {
     flex-basis: calc((100% - var(--separacion)) / 2.15);
+  }
+
+  .progreso {
+    display: none;
   }
 }
 
@@ -131,5 +132,19 @@
   /* Con más de tres, se asoma la cuarta para insinuar que hay más */
   .pista[data-mas-de-tres] .item {
     flex-basis: calc((100% - 3 * var(--separacion)) / 3.25);
+  }
+
+  /* Modo grilla: los resultados se acomodan en tres columnas, sin desplazamiento */
+  .pista.grilla {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--espacio-12) var(--espacio-8);
+    margin-inline: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .pista.grilla .item {
+    flex-basis: auto;
   }
 }

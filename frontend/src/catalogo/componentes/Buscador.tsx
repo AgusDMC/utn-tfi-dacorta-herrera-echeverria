@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react'
+import { useId, ViewTransition, type FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { ESTADO_ENFOCAR_RESULTADOS, leerFiltros, urlCatalogo } from '../filtros.ts'
 import {
@@ -24,6 +24,7 @@ const CAMPOS = ['operacion', 'tipo', 'localidad'] as const
 export default function Buscador({ filtros, localidades }: Props) {
   const navigate = useNavigate()
   const { pathname, search } = useLocation()
+  const idOperacion = useId()
 
   function buscar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
@@ -39,66 +40,73 @@ export default function Buscador({ filtros, localidades }: Props) {
   }
 
   return (
-    <form
-      className={estilos.buscador}
-      role="search"
-      aria-label="Buscar propiedades"
-      onSubmit={buscar}
-    >
-      <fieldset className={estilos.operacion}>
-        <legend className="sr-only">Operación</legend>
-        <label className={estilos.pestana}>
-          <input type="radio" name="operacion" value="" defaultChecked={!filtros.operacion} />
-          Todas
-        </label>
-        {TIPOS_OPERACION.map((operacion) => (
-          <label key={operacion} className={estilos.pestana}>
-            <input
-              type="radio"
-              name="operacion"
-              value={operacion}
-              defaultChecked={filtros.operacion === operacion}
-            />
-            {ACCION_OPERACION[operacion]}
-          </label>
-        ))}
-      </fieldset>
-
-      <div className={estilos.campos}>
-        <label className={estilos.campo}>
-          <span className={estilos.etiqueta}>Tipo de propiedad</span>
-          <select name="tipo" defaultValue={filtros.tipo ?? ''} className={estilos.selector}>
-            <option value="">Todos los tipos</option>
-            {TIPOS_PROPIEDAD.map((tipo) => (
-              <option key={tipo} value={tipo}>
-                {ETIQUETA_TIPO[tipo]}
-              </option>
+    // Es la misma barra en la home y en los resultados: al cambiar de estado viaja de un
+    // lugar al otro en lugar de desaparecer y reaparecer
+    <ViewTransition name="buscador" enter="none" exit="none" update="none" share="buscador-compartido">
+      <form
+        className={estilos.buscador}
+        role="search"
+        aria-label="Buscar propiedades"
+        autoComplete="off"
+        onSubmit={buscar}
+      >
+        {/* Radios nativos: las flechas del teclado cambian de opción dentro del grupo */}
+        <div role="radiogroup" aria-labelledby={idOperacion} className={estilos.operacion}>
+          <span id={idOperacion} className={estilos.etiqueta}>
+            Operación
+          </span>
+          <div className={estilos.opciones}>
+            <label className={estilos.opcion}>
+              <input type="radio" name="operacion" value="" defaultChecked={!filtros.operacion} />
+              Todas
+            </label>
+            {TIPOS_OPERACION.map((operacion) => (
+              <label key={operacion} className={estilos.opcion}>
+                <input
+                  type="radio"
+                  name="operacion"
+                  value={operacion}
+                  defaultChecked={filtros.operacion === operacion}
+                />
+                {ACCION_OPERACION[operacion]}
+              </label>
             ))}
-          </select>
-        </label>
-
-        <label className={estilos.campo}>
-          <span className={estilos.etiqueta}>Ubicación</span>
-          <select name="localidad" defaultValue={filtros.localidad ?? ''} className={estilos.selector}>
-            <option value="">Todas las localidades</option>
-            {localidades.map((localidad) => (
-              <option key={localidad} value={localidad}>
-                {localidad}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <div className={estilos.acciones}>
-          <button type="submit" className={`boton boton-primario ${estilos.botonBuscar}`}>
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-              <circle cx="9" cy="9" r="5.5" />
-              <path d="m13.5 13.5 3.5 3.5" strokeLinecap="round" />
-            </svg>
-            Buscar
-          </button>
+          </div>
         </div>
-      </div>
-    </form>
+
+        <div className={estilos.campos}>
+          {/* El select cubre toda la celda: tocar cualquier punto lo abre */}
+          <label className={estilos.campo}>
+            <span className={estilos.etiqueta}>Tipo de propiedad</span>
+            <select name="tipo" defaultValue={filtros.tipo ?? ''} className={estilos.selector}>
+              <option value="">Todos los tipos</option>
+              {TIPOS_PROPIEDAD.map((tipo) => (
+                <option key={tipo} value={tipo}>
+                  {ETIQUETA_TIPO[tipo]}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className={estilos.campo}>
+            <span className={estilos.etiqueta}>Ubicación</span>
+            <select name="localidad" defaultValue={filtros.localidad ?? ''} className={estilos.selector}>
+              <option value="">Todas las localidades</option>
+              {localidades.map((localidad) => (
+                <option key={localidad} value={localidad}>
+                  {localidad}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className={estilos.acciones}>
+            <button type="submit" className={`boton boton-primario ${estilos.botonBuscar}`}>
+              Buscar
+            </button>
+          </div>
+        </div>
+      </form>
+    </ViewTransition>
   )
 }

@@ -1,9 +1,30 @@
-/* Mobile primero: texto, foto a sangre y buscador montado sobre la foto */
+/* =====================================================================
+   Hero "ventana Nexo": una placa verde pino sostiene el titular y la foto
+   la pisa como una ventana recortada en el verde. Un marco de línea fina,
+   desplazado hacia arriba y a la izquierda, solo se ve sobre la placa (es del
+   color del fondo: fuera del verde desaparece), así foto y placa leen como
+   una sola pieza. El buscador cruza la costura.
 
-@keyframes revelarFoto {
+   Una única secuencia de entrada al cargar: la placa avanza desde la izquierda
+   y la foto desde la derecha (se encuentran en el medio), después el texto,
+   el marco y el buscador.
+   ===================================================================== */
+
+/* Solo transform y opacity: son las únicas propiedades que animan sin repintar */
+@keyframes crecerPlaca {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes entrarFoto {
   from {
     opacity: 0;
-    transform: scale(1.03);
+    transform: translateX(2rem);
   }
 
   to {
@@ -12,135 +33,302 @@
   }
 }
 
+@keyframes asentarFoto {
+  from {
+    transform: scale(1.05);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes subir {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes encender {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- Mobile: el bloque de texto es la placa, a sangre; la foto se corre a la derecha ---------- */
+
 .hero {
+  position: relative;
   padding-inline: var(--margen-lateral);
 }
 
-.texto {
-  padding-block: var(--espacio-12) var(--espacio-8);
+.placa {
+  display: none;
 }
 
-/* Único uso del acento terracota en la home, junto con la etiqueta "Reservada" */
-.antetitulo {
-  color: var(--color-acento);
+/* El padding inferior deja pasar la foto que pisa la placa (-2.5rem) y el marco que
+   sobresale 12 px de la foto, con aire hasta la última línea de texto */
+.texto {
+  position: relative;
+  isolation: isolate;
+  margin-inline: calc(-1 * var(--margen-lateral));
+  padding: var(--espacio-8) var(--margen-lateral) 4.5rem;
+  container-type: inline-size; /* el titular se dimensiona con el ancho real de su columna */
+  color: var(--color-sobre-primario);
+}
+
+/* En mobile la placa es el fondo del bloque de texto; vive en un pseudo-elemento
+   para poder animarla con transform sin deformar el texto */
+.texto::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--color-primario);
+  transform-origin: left;
+  animation: crecerPlaca 500ms var(--curva) both;
 }
 
 .titulo {
-  --retraso: 60ms;
+  color: inherit;
+  font-size: clamp(2.25rem, 14.5cqi, 3.25rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  animation: subir var(--duracion-lenta) var(--curva) 160ms both;
+}
 
-  margin-top: var(--espacio-4);
-  font-size: var(--titulo-lg);
-  line-height: 1.02;
-  letter-spacing: -0.025em;
+/* Cada línea del titular es un bloque que no se parte */
+.titulo span {
+  display: block;
+  white-space: nowrap;
 }
 
 .bajada {
-  --retraso: 120ms;
-
-  max-width: 30rem;
-  margin-top: var(--espacio-6);
-  color: var(--color-texto-suave);
-  font-size: 1.0625rem;
+  max-width: 28rem;
+  margin-top: var(--espacio-4);
+  color: var(--color-sobre-primario-suave);
+  font-size: var(--texto-base);
+  text-wrap: balance; /* dos líneas parejas, sin una palabra suelta al final */
+  animation: subir var(--duracion-lenta) var(--curva) 240ms both;
 }
 
-/* El espacio queda reservado por el aspect-ratio: sin saltos de layout */
 .foto {
-  margin-inline: calc(-1 * var(--margen-lateral));
+  position: relative;
+  margin: -2.5rem calc(-1 * var(--margen-lateral)) 0 var(--espacio-6);
   aspect-ratio: 4 / 3;
+}
+
+/* Marco de línea fina: es del color del fondo, así que solo se ve sobre el verde */
+.marco {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(250 248 245 / 0.55);
+  transform: translate(-12px, -12px);
+  animation: encender 400ms var(--curva) 560ms both;
+}
+
+.recorte {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   background: var(--color-arena);
+  animation: entrarFoto 550ms var(--curva) 80ms both;
 }
 
-.foto img {
+.recorte img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: revelarFoto var(--duracion-lenta) var(--curva) both;
+  animation: asentarFoto 900ms var(--curva) 80ms both;
 }
 
+/* El buscador cruza el borde inferior de la foto */
 .buscador {
-  --retraso: 200ms;
-
   position: relative;
   z-index: 2;
   margin-top: calc(-1 * var(--espacio-12));
+  animation: subir var(--duracion-lenta) var(--curva) 380ms both;
 }
 
 .pie {
-  display: none;
+  margin-top: var(--espacio-3);
   color: var(--color-texto-suave);
   font-size: var(--texto-xs);
+  text-align: right;
 }
 
 @media (min-width: 640px) {
+  .texto {
+    padding: var(--espacio-12) var(--margen-lateral) 6rem;
+  }
+
+  .titulo {
+    font-size: clamp(3rem, 9cqi, 4rem);
+  }
+
   .bajada {
-    font-size: 1.1875rem;
+    margin-top: var(--espacio-6);
+    font-size: var(--texto-lg);
   }
 
   .foto {
+    margin-top: calc(-1 * var(--espacio-16));
+    margin-left: var(--espacio-16);
     aspect-ratio: 16 / 9;
+  }
+
+  .bajada {
+    max-width: 30rem;
+  }
+
+  .buscador {
+    margin-top: calc(-1 * var(--espacio-8));
   }
 }
 
-/* Desktop: composición asimétrica 5/7. La foto llega hasta el borde derecho de la
-   pantalla y el buscador cruza el corte entre texto e imagen. */
+/* ---------- Desktop: 12 columnas iguales entre dos márgenes flexibles ----------
+   Las líneas de la grilla son 1 (borde izquierdo), 2 a 14 (las 12 columnas) y 15
+   (borde derecho).
+   placa:     borde izquierdo → fin de la columna 6
+   texto:     columnas 1 a 5
+   foto:      desde el fin de la columna 5 → borde derecho (pisa la placa una columna)
+   buscador:  columnas 1 a 9, cruza la costura
+   La placa asoma arriba de la foto; la foto cuelga por debajo de la placa. */
 @media (min-width: 1024px) {
   .hero {
     display: grid;
     grid-template-columns:
-      [completo-inicio] minmax(var(--margen-lateral), 1fr)
-      [contenido-inicio] minmax(0, calc(var(--ancho-max) * 5 / 12))
-      [corte] minmax(0, calc(var(--ancho-max) * 4 / 12))
-      [medio] minmax(0, calc(var(--ancho-max) * 3 / 12))
-      [contenido-fin] minmax(var(--margen-lateral), 1fr) [completo-fin];
-    grid-template-rows: auto auto auto;
+      minmax(var(--margen-lateral), 1fr)
+      repeat(12, minmax(0, calc(var(--ancho-max) / 12)))
+      minmax(var(--margen-lateral), 1fr);
+    grid-template-rows:
+      [placa-inicio] var(--espacio-12)
+      [foto-inicio] 1fr
+      [buscador] auto
+      [placa-fin] var(--espacio-16)
+      [foto-fin] auto;
     padding-inline: 0;
   }
 
-  .texto {
-    grid-row: 1;
-    grid-column: contenido-inicio / corte;
-    align-self: center;
-    padding: var(--espacio-12) var(--espacio-8) var(--espacio-12) 0;
+  /* Recorta lo que sobresale del hero: las capas de profundidad se pasan de su caja a propósito */
+  .hero {
+    overflow-x: clip;
   }
 
-  /* La columna de texto es angosta en laptops: el título escala con ella */
+  /* La placa sobresale 1rem a la izquierda y 0.25rem arriba (el header la tapa): al desplazarse
+     con el puntero nunca deja ver un borde del fondo */
+  .placa {
+    display: block;
+    grid-row: placa-inicio / placa-fin;
+    grid-column: 1 / 8;
+    margin: -0.25rem 0 0 -1rem;
+    background: var(--color-primario);
+    transform-origin: left;
+    animation: crecerPlaca 500ms var(--curva) both;
+  }
+
+  .texto {
+    grid-row: foto-inicio / buscador;
+    grid-column: 2 / 7;
+    align-self: center;
+    margin: 0;
+    padding: var(--espacio-12) var(--espacio-6) var(--espacio-12) 0;
+  }
+
+  /* En desktop la placa es el elemento propio de arriba, no el fondo del texto */
+  .texto::before {
+    display: none;
+  }
+
   .titulo {
-    font-size: min(var(--titulo-lg), 5vw);
+    font-size: clamp(2.25rem, 14.5cqi, 5.25rem);
   }
 
   .foto {
-    grid-row: 1 / span 2;
-    grid-column: corte / completo-fin;
-    min-height: 36rem;
+    z-index: 1;
+    grid-row: foto-inicio / foto-fin;
+    grid-column: 7 / -1;
+    min-height: 34rem;
     margin: 0;
     aspect-ratio: auto;
   }
 
   .buscador {
-    grid-row: 2;
-    grid-column: contenido-inicio / medio;
+    grid-row: buscador / placa-fin;
+    grid-column: 2 / 11;
     align-self: end;
-    margin: 0 0 calc(-1 * var(--espacio-12));
+    margin: 0 0 calc(-1 * var(--espacio-8));
   }
 
   .pie {
-    display: block;
-    grid-row: 3;
-    grid-column: medio / contenido-fin;
-    padding-top: var(--espacio-3);
-    text-align: right;
+    grid-row: foto-fin;
+    grid-column: 11 / 14;
   }
 }
 
 @media (min-width: 1280px) {
-  .texto {
-    padding-right: var(--espacio-12);
+  .foto {
+    min-height: 38rem;
   }
 }
 
-@media (min-width: 1440px) {
-  .foto {
-    min-height: 40rem;
+/* ---------- Profundidad ----------
+   Cuatro planos, de lejos a cerca: placa y texto impresos (5 px), la ventana de la foto
+   (12 px) y el marco de línea (20 px). El buscador no se mueve. Lo escribe useProfundidadHero
+   con la propiedad `translate`, que se compone con los transform de las entradas. */
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  /* La ventana se mueve desde JS en cada cuadro y contiene la foto, el único repintado caro:
+     como capa propia solo se recompone. La placa (color plano) y el marco (una línea) no lo necesitan. */
+  .recorte {
+    will-change: translate;
+  }
+
+  /* La ventana sobresale hacia la derecha para no mostrar el fondo al desplazarse */
+  .recorte {
+    right: -1rem;
+  }
+}
+
+/* ---------- Scroll ----------
+   La foto se queda atrás respecto de la página al bajar (más lenta que el scroll) y su
+   escala deja margen para que no asome el fondo. Va atada al scroll con CSS puro: corre
+   fuera del hilo principal. Sin soporte, la foto simplemente queda quieta. */
+@keyframes derivaFoto {
+  to {
+    translate: 0 var(--deriva);
+  }
+}
+
+.recorte {
+  --deriva: 0.75rem; /* cuánto se retrasa la foto al bajar; menos que el margen que da la escala */
+}
+
+@media (min-width: 1024px) {
+  .recorte {
+    --deriva: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .recorte img {
+      scale: 1.1;
+      animation:
+        asentarFoto 900ms var(--curva) 80ms both,
+        derivaFoto linear both;
+      animation-timeline: auto, scroll(root);
+      animation-range: normal, 0 36rem;
+    }
   }
 }

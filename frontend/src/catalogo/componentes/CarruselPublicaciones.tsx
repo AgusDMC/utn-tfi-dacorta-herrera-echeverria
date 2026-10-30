@@ -1,30 +1,47 @@
-import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import type { PublicacionCatalogo } from '../tipos.ts'
+import CabeceraListado from './CabeceraListado.tsx'
 import TarjetaPublicacion from './TarjetaPublicacion.tsx'
 import estilos from './CarruselPublicaciones.module.css'
 
 interface Props {
   titulo: string
   idTitulo: string
-  detalle?: ReactNode // texto que acompaña al título (bajada o cantidad de resultados)
+  detalle?: ReactNode
   publicaciones: PublicacionCatalogo[]
+  // 'grilla': en desktop las tarjetas se acomodan en una grilla de tres columnas
+  // (resultados sistemáticos); en mobile sigue siendo un carrusel con swipe.
+  modo?: 'carrusel' | 'grilla'
 }
 
 // Carrusel horizontal sin librerías: scroll nativo con scroll-snap (swipe en
 // mobile) y botones anterior/siguiente que solo aparecen si hay más contenido.
-export default function CarruselPublicaciones({ titulo, idTitulo, detalle, publicaciones }: Props) {
+export default function CarruselPublicaciones({ titulo, idTitulo, detalle, publicaciones, modo = 'carrusel' }: Props) {
   const idPista = useId()
   const pistaRef = useRef<HTMLUListElement>(null)
+  const barraRef = useRef<HTMLSpanElement>(null)
+  // Solo cambian al llegar a un extremo: el resto del scroll no vuelve a renderizar el carrusel
   const [puedeAnterior, setPuedeAnterior] = useState(false)
   const [puedeSiguiente, setPuedeSiguiente] = useState(false)
+  const cantidad = publicaciones.length
 
   useEffect(() => {
     const pista = pistaRef.current
+    const barra = barraRef.current
     if (!pista) return
 
     const actualizar = () => {
       setPuedeAnterior(pista.scrollLeft > 4)
       setPuedeSiguiente(pista.scrollLeft + pista.clientWidth < pista.scrollWidth - 4)
+
+      // El indicador de posición cambia en cada cuadro del scroll: se escribe directo en el
+      // DOM (una ref) en lugar de pasar por el estado, que re-renderizaría todas las tarjetas
+      if (barra) {
+        const visible = pista.clientWidth / pista.scrollWidth
+        const inicio = pista.scrollLeft / pista.scrollWidth
+        barra.style.width = `${visible * 100}%`
+        barra.style.transform = `translateX(${(inicio / visible) * 100}%)`
+      }
     }
 
     actualizar()
@@ -35,7 +52,7 @@ export default function CarruselPublicaciones({ titulo, idTitulo, detalle, publi
       pista.removeEventListener('scroll', actualizar)
       observador.disconnect()
     }
-  }, [publicaciones])
+  }, [cantidad])
 
   // Avanza de a una tarjeta; sin animación si el sistema pide movimiento reducido
   function desplazar(sentido: 1 | -1) {
@@ -55,12 +72,7 @@ export default function CarruselPublicaciones({ titulo, idTitulo, detalle, publi
 
   return (
     <>
-      <div className={estilos.cabecera}>
-        <h2 id={idTitulo} className={estilos.titulo}>
-          {titulo}
-        </h2>
-        {detalle && <div className={estilos.detalle}>{detalle}</div>}
-
+      <CabeceraListado idTitulo={idTitulo} titulo={titulo} detalle={detalle}>
         {hayDesplazamiento && (
           <div className={estilos.controles}>
             <button
@@ -89,25 +101,26 @@ export default function CarruselPublicaciones({ titulo, idTitulo, detalle, publi
             </button>
           </div>
         )}
-      </div>
+      </CabeceraListado>
 
       <ul
         id={idPista}
         ref={pistaRef}
-        className={estilos.pista}
+        className={`${estilos.pista} ${modo === 'grilla' ? estilos.grilla : ''}`}
         data-mas-de-tres={publicaciones.length > 3 || undefined}
       >
-        {publicaciones.map((publicacion, indice) => (
-          // Entrada escalonada muy leve de las tarjetas
-          <li
-            key={publicacion.id}
-            className={`aparecer ${estilos.item}`}
-            style={{ '--retraso': `${indice * 60}ms` } as CSSProperties}
-          >
+        {publicaciones.map((publicacion) => (
+          <li key={publicacion.id} className={estilos.item}>
             <TarjetaPublicacion publicacion={publicacion} />
           </li>
         ))}
       </ul>
+
+      {/* En mobile reemplaza a las flechas: un filete que muestra qué parte de la pista se ve.
+          Siempre está montado (oculto si no hay nada que desplazar) para que su ref exista. */}
+      <div className={estilos.progreso} aria-hidden="true" hidden={!hayDesplazamiento}>
+        <span ref={barraRef} className={estilos.progresoBarra} />
+      </div>
     </>
   )
 }

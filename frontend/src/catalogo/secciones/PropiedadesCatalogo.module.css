@@ -1,14 +1,17 @@
 .seccion {
-  margin-top: var(--espacio-16);
-  transition:
-    opacity var(--duracion-lenta) var(--curva),
-    transform var(--duracion-lenta) var(--curva);
+  margin-top: var(--espacio-12);
+}
+
+@media (min-width: 640px) {
+  .seccion {
+    margin-top: var(--espacio-16);
+  }
 }
 
 @media (min-width: 1024px) {
-  /* Compensa el buscador que sobresale de la foto del hero */
+  /* El buscador ya bajó el ritmo del hero: acá solo hace falta aire para respirar */
   .seccion {
-    margin-top: calc(var(--espacio-seccion) + var(--espacio-12));
+    margin-top: var(--espacio-12);
   }
 }
 
@@ -16,26 +19,147 @@
   margin-top: var(--espacio-12);
 }
 
-/* Estado previo a la aparición (solo si arrancó fuera de pantalla) */
-.seccion[data-oculta] {
-  opacity: 0;
-  transform: translateY(24px);
-}
+/* La entrada (data-entrada) la coreografían las propias piezas: el filete de la cabecera
+   se traza, la foto protagonista se revela de abajo hacia arriba y las secundarias se abren
+   desde el filete vertical. Acá solo vive el filete vertical entre columnas. */
 
 /* Recibe el foco por código después de buscar; no es un control */
 .seccion:focus {
   outline: none;
 }
 
-.detalle {
-  max-width: 24rem;
-  color: var(--color-texto-suave);
-  font-size: var(--texto-sm);
-}
-
 .limpiar {
   font-weight: 500;
   text-underline-offset: 3px;
+}
+
+/* ---------- Home: protagonista + dos secundarias ----------
+   Una sola estructura de dos columnas (7/5) para la cabecera, la grilla y el footer,
+   con un filete vertical continuo entre ellas. */
+
+.editorial {
+  display: grid;
+  margin-top: var(--espacio-6);
+}
+
+/* Las secundarias van en filas compactas y un filete las separa de lo anterior */
+.secundaria {
+  margin-top: var(--espacio-6);
+  padding-top: var(--espacio-6);
+  border-top: 1px solid var(--color-borde);
+}
+
+/* Las dos secundarias comparten la foto de la misma propiedad: cada una se encuadra
+   en un lado distinto para que no parezcan una tarjeta duplicada */
+.editorial > :nth-child(2) img {
+  object-position: 12% 50%;
+}
+
+.editorial > :nth-child(3) img {
+  object-position: 92% 50%;
+}
+
+@media (min-width: 640px) {
+  .editorial {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--espacio-8);
+  }
+
+  .principal {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .editorial {
+    grid-template-columns: var(--columnas-editorial);
+    grid-template-rows: 1fr 1fr;
+    column-gap: 0;
+    margin-top: 0;
+  }
+
+  .principal {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    padding: var(--espacio-6) var(--separacion-editorial) var(--espacio-6) 0;
+  }
+
+  .secundaria {
+    grid-column: 2;
+    margin: 0;
+    padding: var(--espacio-6) 0 var(--espacio-6) var(--separacion-editorial);
+    border-top: 0;
+  }
+
+  .secundaria + .secundaria {
+    margin: 0;
+    border-top: 1px solid var(--color-borde);
+  }
+
+  /* El filete vertical entre columnas es un solo trazo que baja desde la cabecera
+     (en el borde de la columna de 7 fr de 12) y se dibuja al entrar la sección */
+  .editorial {
+    position: relative;
+  }
+
+  .editorial::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(100% * 7 / 12);
+    width: 1px;
+    background: var(--color-borde);
+    transform-origin: top;
+    transition: transform 800ms var(--ease-in-out) 150ms;
+  }
+
+  .seccion[data-entrada='pendiente'] .editorial::before {
+    transform: scaleY(0);
+    transition: none;
+  }
+
+  /* La cabecera se parte en las mismas dos columnas que la grilla y el filete vertical
+     arranca en ella, así la grilla cuelga del título en lugar de quedar debajo */
+  .seccion .cabeceraEditorial {
+    display: grid;
+    grid-template-areas: 'titulo detalle';
+    grid-template-columns: var(--columnas-editorial);
+    column-gap: 0;
+    align-items: end;
+    padding-top: var(--espacio-4);
+  }
+
+  .seccion .cabeceraEditorial > :nth-child(2) {
+    align-self: stretch;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 0 var(--espacio-1) var(--separacion-editorial);
+    border-left: 1px solid var(--color-borde);
+    text-align: left;
+  }
+}
+
+.mas {
+  margin-top: var(--espacio-seccion);
+}
+
+/* ---------- Resultados ---------- */
+
+.unica {
+  margin-top: var(--espacio-6);
+}
+
+.par {
+  display: grid;
+  gap: var(--espacio-8);
+  margin-top: var(--espacio-6);
+}
+
+@media (min-width: 640px) {
+  .par {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* ---------- Sin resultados ---------- */
@@ -51,6 +175,12 @@
 
 .vacioTitulo {
   font-size: var(--titulo-sm);
+}
+
+.vacioTexto {
+  max-width: 28rem;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
 }
 
 .vacioAccion {
