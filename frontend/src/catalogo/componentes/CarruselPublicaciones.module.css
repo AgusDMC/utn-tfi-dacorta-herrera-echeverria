@@ -1,0 +1,135 @@
+/* Cabecera de sección: filete superior, título, bajada y controles */
+.cabecera {
+  display: grid;
+  grid-template-areas:
+    'titulo controles'
+    'detalle detalle';
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--espacio-2) var(--espacio-4);
+  padding-top: var(--espacio-4);
+  border-top: 1px solid var(--color-texto);
+}
+
+.titulo {
+  grid-area: titulo;
+  font-size: var(--titulo-md);
+}
+
+.detalle {
+  grid-area: detalle;
+}
+
+/* Desktop: la bajada se ubica a la derecha del título, alineada a su base.
+   Flex en lugar de grid para que no quede hueco cuando no hay controles. */
+@media (min-width: 1024px) {
+  .cabecera {
+    display: flex;
+    column-gap: var(--espacio-8);
+  }
+
+  .titulo {
+    flex: 1;
+  }
+}
+
+.controles {
+  display: flex;
+  grid-area: controles;
+  gap: var(--espacio-2);
+}
+
+.control {
+  --empuje: 0px;
+
+  display: grid;
+  place-items: center;
+  width: var(--alto-tactil);
+  height: var(--alto-tactil);
+  padding: 0;
+  border: 1px solid var(--color-borde);
+  border-radius: 50%;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  cursor: pointer;
+  transition:
+    border-color var(--duracion-rapida) var(--curva),
+    color var(--duracion-rapida) var(--curva);
+}
+
+.control:hover:not(:disabled) {
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+.control:disabled {
+  color: var(--color-borde);
+  cursor: default;
+}
+
+.control svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform var(--duracion-rapida) var(--curva);
+}
+
+/* La flecha se adelanta apenas en la dirección en la que mueve */
+.anterior:hover:not(:disabled) svg {
+  transform: translateX(-2px);
+}
+
+.siguiente:hover:not(:disabled) svg {
+  transform: translateX(2px);
+}
+
+/* ---------- Pista con scroll-snap ---------- */
+
+.pista {
+  --separacion: var(--espacio-6);
+
+  display: flex;
+  gap: var(--separacion);
+  margin: var(--espacio-6) calc(-1 * var(--margen-lateral)) 0;
+  padding: var(--espacio-2) var(--margen-lateral) var(--espacio-4);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: var(--margen-lateral);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  list-style: none;
+}
+
+.pista::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile: una tarjeta protagonista y parte de la siguiente */
+.item {
+  flex: 0 0 82%;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 640px) {
+  .item {
+    flex-basis: calc((100% - var(--separacion)) / 2.15);
+  }
+}
+
+@media (min-width: 1024px) {
+  .pista {
+    --separacion: var(--espacio-8);
+
+    margin-inline: calc(-1 * var(--espacio-2));
+    padding-inline: var(--espacio-2);
+    scroll-padding-inline: var(--espacio-2);
+  }
+
+  .item {
+    flex-basis: calc((100% - 2 * var(--separacion)) / 3);
+  }
+
+  /* Con más de tres, se asoma la cuarta para insinuar que hay más */
+  .pista[data-mas-de-tres] .item {
+    flex-basis: calc((100% - 3 * var(--separacion)) / 3.25);
+  }
+}

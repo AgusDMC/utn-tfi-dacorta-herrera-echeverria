@@ -1,0 +1,259 @@
+/* =====================================================================
+   Estilos globales: tokens de diseño, reset mínimo y utilidades comunes.
+   Los componentes usan CSS Modules y solo leen estas variables.
+   ===================================================================== */
+
+:root {
+  /* Colores (contraste AA verificado sobre --color-fondo) */
+  --color-fondo: #faf8f5;            /* hueso */
+  --color-superficie: #ffffff;
+  --color-arena: #f1ede6;            /* footer y espacios para fotos */
+  --color-borde: #e6e1d9;
+  --color-texto: #1c1b19;            /* 16.2:1 */
+  --color-texto-suave: #5f5b54;      /* 6.4:1 (5.8:1 sobre arena) */
+  --color-primario: #1f4d3f;         /* verde pino, 9.0:1 */
+  --color-primario-hover: #173c31;
+  --color-sobre-primario: #faf8f5;
+  --color-acento: #b5562f;           /* terracota: solo detalles puntuales y sobre --color-fondo (4.6:1) */
+  --color-sobre-acento: #ffffff;     /* 4.8:1 sobre terracota */
+  --color-error: #b42318;
+
+  /* Tipografía: Newsreader (títulos) y Public Sans (interfaz), servidas localmente */
+  --fuente-titulos: 'Newsreader Variable', ui-serif, Georgia, serif;
+  --fuente-texto: 'Public Sans Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --texto-etiqueta: 0.6875rem;       /* etiquetas en versalitas */
+  --texto-xs: 0.75rem;
+  --texto-sm: 0.875rem;
+  --texto-ui: 0.9375rem;             /* navegación y pestañas */
+  --texto-base: 1rem;
+  --texto-lg: 1.125rem;
+  --titulo-sm: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  --titulo-md: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+  --titulo-lg: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
+
+  /* Espaciado: escala amplia, mucho aire */
+  --espacio-1: 0.25rem;
+  --espacio-2: 0.5rem;
+  --espacio-3: 0.75rem;
+  --espacio-4: 1rem;
+  --espacio-6: 1.5rem;
+  --espacio-8: 2rem;
+  --espacio-12: 3rem;
+  --espacio-16: 4rem;
+  --espacio-24: 6rem;
+  --espacio-seccion: clamp(4rem, 3rem + 4vw, 7rem);
+
+  /* Layout */
+  --ancho-max: 75rem;                /* 1200px */
+  --margen-lateral: 1rem;
+  --alto-header: 4rem;
+  --alto-tactil: 2.75rem;            /* objetivo táctil mínimo de 44px */
+  --radio-sm: 2px;
+  --radio-md: 4px;
+
+  /* Movimiento: microinteracciones discretas */
+  --duracion-rapida: 150ms;
+  --duracion-media: 300ms;
+  --duracion-lenta: 450ms;
+  --curva: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --margen-lateral: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --margen-lateral: 2rem;
+    --alto-header: 4.5rem;
+  }
+}
+
+/* ---------- Reset mínimo ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scrollbar-gutter: stable;          /* evita que el layout salte entre páginas con y sin scroll */
+  scroll-padding-top: calc(var(--alto-header) + var(--espacio-4)); /* el header fijo no tapa el foco */
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+figure {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--fuente-titulos);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--color-primario);
+}
+
+::selection {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+/* Foco visible solo con teclado */
+:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 3px;
+  border-radius: var(--radio-sm);
+}
+
+/* ---------- Utilidades comunes ---------- */
+
+.contenedor {
+  width: min(100% - 2 * var(--margen-lateral), var(--ancho-max));
+  margin-inline: auto;
+}
+
+/* Oculta visualmente pero mantiene el contenido para lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Cifras de ancho fijo para precios y medidas */
+.numeros {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Etiqueta pequeña sobre los títulos, con un filete corto adelante */
+.antetitulo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-texto-suave);
+}
+
+.antetitulo::before {
+  content: '';
+  width: 1.5rem;
+  height: 1px;
+  background: currentColor;
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+  min-height: var(--alto-tactil);
+  padding: var(--espacio-2) var(--espacio-6);
+  border: 1px solid transparent;
+  border-radius: var(--radio-sm);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--duracion-rapida) var(--curva),
+    border-color var(--duracion-rapida) var(--curva),
+    color var(--duracion-rapida) var(--curva),
+    transform var(--duracion-rapida) var(--curva);
+}
+
+/* Respuesta al presionar, sin mover el layout */
+.boton:active {
+  transform: scale(0.98);
+}
+
+.boton-primario {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+.boton-primario:hover {
+  background: var(--color-primario-hover);
+}
+
+.boton-secundario {
+  border-color: var(--color-borde);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+}
+
+.boton-secundario:hover {
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+/* Entrada suave: subida corta + fundido. El retraso se ajusta con --retraso. */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.aparecer {
+  animation: aparecer var(--duracion-lenta) var(--curva) var(--retraso, 0ms) both;
+}
+
+/* Sin animaciones para quien las desactivó en el sistema */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

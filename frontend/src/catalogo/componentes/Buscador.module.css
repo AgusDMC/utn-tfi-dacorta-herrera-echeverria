@@ -1,0 +1,150 @@
+/* Superficie plana con filetes finos: la profundidad la da el contraste
+   blanco sobre hueso y foto, sin sombras */
+.buscador {
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background: var(--color-superficie);
+}
+
+/* ---------- Pestañas de operación (radios nativos) ---------- */
+
+.operacion {
+  display: flex;
+  gap: var(--espacio-6);
+  margin: 0;
+  padding: 0 var(--espacio-6);
+  border: 0;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.pestana {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 3rem;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-ui);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--duracion-rapida) var(--curva);
+}
+
+.pestana input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pestana:hover,
+.pestana:has(input:checked) {
+  color: var(--color-texto);
+}
+
+/* La pestaña elegida se marca con texto oscuro y un filete verde (no solo con color) */
+.pestana::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--color-primario);
+  transform: scaleX(0);
+  transition: transform var(--duracion-media) var(--curva);
+}
+
+.pestana:has(input:checked)::after {
+  transform: scaleX(1);
+}
+
+.pestana:has(input:focus-visible) {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+  border-radius: var(--radio-sm);
+}
+
+/* ---------- Campos ---------- */
+
+.campos {
+  display: grid;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: var(--espacio-3) var(--espacio-6);
+  border-bottom: 1px solid var(--color-borde);
+  cursor: pointer;
+  transition: background-color var(--duracion-rapida) var(--curva);
+}
+
+.campo:hover {
+  background: var(--color-fondo);
+}
+
+.campo:has(.selector:focus-visible) {
+  box-shadow: inset 0 0 0 2px var(--color-primario);
+}
+
+.etiqueta {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-etiqueta);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.selector {
+  width: 100%;
+  min-height: 1.75rem;
+  margin: 0;
+  padding: 0 1.5rem 0 0;
+  border: 0;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%231c1b19' stroke-width='1.5'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E")
+    no-repeat right center / 1rem;
+  color: var(--color-texto);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  appearance: none;
+}
+
+/* El foco se muestra en toda la celda */
+.selector:focus-visible {
+  outline: none;
+}
+
+.acciones {
+  display: flex;
+  padding: var(--espacio-4) var(--espacio-6) var(--espacio-6);
+}
+
+.botonBuscar {
+  flex: 1;
+  min-height: 3.25rem;
+  padding-inline: var(--espacio-8);
+}
+
+.botonBuscar svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Desde tablet: campos en una fila */
+@media (min-width: 640px) {
+  .campos {
+    grid-template-columns: 1fr 1fr auto;
+  }
+
+  .campo {
+    border-bottom: 0;
+    border-right: 1px solid var(--color-borde);
+  }
+
+  .acciones {
+    align-items: center;
+    padding: var(--espacio-3);
+  }
+}

@@ -1,0 +1,146 @@
+/* Mobile primero: texto, foto a sangre y buscador montado sobre la foto */
+
+@keyframes revelarFoto {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero {
+  padding-inline: var(--margen-lateral);
+}
+
+.texto {
+  padding-block: var(--espacio-12) var(--espacio-8);
+}
+
+/* Único uso del acento terracota en la home, junto con la etiqueta "Reservada" */
+.antetitulo {
+  color: var(--color-acento);
+}
+
+.titulo {
+  --retraso: 60ms;
+
+  margin-top: var(--espacio-4);
+  font-size: var(--titulo-lg);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.bajada {
+  --retraso: 120ms;
+
+  max-width: 30rem;
+  margin-top: var(--espacio-6);
+  color: var(--color-texto-suave);
+  font-size: 1.0625rem;
+}
+
+/* El espacio queda reservado por el aspect-ratio: sin saltos de layout */
+.foto {
+  margin-inline: calc(-1 * var(--margen-lateral));
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-arena);
+}
+
+.foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: revelarFoto var(--duracion-lenta) var(--curva) both;
+}
+
+.buscador {
+  --retraso: 200ms;
+
+  position: relative;
+  z-index: 2;
+  margin-top: calc(-1 * var(--espacio-12));
+}
+
+.pie {
+  display: none;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-xs);
+}
+
+@media (min-width: 640px) {
+  .bajada {
+    font-size: 1.1875rem;
+  }
+
+  .foto {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* Desktop: composición asimétrica 5/7. La foto llega hasta el borde derecho de la
+   pantalla y el buscador cruza el corte entre texto e imagen. */
+@media (min-width: 1024px) {
+  .hero {
+    display: grid;
+    grid-template-columns:
+      [completo-inicio] minmax(var(--margen-lateral), 1fr)
+      [contenido-inicio] minmax(0, calc(var(--ancho-max) * 5 / 12))
+      [corte] minmax(0, calc(var(--ancho-max) * 4 / 12))
+      [medio] minmax(0, calc(var(--ancho-max) * 3 / 12))
+      [contenido-fin] minmax(var(--margen-lateral), 1fr) [completo-fin];
+    grid-template-rows: auto auto auto;
+    padding-inline: 0;
+  }
+
+  .texto {
+    grid-row: 1;
+    grid-column: contenido-inicio / corte;
+    align-self: center;
+    padding: var(--espacio-12) var(--espacio-8) var(--espacio-12) 0;
+  }
+
+  /* La columna de texto es angosta en laptops: el título escala con ella */
+  .titulo {
+    font-size: min(var(--titulo-lg), 5vw);
+  }
+
+  .foto {
+    grid-row: 1 / span 2;
+    grid-column: corte / completo-fin;
+    min-height: 36rem;
+    margin: 0;
+    aspect-ratio: auto;
+  }
+
+  .buscador {
+    grid-row: 2;
+    grid-column: contenido-inicio / medio;
+    align-self: end;
+    margin: 0 0 calc(-1 * var(--espacio-12));
+  }
+
+  .pie {
+    display: block;
+    grid-row: 3;
+    grid-column: medio / contenido-fin;
+    padding-top: var(--espacio-3);
+    text-align: right;
+  }
+}
+
+@media (min-width: 1280px) {
+  .texto {
+    padding-right: var(--espacio-12);
+  }
+}
+
+@media (min-width: 1440px) {
+  .foto {
+    min-height: 40rem;
+  }
+}
