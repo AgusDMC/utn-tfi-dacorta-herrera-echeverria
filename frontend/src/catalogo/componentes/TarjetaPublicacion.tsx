@@ -6,33 +6,43 @@ import estilos from './TarjetaPublicacion.module.css'
 
 interface Props {
   publicacion: PublicacionCatalogo
+  copia?: boolean // una repetición visual (marquesina): su foto no participa de la transición
 }
 
 // Tarjeta de una publicación: la misma en la home y en los resultados
-export default function TarjetaPublicacion({ publicacion }: Props) {
+export default function TarjetaPublicacion({ publicacion, copia = false }: Props) {
   const { id, titulo, portada, cantAmbientes } = publicacion
   const operacion = ETIQUETA_OPERACION[publicacion.tipoOperacion].toLowerCase()
 
+  const foto = (
+    <div className={estilos.foto}>
+      {portada ? (
+        <img
+          src={portada.url}
+          alt={portada.descripcion ?? `Foto de ${titulo}`}
+          width={800}
+          height={600}
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <span className={estilos.sinFoto}>Sin fotografías</span>
+      )}
+      {publicacion.estadoComercial === 'RESERVADA' && <span className={estilos.estado}>Reservada</span>}
+    </div>
+  )
+
   return (
     <article className={estilos.tarjeta}>
-      {/* La foto viaja a la ficha de la propiedad (y vuelve con Atrás) en lugar de cortarse */}
-      <ViewTransition name={`foto-${id}`} enter="none" exit="none" update="none" share="foto-compartida">
-        <div className={estilos.foto}>
-          {portada ? (
-            <img
-              src={portada.url}
-              alt={portada.descripcion ?? `Foto de ${titulo}`}
-              width={800}
-              height={600}
-              loading="lazy"
-              decoding="async"
-            />
-          ) : (
-            <span className={estilos.sinFoto}>Sin fotografías</span>
-          )}
-          {publicacion.estadoComercial === 'RESERVADA' && <span className={estilos.estado}>Reservada</span>}
-        </div>
-      </ViewTransition>
+      {/* La foto viaja a la ficha de la propiedad (y vuelve con Atrás) en lugar de cortarse. Cada
+          nombre de transición tiene que ser único en la página: las copias van sin ella. */}
+      {copia ? (
+        foto
+      ) : (
+        <ViewTransition name={`foto-${id}`} enter="none" exit="none" update="none" share="foto-compartida">
+          {foto}
+        </ViewTransition>
+      )}
 
       <div className={estilos.datos}>
         {/* El precio lidera: es lo primero que se mira en una propiedad */}
