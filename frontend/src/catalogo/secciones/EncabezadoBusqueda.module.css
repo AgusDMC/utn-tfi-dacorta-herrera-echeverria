@@ -1,0 +1,15 @@
+.encabezado {
+  padding-top: var(--espacio-8);
+}
+
+.titulo {
+  --retraso: 60ms;
+
+  margin-top: var(--espacio-3);
+  margin-bottom: var(--espacio-6);
+  font-size: var(--titulo-md);
+}
+
+.buscador {
+  --retraso: 120ms;
+}

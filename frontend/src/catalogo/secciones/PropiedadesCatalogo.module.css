@@ -1,0 +1,58 @@
+.seccion {
+  margin-top: var(--espacio-16);
+  transition:
+    opacity var(--duracion-lenta) var(--curva),
+    transform var(--duracion-lenta) var(--curva);
+}
+
+@media (min-width: 1024px) {
+  /* Compensa el buscador que sobresale de la foto del hero */
+  .seccion {
+    margin-top: calc(var(--espacio-seccion) + var(--espacio-12));
+  }
+}
+
+.seccion.conFiltros {
+  margin-top: var(--espacio-12);
+}
+
+/* Estado previo a la aparición (solo si arrancó fuera de pantalla) */
+.seccion[data-oculta] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+/* Recibe el foco por código después de buscar; no es un control */
+.seccion:focus {
+  outline: none;
+}
+
+.detalle {
+  max-width: 24rem;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.limpiar {
+  font-weight: 500;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Sin resultados ---------- */
+
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--espacio-2);
+  padding-top: var(--espacio-4);
+  border-top: 1px solid var(--color-texto);
+}
+
+.vacioTitulo {
+  font-size: var(--titulo-sm);
+}
+
+.vacioAccion {
+  margin-top: var(--espacio-4);
+}

@@ -1,0 +1,33 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.principal {
+  flex: 1;
+}
+
+/* El foco programático del skip link no necesita contorno */
+.principal:focus {
+  outline: none;
+}
+
+.saltarContenido {
+  position: absolute;
+  top: var(--espacio-2);
+  left: var(--espacio-2);
+  z-index: 100;
+  padding: var(--espacio-2) var(--espacio-4);
+  border-radius: var(--radio-sm);
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  font-weight: 500;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform var(--duracion-rapida) var(--curva);
+}
+
+.saltarContenido:focus-visible {
+  transform: translateY(0);
+}

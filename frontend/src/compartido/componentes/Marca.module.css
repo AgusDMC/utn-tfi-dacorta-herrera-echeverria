@@ -1,0 +1,35 @@
+.marca {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--alto-tactil);
+  color: var(--color-texto);
+  line-height: 1;
+  text-decoration: none;
+}
+
+.nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.descriptor {
+  margin-top: 0.2rem;
+  color: var(--color-texto-suave);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 1024px) {
+  .nombre {
+    font-size: 1.75rem;
+  }
+
+  .descriptor {
+    font-size: var(--texto-etiqueta);
+  }
+}

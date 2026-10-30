@@ -1,0 +1,65 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  min-height: var(--alto-header);
+}
+
+.menu {
+  display: flex;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .menu {
+    gap: var(--espacio-8);
+  }
+}
+
+.enlace {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-tactil);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-ui);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--duracion-rapida) var(--curva);
+}
+
+/* Subrayado que crece desde la izquierda al pasar el mouse o en la operación activa */
+.enlace::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0.55rem;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duracion-media) var(--curva);
+}
+
+.enlace:hover,
+.enlace[aria-current='page'] {
+  color: var(--color-texto);
+}
+
+.enlace:hover::after,
+.enlace[aria-current='page']::after {
+  transform: scaleX(1);
+}
