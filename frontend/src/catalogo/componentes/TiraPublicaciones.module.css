@@ -57,11 +57,75 @@
   pointer-events: none;
 }
 
+/* Debajo de la tira: los puntos de posición a la izquierda y los botones a la derecha */
 .controles {
   display: flex;
-  justify-content: flex-end;
-  gap: var(--espacio-2);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-4);
   margin-top: var(--espacio-6);
+}
+
+.botones {
+  display: flex;
+  gap: var(--espacio-2);
+}
+
+.puntos {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Cada punto es un botón de 44 px de alto con una barra chica adentro; la actual se estira */
+.punto {
+  display: grid;
+  align-items: center;
+  width: 1.25rem;
+  height: var(--alto-tactil);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.punto::before {
+  content: '';
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-borde);
+  transition:
+    background-color var(--duracion-media) var(--ease-out),
+    transform var(--duracion-media) var(--ease-out);
+}
+
+.punto[aria-current='true'] {
+  width: 2.5rem;
+}
+
+.punto[aria-current='true']::before {
+  background: var(--color-primario);
+}
+
+.punto:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: -4px;
+  border-radius: var(--radio-sm);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .punto:hover::before {
+    background: var(--color-texto-suave);
+  }
+}
+
+/* El punto cambia de ancho: la transición es sobre width, un cambio chico y puntual */
+.punto {
+  transition: width var(--duracion-media) var(--ease-out);
 }
 
 .flecha {
@@ -84,6 +148,13 @@
 .flecha svg {
   width: 1.25rem;
   height: 1.25rem;
+}
+
+/* El botón de pausa marcado (reanudar) se ve en pino */
+.flecha[aria-pressed='true'] {
+  border-color: var(--color-primario);
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
 }
 
 .flecha:active {
