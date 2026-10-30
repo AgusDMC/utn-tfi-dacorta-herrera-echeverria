@@ -1,22 +1,14 @@
-/* La tira se sale del contenedor por la derecha hasta el borde de la pantalla: insinúa que sigue */
-.tira {
-  position: relative;
-  margin-top: var(--espacio-8);
-}
-
+/* La pista se sale del contenedor por los dos lados hasta el borde de la pantalla: las tarjetas
+   entran por la derecha y salen por la izquierda */
+/* La pista es una ventana sin scroll: la lista se mueve con transform (TiraPublicaciones.tsx).
+   touch-action deja el scroll vertical de la página al dedo y toma el horizontal para arrastrar. */
 .pista {
+  margin-top: var(--espacio-8);
   margin-inline: calc(-1 * var(--margen-lateral));
   padding-inline: var(--margen-lateral);
-  overflow-x: auto;
-  scroll-padding-inline: var(--margen-lateral);
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
+  overflow: hidden;
+  touch-action: pan-y;
   cursor: grab;
-}
-
-.pista::-webkit-scrollbar {
-  display: none;
 }
 
 .pista[data-arrastrando] {
@@ -24,16 +16,13 @@
   user-select: none;
 }
 
+.lista {
+  will-change: transform;
+}
+
 .pista:focus-visible {
   outline: 2px solid var(--color-primario);
   outline-offset: -2px;
-}
-
-/* Con mouse la tira se mueve libre (arrastre con inercia); el snap queda para el dedo */
-@media (hover: hover) and (pointer: fine) {
-  .pista {
-    scroll-snap-type: none;
-  }
 }
 
 /* El padding superior deja lugar a la tarjeta que sube 2 px al pasar el puntero */
@@ -49,7 +38,6 @@
 .item {
   flex: none;
   width: min(78vw, 20rem);
-  scroll-snap-align: start;
 }
 
 /* Los clics del arrastre no deben abrir una tarjeta: el enlace lo recibe la tarjeta, no la imagen */
@@ -57,127 +45,10 @@
   pointer-events: none;
 }
 
-/* Debajo de la tira: los puntos de posición a la izquierda y los botones a la derecha */
-.controles {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--espacio-4);
-  margin-top: var(--espacio-6);
-}
-
-.botones {
-  display: flex;
-  gap: var(--espacio-2);
-}
-
-.puntos {
-  display: flex;
-  align-items: center;
-  gap: var(--espacio-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* Cada punto es un botón de 44 px de alto con una barra chica adentro; la actual se estira */
-.punto {
-  display: grid;
-  align-items: center;
-  width: 1.25rem;
-  height: var(--alto-tactil);
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.punto::before {
-  content: '';
-  display: block;
-  height: 3px;
-  border-radius: 999px;
-  background: var(--color-borde);
-  transition:
-    background-color var(--duracion-media) var(--ease-out),
-    transform var(--duracion-media) var(--ease-out);
-}
-
-.punto[aria-current='true'] {
-  width: 2.5rem;
-}
-
-.punto[aria-current='true']::before {
-  background: var(--color-primario);
-}
-
-.punto:focus-visible {
-  outline: 2px solid var(--color-primario);
-  outline-offset: -4px;
-  border-radius: var(--radio-sm);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .punto:hover::before {
-    background: var(--color-texto-suave);
-  }
-}
-
-/* El punto cambia de ancho: la transición es sobre width, un cambio chico y puntual */
-.punto {
-  transition: width var(--duracion-media) var(--ease-out);
-}
-
-.flecha {
-  display: grid;
-  place-items: center;
-  width: var(--alto-tactil);
-  height: var(--alto-tactil);
-  padding: 0;
-  border: 1px solid var(--color-texto);
-  border-radius: var(--radio-sm);
-  background: transparent;
-  color: var(--color-texto);
-  cursor: pointer;
-  transition:
-    background-color var(--duracion-rapida) var(--curva),
-    opacity var(--duracion-rapida) var(--curva),
-    transform 120ms var(--curva);
-}
-
-.flecha svg {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-/* El botón de pausa marcado (reanudar) se ve en pino */
-.flecha[aria-pressed='true'] {
-  border-color: var(--color-primario);
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-}
-
-.flecha:active {
-  transform: scale(0.96);
-}
-
-.flecha[aria-disabled='true'] {
-  opacity: 0.35;
-  cursor: default;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .flecha:not([aria-disabled='true']):hover {
-    background: var(--color-arena);
-  }
-}
-
 @media (min-width: 1024px) {
-  /* En escritorio la pista arranca en el margen del contenedor y sigue hasta el borde derecho de la pantalla */
   .pista {
-    margin-inline: 0 calc(-1 * max(var(--margen-lateral), (100vw - var(--ancho-max)) / 2));
-    padding-inline: 0 max(var(--margen-lateral), (100vw - var(--ancho-max)) / 2);
-    scroll-padding-inline: 0;
+    margin-inline: calc(-1 * max(var(--margen-lateral), (100vw - var(--ancho-max)) / 2));
+    padding-inline: max(var(--margen-lateral), (100vw - var(--ancho-max)) / 2);
   }
 
   .item {
