@@ -1,0 +1,118 @@
+/* Cierre en arena: la marca y dos columnas de navegación; abajo, la línea legal. */
+.footer {
+  margin-top: var(--espacio-seccion);
+  border-top: 1px solid var(--color-texto);
+  background: var(--color-arena);
+}
+
+.rejilla {
+  display: grid;
+  gap: var(--espacio-8);
+  padding-block: var(--espacio-12) var(--espacio-8);
+}
+
+.lema {
+  max-width: 20rem;
+  margin-top: var(--espacio-4);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+/* Datos de contacto bajo la marca */
+.contacto {
+  margin: var(--espacio-4) 0 0;
+  padding: 0;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  list-style: none;
+}
+
+.contacto li {
+  padding-block: var(--espacio-1);
+}
+
+.contacto a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contacto a:hover {
+    color: var(--color-texto);
+  }
+}
+
+.titulo {
+  margin-bottom: var(--espacio-2);
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.enlaces {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.enlaces a,
+.legal a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-tactil);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-ui);
+  text-decoration: none;
+  transition: color var(--duracion-rapida) var(--curva);
+}
+
+/* Hover solo con puntero fino; al tocar (:active) el enlace se oscurece mientras se presiona */
+.enlaces a:active,
+.legal a:active {
+  color: var(--color-texto);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .enlaces a:hover,
+  .legal a:hover {
+    color: var(--color-texto);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
+.legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 var(--espacio-6);
+  border-top: 1px solid var(--color-borde);
+  color: var(--color-texto-suave);
+  font-size: 0.8125rem;
+}
+
+.legal a {
+  font-size: 0.8125rem;
+}
+
+@media (min-width: 640px) {
+  .rejilla {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .marca {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .rejilla {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 2fr);
+  }
+
+  .marca {
+    grid-column: auto;
+  }
+}

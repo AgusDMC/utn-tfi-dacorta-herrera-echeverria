@@ -1,0 +1,79 @@
+/* Barra fija inferior del celular: sobre el plano pino, igual que el bloque de datos */
+.barra {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  padding: var(--espacio-3) var(--margen-lateral);
+  padding-bottom: calc(var(--espacio-3) + env(safe-area-inset-bottom));
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  transform: translateY(100%);
+  visibility: hidden;
+  /* La salida es más rápida que la entrada */
+  transition:
+    transform 150ms var(--ease-in-out),
+    visibility 0s linear 150ms;
+}
+
+.barra[data-visible] {
+  transform: none;
+  visibility: visible;
+  transition:
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s;
+}
+
+.precio {
+  font-size: 1.375rem;
+}
+
+.moneda {
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+}
+
+.periodo {
+  color: var(--color-sobre-primario-suave);
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-sm);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* Botón hueso con texto pino, como el CTA de la página */
+.consultar {
+  flex-shrink: 0;
+  background: var(--color-fondo);
+  color: var(--color-primario);
+  transition:
+    background-color var(--duracion-rapida) var(--curva),
+    transform 120ms var(--curva);
+}
+
+.consultar:focus-visible {
+  outline-color: var(--color-fondo);
+}
+
+.consultar:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .consultar:hover {
+    background: var(--color-arena);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barra,
+  .barra[data-visible] {
+    transition: none;
+  }
+}

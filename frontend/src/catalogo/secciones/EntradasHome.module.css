@@ -1,0 +1,166 @@
+.seccion {
+  margin-top: var(--espacio-seccion);
+}
+
+.cuerpo {
+  display: grid;
+  gap: var(--espacio-12);
+  margin-top: var(--espacio-8);
+}
+
+/* ---------- Comprar y alquilar: una ilustración de línea sobre arena y el destino ---------- */
+
+.operaciones {
+  display: grid;
+  gap: var(--espacio-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entrada {
+  display: grid;
+  gap: var(--espacio-4);
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.dibujo {
+  display: block;
+  padding: var(--espacio-8) var(--espacio-8) var(--espacio-6);
+  border-radius: var(--radio-md);
+  background: var(--color-arena);
+  color: var(--color-primario);
+  transition: background-color var(--duracion-media) var(--ease-out);
+}
+
+.dibujo svg {
+  transition:
+    transform var(--duracion-media) var(--ease-out),
+    stroke-width var(--duracion-media) var(--ease-out);
+}
+
+.texto {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.nombre {
+  font-family: var(--fuente-titulos);
+  font-size: var(--titulo-sm);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+.bajada {
+  max-width: 28rem;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.cantidad {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  margin-top: var(--espacio-2);
+  color: var(--color-primario);
+  font-size: var(--texto-ui);
+  font-weight: 500;
+}
+
+.cantidad svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform var(--duracion-media) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .entrada:hover .dibujo {
+    background: var(--color-borde);
+  }
+
+  .entrada:hover .dibujo svg {
+    transform: translateY(-3px);
+    stroke-width: 1.75;
+  }
+
+  .entrada:hover .cantidad svg {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrada:hover .dibujo svg {
+    transform: none;
+  }
+}
+
+/* ---------- Por tipo de propiedad: ícono, nombre y cantidad, separados por filetes ---------- */
+
+.subtitulo {
+  margin-bottom: var(--espacio-2);
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.tipos {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-borde);
+  list-style: none;
+}
+
+.tipos li {
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.tipo {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-4);
+  padding-block: var(--espacio-3);
+  color: var(--color-texto);
+  text-decoration: none;
+  transition: color var(--duracion-rapida) var(--curva);
+}
+
+.tipoNombre {
+  flex: 1;
+  font-weight: 500;
+}
+
+.total {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.tipo:active {
+  color: var(--color-primario);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tipo:hover {
+    color: var(--color-primario);
+  }
+}
+
+@media (min-width: 640px) {
+  .operaciones {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Escritorio: las dos ilustraciones a la izquierda y los tipos a la derecha */
+@media (min-width: 1024px) {
+  .cuerpo {
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    column-gap: var(--espacio-16);
+    align-items: start;
+  }
+
+  .operaciones {
+    gap: var(--espacio-8);
+  }
+}

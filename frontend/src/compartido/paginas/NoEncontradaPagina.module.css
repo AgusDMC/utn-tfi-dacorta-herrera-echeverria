@@ -1,0 +1,25 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-block: var(--espacio-16);
+}
+
+@media (min-width: 1024px) {
+  .pagina {
+    padding-block: var(--espacio-24);
+  }
+}
+
+.titulo {
+  margin-top: var(--espacio-3);
+  font-size: var(--titulo-lg);
+}
+
+.texto {
+  max-width: 34rem;
+  margin-top: var(--espacio-4);
+  margin-bottom: var(--espacio-8);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-lg);
+}

@@ -1,0 +1,84 @@
+/* Apoya directo sobre el footer: el margen negativo anula el margen superior de este */
+.banda {
+  margin-top: var(--espacio-seccion);
+  margin-bottom: calc(-1 * var(--espacio-seccion));
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+.contenido {
+  display: grid;
+  gap: var(--espacio-8);
+  padding-block: clamp(3rem, 2rem + 4vw, 5rem);
+}
+
+.titulo {
+  max-width: 20ch;
+  color: inherit;
+  font-size: clamp(2rem, 1.2rem + 2.2vw, 3rem);
+  font-weight: 350;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+
+.bajada {
+  max-width: 28rem;
+  margin-top: var(--espacio-3);
+  color: var(--color-sobre-primario-suave);
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-8);
+}
+
+.principal {
+  background: var(--color-fondo);
+  color: var(--color-primario);
+}
+
+.secundario {
+  border-color: rgb(250 248 245 / 0.5);
+  color: var(--color-sobre-primario);
+}
+
+.principal:focus-visible,
+.secundario:focus-visible {
+  outline-color: var(--color-fondo);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .principal:hover {
+    background: var(--color-arena);
+  }
+
+  .secundario:hover {
+    background: rgb(250 248 245 / 0.12);
+  }
+}
+
+/* La puerta, en hueso atenuado, solo desde tablet */
+.dibujo {
+  display: none;
+  color: var(--color-sobre-primario-suave);
+}
+
+@media (min-width: 768px) {
+  .contenido {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .dibujo {
+    display: block;
+    width: 9rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dibujo {
+    width: 11rem;
+  }
+}

@@ -1,0 +1,44 @@
+.ilustracion {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Cada trazo se dibuja de punta a punta cuando la ilustración entra en pantalla. Los trazos se
+   dibujan escalonados por su orden. Sin soporte de scroll-driven animations, o con movimiento
+   reducido, se ven completos desde el principio. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes dibujar {
+      from {
+        stroke-dashoffset: 1;
+      }
+
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    /* Cada trazo tiene pathLength="1" en el SVG: así el dasharray no depende del largo real */
+    .trazo {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: dibujar linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 70%;
+    }
+
+    .trazo:nth-child(2) {
+      animation-range: entry 20% entry 80%;
+    }
+
+    .trazo:nth-child(3) {
+      animation-range: entry 30% entry 85%;
+    }
+
+    .trazo:nth-child(n + 4) {
+      animation-range: entry 40% entry 90%;
+    }
+  }
+}

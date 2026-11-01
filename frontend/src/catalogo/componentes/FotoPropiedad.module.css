@@ -1,0 +1,47 @@
+.foto {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--color-arena);
+}
+
+/* En el visor la foto flota sobre el fondo oscuro: sin bloque arena mientras carga */
+.contain {
+  background: transparent;
+}
+
+.foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+}
+
+.cover img {
+  object-fit: cover;
+  filter: var(--filtro-foto);
+}
+
+.contain img {
+  object-fit: contain;
+}
+
+.foto[data-estado='lista'] img {
+  opacity: 1;
+}
+
+.contain[data-estado='error'] {
+  background: var(--color-arena);
+}
+
+.fallo {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: var(--espacio-4);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  text-align: center;
+}

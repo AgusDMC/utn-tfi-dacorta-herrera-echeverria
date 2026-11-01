@@ -1,0 +1,141 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  min-height: var(--alto-header);
+}
+
+/* Filete oscuro que aparece al hacer scroll (solo opacidad: no mueve el contenido) */
+.header::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--color-texto);
+  opacity: 0;
+  transition: opacity var(--duracion-media) var(--curva);
+  pointer-events: none;
+}
+
+.header[data-adherido]::after {
+  opacity: 1;
+}
+
+.navegacion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.enlace {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-tactil);
+  padding-inline: var(--espacio-3);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-ui);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--duracion-rapida) var(--curva);
+}
+
+/* La operación activa lleva un filete verde debajo del texto */
+.enlace::after {
+  content: '';
+  position: absolute;
+  right: var(--espacio-3);
+  bottom: 0.375rem;
+  left: var(--espacio-3);
+  height: 2px;
+  background: var(--color-primario);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--duracion-media) var(--ease-out);
+}
+
+.enlace[aria-current='page'] {
+  color: var(--color-primario);
+}
+
+/* El filete entra por la izquierda y sale por la derecha, como en el buscador */
+.enlace[aria-current='page']::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.enlace:active {
+  color: var(--color-texto);
+}
+
+/* El hover solo donde hay puntero: en touch quedaría marcado después del toque */
+@media (hover: hover) and (pointer: fine) {
+  .enlace:hover {
+    color: var(--color-texto);
+  }
+}
+
+.institucional {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .institucional {
+    display: block;
+  }
+}
+
+/* Solo aparece donde hay lugar; mismo alto y letra que los enlaces */
+.todas {
+  display: none;
+  min-height: var(--alto-tactil);
+  padding-inline: var(--espacio-4);
+  font-size: var(--texto-ui);
+  font-weight: 500;
+}
+
+/* Foco: el mismo contorno en los enlaces y en el botón */
+.enlace:focus-visible,
+.todas:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: -2px;
+  border-radius: var(--radio-sm);
+}
+
+@media (min-width: 640px) {
+  .todas {
+    display: inline-flex;
+  }
+
+  .navegacion {
+    gap: var(--espacio-4);
+  }
+
+  .enlace {
+    padding-inline: var(--espacio-4);
+  }
+
+  .enlace::after {
+    right: var(--espacio-4);
+    left: var(--espacio-4);
+  }
+}
