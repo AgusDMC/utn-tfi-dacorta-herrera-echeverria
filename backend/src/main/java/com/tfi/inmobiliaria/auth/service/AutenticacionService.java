@@ -5,10 +5,9 @@ import com.tfi.inmobiliaria.auth.dto.LoginResponse;
 import com.tfi.inmobiliaria.usuario.model.Usuario;
 import com.tfi.inmobiliaria.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import com.tfi.inmobiliaria.exceptions.CredencialesInvalidasException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,10 +21,7 @@ public class AutenticacionService {
         Usuario usuario = repositorioUsuario.findByEmailIgnoreCase(solicitud.getEmail())
                 .orElseThrow(this::credencialesInvalidas);
 
-        boolean claveCorrecta = codificadorClave.matches(
-                solicitud.getClave(),
-                usuario.getClaveHash()
-        );
+        boolean claveCorrecta = codificadorClave.matches(solicitud.getClave(), usuario.getClaveHash());
 
         if (!usuario.isActivo() || !claveCorrecta) {
             throw credencialesInvalidas();
@@ -33,17 +29,11 @@ public class AutenticacionService {
 
         String token = servicioJwt.generarToken(usuario);
 
-        return new LoginResponse(
-                token,
-                "Bearer",
-                usuario.getEmail(),
-                usuario.getRol().name()
-        );
+        return new LoginResponse(token, "Bearer", usuario.getEmail(), usuario.getRol().name());
     }
 
-    private ResponseStatusException credencialesInvalidas() {
-        return new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED,
+    private CredencialesInvalidasException credencialesInvalidas() {
+        return new CredencialesInvalidasException(
                 "Email o clave incorrectos."
         );
     }
