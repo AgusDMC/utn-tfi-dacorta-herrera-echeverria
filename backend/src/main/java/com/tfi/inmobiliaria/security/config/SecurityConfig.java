@@ -26,7 +26,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/publicaciones",
-                                "/api/publicaciones/**").permitAll()
+                                "/api/publicaciones/**",
+                                "/api/propiedades/*/imagenes").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
