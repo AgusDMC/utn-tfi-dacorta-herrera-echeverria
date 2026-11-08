@@ -29,6 +29,9 @@ public class GlobalExceptionHandler {
             case ImagenPropiedadInvalidaException ex ->
                 crearProblema(HttpStatus.BAD_REQUEST, "Datos inválidos", excepcion.getMessage());
 
+            case ConsultaInvalidaException ex ->
+                crearProblema(HttpStatus.BAD_REQUEST, "Datos inválidos", excepcion.getMessage());
+
             case MethodArgumentNotValidException errorValidacion ->
                     crearProblema(HttpStatus.BAD_REQUEST, "Error de validación", obtenerDetalleValidacion(errorValidacion));
 
