@@ -67,24 +67,8 @@ public class PublicacionService {
     }
 
     @Transactional(readOnly = true)
-    public PaginaResponseDto<PublicacionDto> obtenerPublicacionesActivas(Pageable pageable) {
-        Page<PublicacionDto> paginaPublicaciones = publicacionRepo.findAllByEstadoPublicacion(EstadoPublicacion.ACTIVA, pageable)
-                .map(PublicacionMapper::convertirPublicacionADto);
-
-        return PaginaResponseDto.desde(paginaPublicaciones);
-    }
-
-    @Transactional(readOnly = true)
     public PublicacionDto obtenerPublicacionPorId(Long id) {
         Publicacion publicacion = obtenerEntidadPorId(id);
-
-        return PublicacionMapper.convertirPublicacionADto(publicacion);
-    }
-
-    @Transactional(readOnly = true)
-    public PublicacionDto obtenerPublicacionActivaPorId(Long id) {
-        Publicacion publicacion = publicacionRepo.findByIdAndEstadoPublicacion(id, EstadoPublicacion.ACTIVA)
-                .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró una publicación activa con el id: " + id));
 
         return PublicacionMapper.convertirPublicacionADto(publicacion);
     }
