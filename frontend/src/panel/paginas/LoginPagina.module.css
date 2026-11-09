@@ -12,7 +12,7 @@
   align-items: flex-start;
   width: 100%;
   max-width: 26rem;
-  padding: var(--espacio-8);
+  padding: var(--espacio-8) var(--espacio-6);
   border: 1px solid var(--color-borde);
   border-radius: var(--radio-md);
   background: var(--color-superficie);
@@ -31,6 +31,95 @@
 
 .texto {
   margin-top: var(--espacio-3);
-  margin-bottom: var(--espacio-8);
   color: var(--color-texto-suave);
+}
+
+.estado {
+  margin-top: var(--espacio-4);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+}
+
+/* ---------- Formulario: campos subrayados, como el de consulta ---------- */
+
+.formulario {
+  display: grid;
+  gap: var(--espacio-6);
+  width: 100%;
+  margin-top: var(--espacio-8);
+}
+
+.campo {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.etiqueta {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+}
+
+.control {
+  width: 100%;
+  min-height: var(--alto-tactil);
+  padding: var(--espacio-2) 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-texto-suave);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 1.0625rem; /* 17 px: el celular no hace zoom al enfocar */
+}
+
+.control:focus-visible {
+  border-bottom-color: var(--color-primario);
+}
+
+.control[aria-invalid='true'] {
+  padding-bottom: calc(var(--espacio-2) - 1px);
+  border-bottom: 2px solid var(--color-error);
+}
+
+.aviso {
+  color: var(--color-error);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+}
+
+/* Error del envío: una nota al margen con filete, no una caja de alerta */
+.error {
+  padding-left: var(--espacio-4);
+  border-left: 2px solid var(--color-error);
+  font-weight: 600;
+}
+
+.error:focus {
+  outline: none;
+}
+
+.error:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 4px;
+}
+
+.ingresar {
+  width: 100%;
+  min-height: 3.25rem;
+}
+
+.ingresar:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-tactil);
+  margin-top: var(--espacio-4);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+  text-underline-offset: 4px;
 }
