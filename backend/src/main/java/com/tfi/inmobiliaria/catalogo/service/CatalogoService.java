@@ -55,6 +55,11 @@ public class CatalogoService {
         return CatalogoMapper.convertirAPublicacionDetalleDto(publicacion, imagenes);
     }
 
+    @Transactional(readOnly = true)
+    public List<String> obtenerLocalidades() {
+        return publicacionRepo.findLocalidadesCatalogo();
+    }
+
     private Map<Long, ImagenPropiedad> obtenerPortadasPorPropiedad(List<Publicacion> publicaciones) {
 
         // Obtengo los IDs de las propiedades
