@@ -35,11 +35,17 @@ export async function getJson<T>(ruta: string, token: string, senal?: AbortSigna
   return respuesta.json()
 }
 
-export async function patchJson<T>(ruta: string, cuerpo: unknown, token: string): Promise<T> {
+// POST, PUT o PATCH autenticado con cuerpo JSON; devuelve el JSON de la respuesta
+export async function enviarJson<T>(metodo: 'POST' | 'PUT' | 'PATCH', ruta: string, cuerpo: unknown, token: string): Promise<T> {
   const respuesta = await pedir(ruta, {
-    method: 'PATCH',
+    method: metodo,
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(cuerpo),
   })
   return respuesta.json()
+}
+
+// DELETE autenticado. La respuesta exitosa no trae cuerpo (204).
+export async function borrar(ruta: string, token: string) {
+  await pedir(ruta, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
 }

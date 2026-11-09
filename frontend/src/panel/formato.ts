@@ -5,3 +5,8 @@ const FORMATO_FECHA = new Intl.DateTimeFormat('es-AR', { dateStyle: 'medium', ti
 export function formatearFecha(instante: string) {
   return FORMATO_FECHA.format(new Date(instante))
 }
+
+// "1 ambiente", "3 ambientes"
+export function contar(cantidad: number, singular: string, plural: string) {
+  return `${cantidad} ${cantidad === 1 ? singular : plural}`
+}

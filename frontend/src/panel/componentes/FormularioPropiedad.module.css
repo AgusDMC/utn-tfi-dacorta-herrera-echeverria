@@ -1,0 +1,123 @@
+.formulario {
+  display: grid;
+  gap: var(--espacio-8);
+  max-width: 48rem;
+  margin-top: var(--espacio-8);
+}
+
+/* Cada grupo abre con un filete y su título, como las secciones del detalle de una consulta */
+.grupo {
+  display: grid;
+  gap: var(--espacio-6);
+  min-width: 0;
+  margin: 0;
+  padding: var(--espacio-6) 0 0;
+  border: 0;
+  border-top: 1px solid var(--color-texto);
+}
+
+.leyenda {
+  float: left; /* saca la leyenda del borde del fieldset y la deja como título del grupo */
+  width: 100%;
+  padding: 0;
+  font-family: var(--fuente-titulos);
+  font-size: var(--titulo-sm);
+}
+
+.columnas,
+.cifras {
+  display: grid;
+  gap: var(--espacio-6);
+}
+
+.campo {
+  display: grid;
+  gap: var(--espacio-1);
+  align-content: start;
+  min-width: 0;
+}
+
+.etiqueta {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+}
+
+.control {
+  width: 100%;
+  min-height: var(--alto-tactil);
+  padding: var(--espacio-2) var(--espacio-3);
+  border: 1px solid var(--color-texto-suave);
+  border-radius: var(--radio-sm);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 1.0625rem; /* 17 px: el celular no hace zoom al enfocar */
+}
+
+textarea.control {
+  resize: vertical;
+}
+
+.control[aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+
+.aviso {
+  color: var(--color-error);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+}
+
+.casilla {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  justify-self: start;
+  min-height: var(--alto-tactil);
+  cursor: pointer;
+}
+
+.casilla input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  accent-color: var(--color-primario);
+}
+
+/* Error al guardar: una nota al margen con filete */
+.error {
+  padding-left: var(--espacio-4);
+  border-left: 2px solid var(--color-error);
+  font-weight: 600;
+}
+
+.error:focus {
+  outline: none;
+}
+
+.error:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 4px;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+}
+
+.acciones button:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+@media (min-width: 640px) {
+  .columnas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cifras {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
