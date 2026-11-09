@@ -2,6 +2,7 @@ import { useRef, type CSSProperties, type MouseEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { CONTACTO, tituloPagina } from '../../config.ts'
 import { useDescripcionPagina } from '../../compartido/useDescripcionPagina.ts'
+import Correo from '../../compartido/componentes/Correo.tsx'
 import { buscarPublicaciones, obtenerPublicacion } from '../catalogo.ts'
 import { urlCatalogo } from '../filtros.ts'
 import { listarCaracteristicas, partirPrecio, formatearPrecio } from '../formato.ts'
@@ -211,11 +212,11 @@ function Detalle({ publicacion }: { publicacion: PublicacionDetalle }) {
                       </a>
                     </li>
                   )}
-                  {correo && (
+                  {email && (
                     <li className={estilos.medio}>
                       <span className={estilos.medioEtiqueta}>Correo electrónico</span>
                       <a href={correo} className={estilos.medioValor}>
-                        {email}
+                        <Correo direccion={email} />
                       </a>
                     </li>
                   )}

@@ -9,11 +9,11 @@ const PASOS = [
   },
   {
     titulo: 'Enviá tu consulta',
-    texto: 'Desde la ficha de la propiedad podés hacer tu consulta.',
+    texto: 'En la ficha de la propiedad dejanos tus datos y contanos qué querés saber.',
   },
   {
     titulo: 'Te respondemos',
-    texto: 'Recibimos tu consulta y nos comunicamos con vos para coordinar los pasos a seguir.',
+    texto: 'Nos comunicamos con vos para darte más información sobre la propiedad.',
   },
 ] as const
 

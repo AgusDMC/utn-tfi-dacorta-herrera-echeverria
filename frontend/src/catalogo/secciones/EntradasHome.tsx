@@ -9,8 +9,8 @@ import iconos from '../../compartido/componentes/Iconos.module.css'
 import estilos from './EntradasHome.module.css'
 
 const ENTRADAS: { operacion: TipoOperacion; titulo: string; texto: string }[] = [
-  { operacion: 'VENTA', titulo: 'Comprar', texto: 'Casas y departamentos en venta para mudarte o invertir.' },
-  { operacion: 'ALQUILER', titulo: 'Alquilar', texto: 'Propiedades en alquiler, con el precio y las expensas claros.' },
+  { operacion: 'VENTA', titulo: 'Propiedades en venta', texto: 'Opciones para vivir o invertir, con precio y características claras.' },
+  { operacion: 'ALQUILER', titulo: 'Propiedades en alquiler', texto: 'Opciones con precio mensual, expensas y características claras.' },
 ]
 
 function textoCantidad(cantidad: number) {
@@ -26,7 +26,7 @@ export default function EntradasHome() {
 
   return (
     <section className={`contenedor aparece ${estilos.seccion}`} aria-labelledby="titulo-entradas">
-      <CabeceraListado idTitulo="titulo-entradas" titulo="¿Qué estás buscando?" />
+      <CabeceraListado idTitulo="titulo-entradas" titulo="Propiedades para comprar o alquilar" />
 
       <div className={estilos.cuerpo}>
         <ul role="list" className={estilos.operaciones}>

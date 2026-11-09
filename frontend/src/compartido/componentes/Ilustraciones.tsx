@@ -25,34 +25,34 @@ function Lienzo({ className, viewBox, children }: Props & { viewBox: string; chi
   )
 }
 
-// Una casa de una planta con galería, árbol y sol: la entrada a "Comprar"
+// Una casa contemporánea de dos volúmenes con un ciprés: la entrada a "Comprar"
 export function IlustracionCasa(props: Props) {
   return (
     <Lienzo viewBox="0 0 240 180" {...props}>
-      <circle cx="196" cy="42" r="14" pathLength="1" className={estilos.trazo} />
-      <path d="M20 150h200" pathLength="1" className={estilos.trazo} />
-      <path d="M44 150V82l58-42 58 42v68" pathLength="1" className={estilos.trazo} />
-      <path d="M44 82h116M160 150V82" pathLength="1" className={estilos.trazo} />
-      <path d="M60 150v-40h26v40" pathLength="1" className={estilos.trazo} />
-      <path d="M104 110h30v22h-30zM119 110v22M104 121h30" pathLength="1" className={estilos.trazo} />
-      <path d="M166 150v-30M166 120c-14-2-20-12-16-26 4 10 14 16 28 14-2 10-6 12-12 12" pathLength="1" className={estilos.trazo} />
-      <path d="M30 150c0-10 10-10 10 0M194 150c0-8 12-8 12 0" pathLength="1" className={estilos.trazo} />
+      <path d="M16 150h208" pathLength="1" className={estilos.trazo} />
+      <path d="M40 150V62M118 150V44M34 63.4 124 42.6" pathLength="1" className={estilos.trazo} />
+      <path d="M118 92h82M118 97h78M196 97v53" pathLength="1" className={estilos.trazo} />
+      <path d="M54 76h20v32H54zM64 76v32" pathLength="1" className={estilos.trazo} />
+      <path d="M88 150v-38h18v38M101 130v5" pathLength="1" className={estilos.trazo} />
+      <path d="M132 112h50v22h-50zM148.7 112v22M165.3 112v22" pathLength="1" className={estilos.trazo} />
+      <path d="M216 150v-22M216 128c-5.5 0-7.5-8-6.5-19 1-12 3.5-25 6.5-35 3 9 6 22 7 34 1 12-1.5 20-7 20" pathLength="1" className={estilos.trazo} />
     </Lienzo>
   )
 }
 
-// Un edificio de tres pisos con balcones y una llave: la entrada a "Alquilar"
+// Un edificio de departamentos con balcones, núcleo de escalera y una llave: la entrada a "Alquilar"
 export function IlustracionEdificio(props: Props) {
   return (
     <Lienzo viewBox="0 0 240 180" {...props}>
-      <path d="M20 150h200" pathLength="1" className={estilos.trazo} />
-      <path d="M70 150V34h100v116" pathLength="1" className={estilos.trazo} />
-      <path d="M70 34 120 20l50 14" pathLength="1" className={estilos.trazo} />
-      <path d="M84 50h18v16H84zM138 50h18v16h-18zM84 82h18v16H84zM138 82h18v16h-18zM84 114h18v16H84zM138 114h18v16h-18z" pathLength="1" className={estilos.trazo} />
-      <path d="M80 98h26M134 98h26M80 66h26M134 66h26" pathLength="1" className={estilos.trazo} />
-      <path d="M110 150v-26h20v26" pathLength="1" className={estilos.trazo} />
-      <circle cx="202" cy="112" r="9" pathLength="1" className={estilos.trazo} />
-      <path d="M211 112h20M226 112v6M221 112v4" pathLength="1" className={estilos.trazo} />
+      <path d="M16 150h208" pathLength="1" className={estilos.trazo} />
+      <path d="M58 150V36h92v114M54 36h96" pathLength="1" className={estilos.trazo} />
+      <path d="M150 36V24h22v126M161 34v14M161 62v14M161 90v14" pathLength="1" className={estilos.trazo} />
+      <path d="M68 42h16v22H68zM68 70h16v22H68zM68 98h16v22H68z" pathLength="1" className={estilos.trazo} />
+      <path d="M108 56V42h28v14M108 84V70h28v14M108 112V98h28v14" pathLength="1" className={estilos.trazo} />
+      <path d="M100 56h44v8h-44zM100 84h44v8h-44zM100 112h44v8h-44z" pathLength="1" className={estilos.trazo} />
+      <path d="M98 130h34M104 150v-20M124 150v-20M68 132h18v10H68z" pathLength="1" className={estilos.trazo} />
+      <circle cx="198" cy="128" r="6" pathLength="1" className={estilos.trazo} />
+      <path d="M204 128h18M218 128v5M213 128v4" pathLength="1" className={estilos.trazo} />
     </Lienzo>
   )
 }

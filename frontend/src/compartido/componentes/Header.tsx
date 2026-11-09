@@ -51,7 +51,11 @@ export default function Header() {
               </Link>
             </li>
           </ul>
-          <Link to={urlCatalogo({})} className={`boton boton-secundario ${estilos.todas}`}>
+          <Link
+            to={urlCatalogo({})}
+            className={`boton boton-secundario ${estilos.todas}`}
+            aria-current={pathname === '/propiedades' && !operacionActual ? 'page' : undefined}
+          >
             Ver propiedades
           </Link>
         </nav>

@@ -1,4 +1,5 @@
 import { CONTACTO, NOMBRE_INMOBILIARIA, tituloPagina } from '../../config.ts'
+import Correo from '../componentes/Correo.tsx'
 import { useDescripcionPagina } from '../useDescripcionPagina.ts'
 import { IconoCorreo, IconoMatricula, IconoReloj, IconoTelefono, IconoUbicacion } from '../componentes/Iconos.tsx'
 import { IlustracionPuerta } from '../componentes/Ilustraciones.tsx'
@@ -19,8 +20,8 @@ export default function ContactoPagina() {
       <div>
         <h1 className={estilos.titulo}>Contacto</h1>
         <p className={estilos.entrada}>
-          Para consultar por una propiedad, abrí su ficha y usá el botón &ldquo;Consultar por esta propiedad&rdquo;.
-          Por cualquier otra consulta, escribinos o llamanos.
+          Si viste una propiedad que te interesa, entrá a su ficha y dejanos tu consulta. Te respondemos con los datos
+          que necesites. Para cualquier otra consulta, podés llamarnos o escribirnos.
         </p>
 
         <ul role="list" className={estilos.medios}>
@@ -45,7 +46,7 @@ export default function ContactoPagina() {
               <span className={estilos.medioTexto}>
                 <span className={estilos.medioEtiqueta}>Correo electrónico</span>
                 <a href={`mailto:${email}`} className={estilos.medioValor}>
-                  {email}
+                  <Correo direccion={email} />
                 </a>
               </span>
             </li>
