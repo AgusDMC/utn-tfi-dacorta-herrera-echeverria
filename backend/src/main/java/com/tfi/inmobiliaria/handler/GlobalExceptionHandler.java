@@ -4,10 +4,11 @@ import com.tfi.inmobiliaria.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,8 +33,14 @@ public class GlobalExceptionHandler {
             case ConsultaInvalidaException ex ->
                 crearProblema(HttpStatus.BAD_REQUEST, "Datos inválidos", excepcion.getMessage());
 
+            case FiltroInvalidoException ex ->
+                crearProblema(HttpStatus.BAD_REQUEST, "Filtros inválidos", excepcion.getMessage());
+
             case MethodArgumentNotValidException errorValidacion ->
                     crearProblema(HttpStatus.BAD_REQUEST, "Error de validación", obtenerDetalleValidacion(errorValidacion));
+
+            case BindException ex ->
+                    crearProblema(HttpStatus.BAD_REQUEST, "Filtros inválidos", "Uno o más filtros tienen un formato inválido.");
 
             case CredencialesInvalidasException ex ->
                     crearProblema(HttpStatus.UNAUTHORIZED, "Credenciales inválidas", excepcion.getMessage());
