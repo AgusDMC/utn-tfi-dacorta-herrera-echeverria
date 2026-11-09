@@ -9,6 +9,7 @@ import com.tfi.inmobiliaria.consulta.model.EstadoConsulta;
 import com.tfi.inmobiliaria.consulta.repository.ConsultaRepository;
 import com.tfi.inmobiliaria.exceptions.ConsultaInvalidaException;
 import com.tfi.inmobiliaria.exceptions.RecursoNoEncontradoException;
+import com.tfi.inmobiliaria.notificacion.interfaces.NotificadorConsulta;
 import com.tfi.inmobiliaria.publicacion.model.EstadoPublicacion;
 import com.tfi.inmobiliaria.publicacion.model.Publicacion;
 import com.tfi.inmobiliaria.publicacion.repository.PublicacionRepository;
@@ -24,6 +25,7 @@ public class ConsultaService {
 
     private final ConsultaRepository consultaRepo;
     private final PublicacionRepository publicacionRepo;
+    private final NotificadorConsulta notificadorConsulta;
 
     @Transactional
     public ConsultaDto crearConsulta(ConsultaCreateDto consultaCreateDto) {
@@ -36,7 +38,9 @@ public class ConsultaService {
 
         consulta.setEstado(EstadoConsulta.NUEVA);
 
-        Consulta consultaGuardada = consultaRepo.save(consulta);
+        Consulta consultaGuardada = consultaRepo.saveAndFlush(consulta);
+
+        notificadorConsulta.notificarNuevaConsulta(consultaGuardada);
 
         return ConsultaMapper.convertirConsultaADto(consultaGuardada);
     }

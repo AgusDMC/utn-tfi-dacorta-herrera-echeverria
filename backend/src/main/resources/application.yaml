@@ -13,7 +13,22 @@ spring:
 
   flyway:
     locations: filesystem:../database/migrations
+
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      "[mail.smtp.auth]": true
+      "[mail.smtp.starttls.enable]": true
+
 app:
   jwt:
     secret: ${JWT_SECRET}
     expiration-minutes: 60
+
+  notificacion:
+    remitente: ${EMAIL_REMITENTE}
+    nombre-remitente: ${NOMBRE_REMITENTE}
+    destinatario: ${EMAIL_DESTINATARIO}
