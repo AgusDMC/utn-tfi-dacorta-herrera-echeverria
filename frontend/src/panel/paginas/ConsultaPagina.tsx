@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useLocation, useParams } from 'react-router'
 import { tituloPagina } from '../../config.ts'
 import { ErrorApi } from '../../compartido/api/clienteApi.ts'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
@@ -10,9 +10,11 @@ import { ETIQUETA_ESTADO, TONO_ESTADO, type Consulta } from '../consultas/tipos.
 import { formatearFecha } from '../formato.ts'
 import estilos from './ConsultaPagina.module.css'
 
+// La URL trae la página y el filtro del listado (?page=2&estado=…): se vuelve a ese mismo lugar
 function VolverABandeja() {
+  const { search } = useLocation()
   return (
-    <Link to="/admin/consultas" className={estilos.volver}>
+    <Link to={{ pathname: '/admin/consultas', search }} className={estilos.volver}>
       Volver a consultas
     </Link>
   )

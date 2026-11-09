@@ -1,10 +1,12 @@
 import { borrar, enviarJson, getJson } from '../../compartido/api/clienteApi.ts'
+import type { Pagina } from '../../compartido/api/pagina.ts'
 import { tokenSesion } from '../autenticacion/sesion.ts'
 import type { CambiosPublicacion, NuevaPublicacion, Publicacion } from './tipos.ts'
 
-// Devuelve todas, también las pausadas y las eliminadas, sin filtrar
-export function listarPublicaciones(senal?: AbortSignal) {
-  return getJson<Publicacion[]>('/api/admin/publicaciones', tokenSesion(), senal)
+// Una página (20 por página, la última actualizada primero). Incluye pausadas y eliminadas;
+// el backend no filtra por estado.
+export function listarPublicaciones(pagina: number, senal?: AbortSignal) {
+  return getJson<Pagina<Publicacion>>(`/api/admin/publicaciones?page=${pagina}`, tokenSesion(), senal)
 }
 
 export function obtenerPublicacion(id: number, senal?: AbortSignal) {

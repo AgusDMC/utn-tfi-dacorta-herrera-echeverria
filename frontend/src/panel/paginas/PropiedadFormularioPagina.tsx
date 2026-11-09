@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { tituloPagina } from '../../config.ts'
 import { ErrorApi } from '../../compartido/api/clienteApi.ts'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
@@ -10,9 +10,11 @@ import estilos from './PropiedadFormularioPagina.module.css'
 
 const NO_EXISTE = 'La propiedad no existe o ya no está activa.'
 
+// La URL trae la página del listado (?page=2): se vuelve a ese mismo lugar
 function VolverAPropiedades() {
+  const { search } = useLocation()
   return (
-    <Link to="/admin/propiedades" className={estilos.volver}>
+    <Link to={{ pathname: '/admin/propiedades', search }} className={estilos.volver}>
       Volver a propiedades
     </Link>
   )
@@ -29,6 +31,7 @@ function EdicionOAlta({ id }: { id: string | undefined }) {
   const esEdicion = id !== undefined
   const idPropiedad = id && /^\d+$/.test(id) ? Number(id) : null
   const navigate = useNavigate()
+  const { search } = useLocation()
   const salirSiVencio = useSalirSiVencio()
   const [propiedad, setPropiedad] = useState<Propiedad | null>(null)
   const [falloCarga, setFalloCarga] = useState<'no-existe' | 'error' | null>(null)
@@ -60,7 +63,7 @@ function EdicionOAlta({ id }: { id: string | undefined }) {
     try {
       if (idPropiedad === null) await crearPropiedad(datos)
       else await actualizarPropiedad(idPropiedad, datos)
-      navigate('/admin/propiedades', { state: { aviso: esEdicion ? 'Propiedad actualizada.' : 'Propiedad agregada.' } })
+      navigate({ pathname: '/admin/propiedades', search }, { state: { aviso: esEdicion ? 'Propiedad actualizada.' : 'Propiedad agregada.' } })
     } catch (excepcion) {
       if (salirSiVencio(excepcion)) return
       const estado = excepcion instanceof ErrorApi ? excepcion.estado : null

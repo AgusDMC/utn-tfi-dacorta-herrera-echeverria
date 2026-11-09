@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { flushSync } from 'react-dom'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { ETIQUETA_TIPO, TIPOS_PROPIEDAD } from '../../catalogo/tipos.ts'
 import type { DatosPropiedad } from '../propiedades/tipos.ts'
 import Campo from './Campo.tsx'
@@ -95,6 +95,7 @@ function validar(formulario: HTMLFormElement) {
 // El mismo formulario para el alta y la edición. Valida antes de entregar los datos a la página,
 // que es la que llama a la API.
 export default function FormularioPropiedad({ inicial, textoBoton, guardando, error, onGuardar }: Props) {
+  const { search } = useLocation() // la página del listado, para que Cancelar vuelva a ella
   const [errores, setErrores] = useState<Errores>({})
   const errorRef = useRef<HTMLParagraphElement>(null)
 
@@ -209,7 +210,7 @@ export default function FormularioPropiedad({ inicial, textoBoton, guardando, er
         <button type="submit" className="boton boton-primario" disabled={guardando}>
           {guardando ? 'Guardando…' : textoBoton}
         </button>
-        <Link to="/admin/propiedades" className="boton boton-secundario">
+        <Link to={{ pathname: '/admin/propiedades', search }} className="boton boton-secundario">
           Cancelar
         </Link>
       </div>

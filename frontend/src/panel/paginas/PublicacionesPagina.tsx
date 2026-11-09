@@ -3,9 +3,12 @@ import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { tituloPagina } from '../../config.ts'
 import { ETIQUETA_OPERACION } from '../../catalogo/tipos.ts'
 import { ErrorApi } from '../../compartido/api/clienteApi.ts'
+import type { Pagina } from '../../compartido/api/pagina.ts'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
 import EtiquetaEstado from '../componentes/EtiquetaEstado.tsx'
-import { describirPropiedad, formatearImporte } from '../formato.ts'
+import Paginacion from '../componentes/Paginacion.tsx'
+import { contar, describirPropiedad, formatearImporte } from '../formato.ts'
+import { conPagina, leerPagina } from '../paginacion.ts'
 import { listarPropiedades } from '../propiedades/propiedades.ts'
 import type { Propiedad } from '../propiedades/tipos.ts'
 import { activarPublicacion, darDeBajaPublicacion, listarPublicaciones, pausarPublicacion } from '../publicaciones/publicaciones.ts'
@@ -45,20 +48,23 @@ function avisoDeLlegada(estado: unknown): Aviso | null {
   return typeof estado.aviso === 'string' ? { texto: estado.aviso } : null
 }
 
-// Listado con historial: el backend devuelve también las pausadas y las eliminadas, sin filtrar.
-// El filtro por estado se aplica acá y va en la URL, como en Consultas.
+// Listado con historial, de a una página: el backend devuelve también las pausadas y las
+// eliminadas. Todavía no filtra por estado, así que el filtro se aplica sobre la página que se
+// está viendo y así se lo dice. Página y filtro van en la URL, como en Consultas.
 export default function PublicacionesPagina() {
   const { state, pathname, search } = useLocation()
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const salirSiVencio = useSalirSiVencio()
   const idFiltro = useId()
-  const [publicaciones, setPublicaciones] = useState<Publicacion[] | null>(null)
+  const pagina = leerPagina(params)
+  const [respuesta, setRespuesta] = useState<Pagina<Publicacion> | null>(null)
   const [propiedades, setPropiedades] = useState<Propiedad[]>([])
-  const [fallo, setFallo] = useState(false)
+  const [falloEn, setFalloEn] = useState<number | null>(null) // la página que no se pudo cargar
   const [intento, setIntento] = useState(0)
   const [aviso, setAviso] = useState<Aviso | null>(() => avisoDeLlegada(state))
   const [enCurso, setEnCurso] = useState<number | null>(null)
+  const tituloRef = useRef<HTMLHeadingElement>(null)
   const avisoRef = useRef<HTMLParagraphElement>(null)
   // El estado tarda un render en reflejarse; el ref corta en el acto una segunda acción
   const accionEnCursoRef = useRef(false)
@@ -66,20 +72,39 @@ export default function PublicacionesPagina() {
   const valorFiltro = params.get('estado')
   const filtro = esEstadoPublicacion(valorFiltro) ? valorFiltro : null
 
-  // Las propiedades activas solo sirven para nombrarlas: una sola request para todas
+  // Las propiedades activas solo sirven para nombrarlas, así que se piden una vez y no por página.
+  // Si fallan se muestra "Propiedad #id"; un 401 igual cierra la sesión.
   useEffect(() => {
     const control = new AbortController()
-    Promise.all([listarPublicaciones(control.signal), listarPropiedades(control.signal)])
-      .then(([lista, activas]) => {
-        if (control.signal.aborted) return
-        setPropiedades(activas)
-        setPublicaciones(lista)
+    listarPropiedades(control.signal)
+      .then((activas) => {
+        if (!control.signal.aborted) setPropiedades(activas)
       })
       .catch((error: unknown) => {
-        if (!control.signal.aborted && !salirSiVencio(error)) setFallo(true)
+        if (!control.signal.aborted) salirSiVencio(error)
       })
     return () => control.abort()
-  }, [intento, salirSiVencio])
+  }, [salirSiVencio])
+
+  useEffect(() => {
+    const control = new AbortController()
+    listarPublicaciones(pagina, control.signal)
+      .then((recibida) => {
+        if (control.signal.aborted) return
+        setFalloEn(null)
+        setRespuesta(recibida)
+      })
+      .catch((error: unknown) => {
+        if (!control.signal.aborted && !salirSiVencio(error)) setFalloEn(pagina)
+      })
+    return () => control.abort()
+  }, [pagina, intento, salirSiVencio])
+
+  // Página que ya no existe: se pasa a la última que sí existe
+  const fueraDeRango = respuesta !== null && respuesta.page === pagina && pagina > 0 && respuesta.results.length === 0
+  useEffect(() => {
+    if (fueraDeRango && respuesta) setParams((actuales) => conPagina(actuales, Math.max(respuesta.totalPages - 1, 0)), { replace: true })
+  }, [fueraDeRango, respuesta, setParams])
 
   // El aviso de llegada ya se leyó: se borra del historial para que no reaparezca al recargar
   useEffect(() => {
@@ -92,16 +117,26 @@ export default function PublicacionesPagina() {
   }, [aviso])
 
   function reintentar() {
-    setFallo(false)
+    setFalloEn(null)
     setIntento((n) => n + 1)
   }
 
+  // Cambiar el filtro vuelve a la primera página
   function filtrar(valor: string) {
-    setParams(valor ? { estado: valor } : {}, { replace: true })
+    setParams(valor ? { estado: valor, page: '0' } : { page: '0' }, { replace: true })
   }
 
-  function reemplazar(actualizada: Publicacion) {
-    setPublicaciones((actuales) => actuales?.map((otra) => (otra.id === actualizada.id ? actualizada : otra)) ?? null)
+  // El foco vuelve al título: el botón de la paginación queda abajo y la lista nueva arranca arriba
+  function irAPagina(nueva: number) {
+    setParams(conPagina(params, nueva))
+    tituloRef.current?.focus()
+  }
+
+  // El listado se ordena por última actualización: una acción puede mover la publicación de página.
+  // La fila cambia en el acto y después se vuelve a pedir la página para ver el orden real.
+  function reemplazarYRecargar(actualizada: Publicacion) {
+    setRespuesta((actual) => actual && { ...actual, results: actual.results.map((otra) => (otra.id === actualizada.id ? actualizada : otra)) })
+    setIntento((n) => n + 1)
   }
 
   async function ejecutar(publicacion: Publicacion, accion: Accion) {
@@ -115,9 +150,9 @@ export default function PublicacionesPagina() {
       if (accion === 'baja') {
         // El DELETE no devuelve la publicación: se refleja lo que hizo el backend, dejarla eliminada
         await darDeBajaPublicacion(publicacion.id)
-        reemplazar({ ...publicacion, estadoPublicacion: 'ELIMINADA' })
+        reemplazarYRecargar({ ...publicacion, estadoPublicacion: 'ELIMINADA' })
       } else {
-        reemplazar(await (accion === 'activar' ? activarPublicacion(publicacion.id) : pausarPublicacion(publicacion.id)))
+        reemplazarYRecargar(await (accion === 'activar' ? activarPublicacion(publicacion.id) : pausarPublicacion(publicacion.id)))
       }
       setAviso({ texto: RESULTADO_ACCION[accion] })
     } catch (error) {
@@ -136,24 +171,26 @@ export default function PublicacionesPagina() {
     }
   }
 
-  const todas = publicaciones ?? []
-  const visibles = filtro ? todas.filter((publicacion) => publicacion.estadoPublicacion === filtro) : todas
+  const cargada = respuesta && respuesta.page === pagina && !fueraDeRango ? respuesta : null
+  const visibles = cargada ? cargada.results.filter((publicacion) => !filtro || publicacion.estadoPublicacion === filtro) : []
 
   return (
     <>
       <title>{tituloPagina('Publicaciones')}</title>
 
       <div className={estilos.cabecera}>
-        <h1 className={estilos.titulo}>Publicaciones</h1>
+        <h1 ref={tituloRef} tabIndex={-1} className={estilos.titulo}>
+          Publicaciones
+        </h1>
         <Link to="/admin/publicaciones/nueva" className="boton boton-primario">
           Agregar publicación
         </Link>
       </div>
 
-      {publicaciones && publicaciones.length > 0 && (
+      {respuesta && respuesta.totalElements > 0 && (
         <div className={estilos.filtro}>
           <label htmlFor={idFiltro} className={estilos.etiqueta}>
-            Estado
+            Estado en esta página
           </label>
           <select id={idFiltro} value={filtro ?? ''} onChange={(evento) => filtrar(evento.target.value)} className={estilos.selector}>
             <option value="">Todas</option>
@@ -172,25 +209,27 @@ export default function PublicacionesPagina() {
         </p>
       )}
 
-      {fallo ? (
+      {falloEn === pagina ? (
         <div role="alert" className={estilos.estado}>
           <p>No pudimos cargar las publicaciones.</p>
           <button type="button" className="boton boton-secundario" onClick={reintentar}>
             Reintentar
           </button>
         </div>
-      ) : !publicaciones ? (
+      ) : !cargada ? (
         <p role="status" className={estilos.estado}>
           Cargando publicaciones…
         </p>
-      ) : publicaciones.length === 0 ? (
+      ) : cargada.totalElements === 0 ? (
         <p className={estilos.estado}>Todavía no hay publicaciones cargadas.</p>
       ) : (
         <>
           <p aria-live="polite" className={estilos.cantidad}>
-            {visibles.length === 0
-              ? 'No hay publicaciones con este estado.'
-              : `${visibles.length} ${visibles.length === 1 ? 'publicación' : 'publicaciones'}`}
+            {!filtro
+              ? contar(cargada.totalElements, 'publicación', 'publicaciones')
+              : visibles.length === 0
+                ? 'No hay publicaciones con este estado en esta página.'
+                : `${contar(visibles.length, 'publicación', 'publicaciones')} con este estado en esta página`}
           </p>
 
           {visibles.length > 0 && (
@@ -220,7 +259,7 @@ export default function PublicacionesPagina() {
                     {/* R5: una eliminada queda como historial, sin acciones */}
                     {!eliminada && (
                       <div className={estilos.acciones}>
-                        <Link to={`/admin/publicaciones/${id}/editar`} className="boton boton-secundario">
+                        <Link to={{ pathname: `/admin/publicaciones/${id}/editar`, search }} className="boton boton-secundario">
                           Editar<span className="sr-only"> {titulo}</span>
                         </Link>
                         {estadoPublicacion === 'ACTIVA' && (
@@ -245,6 +284,8 @@ export default function PublicacionesPagina() {
               })}
             </ul>
           )}
+
+          <Paginacion pagina={cargada} onCambiar={irAPagina} />
         </>
       )}
     </>

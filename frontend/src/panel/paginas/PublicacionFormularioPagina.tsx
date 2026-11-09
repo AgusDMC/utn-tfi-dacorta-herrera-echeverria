@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { tituloPagina } from '../../config.ts'
 import { ErrorApi } from '../../compartido/api/clienteApi.ts'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
@@ -13,9 +13,11 @@ import estilos from './PublicacionFormularioPagina.module.css'
 const NO_EXISTE = 'La publicación no existe.'
 const DUPLICADA = 'Ya existe una publicación activa para esta propiedad y operación.'
 
+// La URL trae la página y el filtro del listado (?page=2&estado=…): se vuelve a ese mismo lugar
 function VolverAPublicaciones() {
+  const { search } = useLocation()
   return (
-    <Link to="/admin/publicaciones" className={estilos.volver}>
+    <Link to={{ pathname: '/admin/publicaciones', search }} className={estilos.volver}>
       Volver a publicaciones
     </Link>
   )
@@ -32,6 +34,7 @@ function EdicionOAlta({ id }: { id: string | undefined }) {
   const esEdicion = id !== undefined
   const idPublicacion = id && /^\d+$/.test(id) ? Number(id) : null
   const navigate = useNavigate()
+  const { search } = useLocation()
   const salirSiVencio = useSalirSiVencio()
   const [propiedades, setPropiedades] = useState<Propiedad[] | null>(null)
   const [publicacion, setPublicacion] = useState<Publicacion | null>(null)
@@ -82,7 +85,7 @@ function EdicionOAlta({ id }: { id: string | undefined }) {
       } else {
         await crearPublicacion({ propiedadId, titulo, descripcion, tipoOperacion, precio, moneda, expensas })
       }
-      navigate('/admin/publicaciones', { state: { aviso: publicacion ? 'Publicación actualizada.' : 'Publicación agregada.' } })
+      navigate({ pathname: '/admin/publicaciones', search }, { state: { aviso: publicacion ? 'Publicación actualizada.' : 'Publicación agregada.' } })
     } catch (excepcion) {
       if (salirSiVencio(excepcion)) return
       const estado = excepcion instanceof ErrorApi ? excepcion.estado : null

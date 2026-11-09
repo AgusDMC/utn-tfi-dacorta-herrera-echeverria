@@ -1,10 +1,22 @@
 import { borrar, enviarJson, getJson } from '../../compartido/api/clienteApi.ts'
+import type { Pagina } from '../../compartido/api/pagina.ts'
 import { tokenSesion } from '../autenticacion/sesion.ts'
 import type { DatosPropiedad, Propiedad } from './tipos.ts'
 
-// Solo devuelve las propiedades activas
-export function listarPropiedades(senal?: AbortSignal) {
-  return getJson<Propiedad[]>('/api/admin/propiedades', tokenSesion(), senal)
+// Una página del listado del panel (20 por página, de la más nueva a la más vieja). Solo activas.
+export function listarPaginaPropiedades(pagina: number, senal?: AbortSignal) {
+  return getJson<Pagina<Propiedad>>(`/api/admin/propiedades?page=${pagina}`, tokenSesion(), senal)
+}
+
+// Todas las propiedades activas, para elegirlas o nombrarlas en las publicaciones. Pide páginas
+// de 100 (el máximo que acepta el backend) hasta la última.
+export async function listarPropiedades(senal?: AbortSignal) {
+  const todas: Propiedad[] = []
+  for (let pagina = 0; ; pagina++) {
+    const respuesta = await getJson<Pagina<Propiedad>>(`/api/admin/propiedades?page=${pagina}&size=100`, tokenSesion(), senal)
+    todas.push(...respuesta.results)
+    if (!respuesta.hasNext) return todas
+  }
 }
 
 export function obtenerPropiedad(id: number, senal?: AbortSignal) {
