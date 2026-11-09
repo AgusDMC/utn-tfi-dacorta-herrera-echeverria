@@ -1,15 +1,17 @@
 package com.tfi.inmobiliaria.propiedad.controller;
 
+import com.tfi.inmobiliaria.compartido.dto.PaginaResponseDto;
 import com.tfi.inmobiliaria.propiedad.dto.PropiedadCreateDto;
 import com.tfi.inmobiliaria.propiedad.dto.PropiedadDto;
 import com.tfi.inmobiliaria.propiedad.dto.PropiedadUpdateDto;
 import com.tfi.inmobiliaria.propiedad.service.PropiedadService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/propiedades")
@@ -24,8 +26,11 @@ public class PropiedadController {
     }
 
     @GetMapping
-    public List<PropiedadDto> obtenerPropiedades() {
-        return propiedadService.obtenerPropiedades();
+    public PaginaResponseDto<PropiedadDto> obtenerPropiedades(@PageableDefault(
+            size = 20,
+            sort = "fechaCreacion",
+            direction = Sort.Direction.DESC) Pageable pageable) {
+        return propiedadService.obtenerPropiedades(pageable);
     }
 
     @GetMapping("/{id}")

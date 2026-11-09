@@ -1,15 +1,17 @@
 package com.tfi.inmobiliaria.publicacion.controller;
 
+import com.tfi.inmobiliaria.compartido.dto.PaginaResponseDto;
 import com.tfi.inmobiliaria.publicacion.dto.PublicacionCreateDto;
 import com.tfi.inmobiliaria.publicacion.dto.PublicacionDto;
 import com.tfi.inmobiliaria.publicacion.dto.PublicacionUpdateDto;
 import com.tfi.inmobiliaria.publicacion.service.PublicacionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/publicaciones")
@@ -25,8 +27,11 @@ public class PublicacionController {
     }
 
     @GetMapping
-    public List<PublicacionDto> obtenerPublicaciones() {
-        return publicacionService.obtenerPublicaciones();
+    public PaginaResponseDto<PublicacionDto> obtenerPublicaciones(@PageableDefault(
+            size = 20,
+            sort = "fechaUltActualizacion",
+            direction = Sort.Direction.DESC) Pageable pageable) {
+        return publicacionService.obtenerPublicaciones(pageable);
     }
 
     @GetMapping("/{id}")

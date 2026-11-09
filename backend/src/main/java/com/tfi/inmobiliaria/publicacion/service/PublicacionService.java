@@ -1,5 +1,6 @@
 package com.tfi.inmobiliaria.publicacion.service;
 
+import com.tfi.inmobiliaria.compartido.dto.PaginaResponseDto;
 import com.tfi.inmobiliaria.exceptions.PublicacionInvalidaException;
 import com.tfi.inmobiliaria.exceptions.RecursoNoEncontradoException;
 import com.tfi.inmobiliaria.propiedad.model.Propiedad;
@@ -13,11 +14,12 @@ import com.tfi.inmobiliaria.publicacion.model.EstadoPublicacion;
 import com.tfi.inmobiliaria.publicacion.model.Publicacion;
 import com.tfi.inmobiliaria.publicacion.repository.PublicacionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,19 +58,20 @@ public class PublicacionService {
 
     // OBTIENE TODAS LAS PUBLICACIONES INDEPENDIENTEMENTE DEL ESTADO. PARA LISTADO DE ADMINISTRADOR
     @Transactional(readOnly = true)
-    public List<PublicacionDto> obtenerPublicaciones() {
-        return publicacionRepo.findAll()
-                .stream()
-                .map(PublicacionMapper::convertirPublicacionADto)
-                .toList();
+    public PaginaResponseDto<PublicacionDto> obtenerPublicaciones(Pageable pageable) {
+
+        Page<PublicacionDto> paginaPublicaciones = publicacionRepo.findAll(pageable)
+                .map(PublicacionMapper::convertirPublicacionADto);
+
+        return PaginaResponseDto.desde(paginaPublicaciones);
     }
 
     @Transactional(readOnly = true)
-    public List<PublicacionDto> obtenerPublicacionesActivas() {
-        return publicacionRepo.findAllByEstadoPublicacion(EstadoPublicacion.ACTIVA)
-                .stream()
-                .map(PublicacionMapper::convertirPublicacionADto)
-                .toList();
+    public PaginaResponseDto<PublicacionDto> obtenerPublicacionesActivas(Pageable pageable) {
+        Page<PublicacionDto> paginaPublicaciones = publicacionRepo.findAllByEstadoPublicacion(EstadoPublicacion.ACTIVA, pageable)
+                .map(PublicacionMapper::convertirPublicacionADto);
+
+        return PaginaResponseDto.desde(paginaPublicaciones);
     }
 
     @Transactional(readOnly = true)

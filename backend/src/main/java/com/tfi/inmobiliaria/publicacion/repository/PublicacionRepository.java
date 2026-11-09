@@ -3,15 +3,16 @@ package com.tfi.inmobiliaria.publicacion.repository;
 import com.tfi.inmobiliaria.publicacion.model.EstadoPublicacion;
 import com.tfi.inmobiliaria.publicacion.model.Publicacion;
 import com.tfi.inmobiliaria.publicacion.model.TipoOperacion;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface PublicacionRepository extends JpaRepository<Publicacion, Long> {
-    List<Publicacion> findAllByEstadoPublicacion(EstadoPublicacion estadoPublicacion);
+    Page<Publicacion> findAllByEstadoPublicacion(EstadoPublicacion estadoPublicacion, Pageable pageable);
 
     Optional<Publicacion> findByIdAndEstadoPublicacion(Long id, EstadoPublicacion estadoPublicacion);
 
