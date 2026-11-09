@@ -10,9 +10,12 @@ import estilos from './LoginPagina.module.css'
 
 type Errores = Partial<Record<'email' | 'clave', string>>
 
-// El panel navega hasta acá con este estado al cerrar la sesión
-function vieneDeCerrarSesion(estado: unknown) {
-  return typeof estado === 'object' && estado !== null && 'sesionCerrada' in estado
+// El panel navega hasta acá con uno de estos estados: al cerrar la sesión o cuando venció
+function avisoDeLlegada(estado: unknown) {
+  if (typeof estado !== 'object' || estado === null) return null
+  if ('sesionVencida' in estado) return 'Tu sesión venció. Iniciá sesión nuevamente.'
+  if ('sesionCerrada' in estado) return 'Cerraste la sesión.'
+  return null
 }
 
 export default function LoginPagina() {
@@ -23,12 +26,12 @@ export default function LoginPagina() {
   const [error, setError] = useState<string | null>(null)
   const emailRef = useRef<HTMLInputElement>(null)
   const errorRef = useRef<HTMLDivElement>(null)
-  const sesionCerrada = vieneDeCerrarSesion(state)
+  const aviso = avisoDeLlegada(state)
 
-  // Después de cerrar sesión el foco queda en el email, listo para volver a entrar
+  // Al llegar desde el panel el foco queda en el email, listo para volver a entrar
   useEffect(() => {
-    if (sesionCerrada) emailRef.current?.focus()
-  }, [sesionCerrada])
+    if (aviso) emailRef.current?.focus()
+  }, [aviso])
 
   // El error del envío recibe el foco: el botón estuvo deshabilitado y lo había perdido
   useEffect(() => {
@@ -88,9 +91,9 @@ export default function LoginPagina() {
         <h1 className={estilos.titulo}>Acceso administración</h1>
         <p className={estilos.texto}>Ingresá con tu cuenta de administrador.</p>
 
-        {sesionCerrada && !error && (
+        {aviso && !error && (
           <p role="status" className={estilos.estado}>
-            Cerraste la sesión.
+            {aviso}
           </p>
         )}
 

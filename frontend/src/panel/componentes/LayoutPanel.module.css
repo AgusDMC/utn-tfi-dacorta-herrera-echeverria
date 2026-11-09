@@ -1,0 +1,66 @@
+.pagina {
+  min-height: 100dvh;
+  background: var(--color-fondo);
+}
+
+/* Barra del panel: la marca, la navegación y la sesión, separadas del contenido por un filete */
+.barra {
+  border-bottom: 1px solid var(--color-borde);
+  background: var(--color-superficie);
+}
+
+.barraContenido {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-4) var(--espacio-8);
+  padding-block: var(--espacio-4);
+}
+
+.navegacion {
+  display: flex;
+  gap: var(--espacio-6);
+}
+
+/* La sección actual se marca con texto pino y un filete, no solo con el color */
+.enlace {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-tactil);
+  border-bottom: 2px solid transparent;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-ui);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.enlace[aria-current='page'] {
+  border-bottom-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .enlace:hover {
+    color: var(--color-texto);
+  }
+}
+
+.sesion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-3) var(--espacio-4);
+  min-width: 0;
+  margin-left: auto;
+}
+
+.email {
+  min-width: 0;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  overflow-wrap: anywhere;
+}
+
+.contenido {
+  padding-block: var(--espacio-12);
+}

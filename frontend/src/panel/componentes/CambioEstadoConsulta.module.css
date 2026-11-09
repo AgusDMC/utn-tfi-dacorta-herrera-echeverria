@@ -1,0 +1,74 @@
+.cambio {
+  margin-top: var(--espacio-12);
+  padding-top: var(--espacio-6);
+  border-top: 1px solid var(--color-texto);
+}
+
+.titulo {
+  font-size: var(--titulo-sm);
+  font-weight: 400;
+}
+
+.texto {
+  margin-top: var(--espacio-3);
+  color: var(--color-texto-suave);
+}
+
+.formulario {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--espacio-4);
+  margin-top: var(--espacio-4);
+}
+
+.campo {
+  display: grid;
+  gap: var(--espacio-1);
+  flex: 1 1 12rem;
+  max-width: 18rem;
+}
+
+.etiqueta {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+}
+
+.selector {
+  min-height: var(--alto-tactil);
+  padding: var(--espacio-2) var(--espacio-3);
+  border: 1px solid var(--color-texto-suave);
+  border-radius: var(--radio-sm);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.guardar:disabled,
+.selector:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* Confirmación o error, con un filete al margen */
+.resultado {
+  margin-top: var(--espacio-4);
+  padding-left: var(--espacio-4);
+  border-left: 2px solid var(--color-primario);
+  font-weight: 600;
+}
+
+.resultado[data-error] {
+  border-left-color: var(--color-error);
+}
+
+.resultado:focus {
+  outline: none;
+}
+
+.resultado:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 4px;
+}

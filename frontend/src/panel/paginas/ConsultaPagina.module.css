@@ -1,0 +1,76 @@
+.volver {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-tactil);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+  text-underline-offset: 4px;
+}
+
+.cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-3) var(--espacio-4);
+  margin-top: var(--espacio-4);
+}
+
+.titulo {
+  font-size: var(--titulo-md);
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.aviso {
+  display: grid;
+  justify-items: start;
+  gap: var(--espacio-4);
+  color: var(--color-texto-suave);
+}
+
+.aviso .titulo {
+  color: var(--color-texto);
+}
+
+/* Datos de contacto y fechas: etiqueta chica arriba, valor abajo, en una grilla que se acomoda */
+.datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: var(--espacio-6) var(--espacio-8);
+  margin: var(--espacio-8) 0 0;
+  padding-top: var(--espacio-6);
+  border-top: 1px solid var(--color-texto);
+}
+
+.dato {
+  display: grid;
+  gap: var(--espacio-1);
+  min-width: 0;
+}
+
+.dato dt {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.dato dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.mensaje {
+  margin-top: var(--espacio-12);
+}
+
+.subtitulo {
+  font-size: var(--titulo-sm);
+  font-weight: 400;
+}
+
+/* El mensaje respeta los saltos de línea que escribió quien consulta */
+.texto {
+  max-width: 62ch;
+  margin-top: var(--espacio-4);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

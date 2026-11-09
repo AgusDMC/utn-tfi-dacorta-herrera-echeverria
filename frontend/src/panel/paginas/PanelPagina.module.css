@@ -1,42 +1,3 @@
-.pagina {
-  min-height: 100dvh;
-  background: var(--color-fondo);
-}
-
-/* Barra del panel: la marca y la sesión, separadas del contenido por un filete */
-.barra {
-  border-bottom: 1px solid var(--color-borde);
-  background: var(--color-superficie);
-}
-
-.barraContenido {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--espacio-4);
-  padding-block: var(--espacio-4);
-}
-
-.sesion {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--espacio-3) var(--espacio-4);
-  min-width: 0;
-}
-
-.email {
-  min-width: 0;
-  color: var(--color-texto-suave);
-  font-size: var(--texto-sm);
-  overflow-wrap: anywhere;
-}
-
-.contenido {
-  padding-block: var(--espacio-12);
-}
-
 .titulo {
   font-size: var(--titulo-md);
   font-weight: 400;
@@ -47,4 +8,8 @@
   margin-top: var(--espacio-4);
   color: var(--color-texto-suave);
   font-size: var(--texto-lg);
+}
+
+.acceso {
+  margin-top: var(--espacio-8);
 }

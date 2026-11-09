@@ -14,13 +14,32 @@ export class ErrorApi extends Error {
   }
 }
 
+async function pedir(ruta: string, opciones: RequestInit) {
+  const respuesta = await fetch(`${URL_API}${ruta}`, opciones)
+  if (!respuesta.ok) throw new ErrorApi(respuesta.status)
+  return respuesta
+}
+
 // Envía un cuerpo JSON por POST. Si la API no responde con éxito, lanza un ErrorApi.
-export async function postJson(ruta: string, cuerpo: unknown) {
-  const respuesta = await fetch(`${URL_API}${ruta}`, {
+export function postJson(ruta: string, cuerpo: unknown) {
+  return pedir(ruta, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(cuerpo),
   })
-  if (!respuesta.ok) throw new ErrorApi(respuesta.status)
-  return respuesta
+}
+
+// GET autenticado de las rutas privadas. `senal` permite cancelarlo si la pantalla se desmonta.
+export async function getJson<T>(ruta: string, token: string, senal?: AbortSignal): Promise<T> {
+  const respuesta = await pedir(ruta, { headers: { Authorization: `Bearer ${token}` }, signal: senal })
+  return respuesta.json()
+}
+
+export async function patchJson<T>(ruta: string, cuerpo: unknown, token: string): Promise<T> {
+  const respuesta = await pedir(ruta, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(cuerpo),
+  })
+  return respuesta.json()
 }

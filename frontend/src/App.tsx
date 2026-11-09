@@ -6,7 +6,10 @@ import NosotrosPagina from './compartido/paginas/NosotrosPagina.tsx'
 import CatalogoPagina from './catalogo/paginas/CatalogoPagina.tsx'
 import DetallePagina from './catalogo/paginas/DetallePagina.tsx'
 import HomePagina from './catalogo/paginas/HomePagina.tsx'
+import LayoutPanel from './panel/componentes/LayoutPanel.tsx'
 import RutaProtegida from './panel/componentes/RutaProtegida.tsx'
+import ConsultaPagina from './panel/paginas/ConsultaPagina.tsx'
+import ConsultasPagina from './panel/paginas/ConsultasPagina.tsx'
 import LoginPagina from './panel/paginas/LoginPagina.tsx'
 import PanelPagina from './panel/paginas/PanelPagina.tsx'
 
@@ -28,8 +31,12 @@ export default function App() {
 
       {/* Panel: todo lo que cuelga de /admin exige sesión */}
       <Route path="admin" element={<RutaProtegida />}>
-        <Route index element={<PanelPagina />} />
-        <Route path="*" element={<Navigate to="/admin" replace />} />
+        <Route element={<LayoutPanel />}>
+          <Route index element={<PanelPagina />} />
+          <Route path="consultas" element={<ConsultasPagina />} />
+          <Route path="consultas/:id" element={<ConsultaPagina />} />
+          <Route path="*" element={<Navigate to="/admin" replace />} />
+        </Route>
       </Route>
     </Routes>
   )
