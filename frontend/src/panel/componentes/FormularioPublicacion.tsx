@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { flushSync } from 'react-dom'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { ETIQUETA_OPERACION, TIPOS_OPERACION, type TipoOperacion } from '../../catalogo/tipos.ts'
 import { describirPropiedad } from '../formato.ts'
 import type { Propiedad } from '../propiedades/tipos.ts'
@@ -93,6 +93,7 @@ function validar(datos: FormData, esEdicion: boolean, tipoOperacion: TipoOperaci
 // El mismo formulario para el alta y la edición. La propiedad solo se elige en el alta y el estado
 // comercial solo se cambia en la edición (el backend crea las publicaciones disponibles).
 export default function FormularioPublicacion({ propiedades, inicial, textoBoton, guardando, error, onGuardar }: Props) {
+  const { search } = useLocation() // la página y el filtro del listado, para que Cancelar vuelva a ellos
   const esEdicion = inicial !== undefined
   const [errores, setErrores] = useState<Errores>({})
   const [tipoOperacion, setTipoOperacion] = useState<TipoOperacion | ''>(inicial?.tipoOperacion ?? '')
@@ -261,7 +262,7 @@ export default function FormularioPublicacion({ propiedades, inicial, textoBoton
         <button type="submit" className="boton boton-primario" disabled={guardando}>
           {guardando ? 'Guardando…' : textoBoton}
         </button>
-        <Link to="/admin/publicaciones" className="boton boton-secundario">
+        <Link to={{ pathname: '/admin/publicaciones', search }} className="boton boton-secundario">
           Cancelar
         </Link>
       </div>

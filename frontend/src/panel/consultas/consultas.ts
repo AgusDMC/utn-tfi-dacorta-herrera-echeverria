@@ -1,10 +1,11 @@
 import { enviarJson, getJson } from '../../compartido/api/clienteApi.ts'
+import type { Pagina } from '../../compartido/api/pagina.ts'
 import { tokenSesion } from '../autenticacion/sesion.ts'
 import type { Consulta, EstadoConsulta } from './tipos.ts'
 
-// El backend las devuelve de la más nueva a la más vieja y sin filtrar
-export function listarConsultas(senal?: AbortSignal) {
-  return getJson<Consulta[]>('/api/admin/consultas', tokenSesion(), senal)
+// Una página (20 por página, de la más nueva a la más vieja). El backend no filtra por estado.
+export function listarConsultas(pagina: number, senal?: AbortSignal) {
+  return getJson<Pagina<Consulta>>(`/api/admin/consultas?page=${pagina}`, tokenSesion(), senal)
 }
 
 export function obtenerConsulta(id: number, senal?: AbortSignal) {

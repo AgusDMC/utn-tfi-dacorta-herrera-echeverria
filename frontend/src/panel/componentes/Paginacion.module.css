@@ -1,0 +1,29 @@
+.paginacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-3) var(--espacio-6);
+  margin-top: var(--espacio-8);
+}
+
+.posicion {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* En el celular la posición va en su propia línea arriba y los dos botones juntos abajo */
+@media (max-width: 479.98px) {
+  .posicion {
+    order: -1;
+    flex-basis: 100%;
+    text-align: center;
+  }
+}
+
+/* En la primera y en la última página, el botón que no aplica queda atenuado */
+.paginacion button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

@@ -40,10 +40,16 @@
   outline-offset: 4px;
 }
 
+.cantidad {
+  margin-top: var(--espacio-8);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
 /* ---------- Lista: filas separadas por filetes ---------- */
 
 .lista {
-  margin: var(--espacio-8) 0 0;
+  margin: var(--espacio-3) 0 0;
   padding: 0;
   border-top: 1px solid var(--color-texto);
   list-style: none;
