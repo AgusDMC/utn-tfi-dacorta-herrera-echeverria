@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { NOMBRE_INMOBILIARIA, tituloPagina } from '../../config.ts'
-import { buscarPublicaciones, obtenerLocalidades } from '../../catalogo/catalogo.ts'
+import { listarLocalidades } from '../../catalogo/catalogo.ts'
 import { urlCatalogo } from '../../catalogo/filtros.ts'
 import { ETIQUETA_TIPO_PLURAL, TIPOS_PROPIEDAD } from '../../catalogo/tipos.ts'
 import { useDescripcionPagina } from '../useDescripcionPagina.ts'
@@ -32,13 +33,17 @@ export default function NosotrosPagina() {
   useDescripcionPagina(
     `${NOMBRE_INMOBILIARIA} es una inmobiliaria de Santa Rosa, La Pampa, dedicada a la venta y el alquiler de casas, departamentos, PH y dúplex.`,
   )
-  const localidades = obtenerLocalidades().map((localidad) => ({
-    localidad,
-    cantidad: buscarPublicaciones({ localidad }).length,
-  }))
-  const tipos = TIPOS_PROPIEDAD.map((tipo) => ({ tipo, cantidad: buscarPublicaciones({ tipo }).length })).filter(
-    ({ cantidad }) => cantidad > 0,
-  )
+  // Las localidades con publicaciones (sin cantidad: contarlas pediría una consulta por localidad)
+  const [localidades, setLocalidades] = useState<string[]>([])
+  useEffect(() => {
+    let vigente = true
+    listarLocalidades({ renovarError: true }).then((lista) => {
+      if (vigente) setLocalidades(lista)
+    })
+    return () => {
+      vigente = false
+    }
+  }, [])
 
   return (
     <>
@@ -69,37 +74,33 @@ export default function NosotrosPagina() {
         </ul>
 
         <div className={`aparece ${estilos.listas}`}>
-          <section className={estilos.bloque}>
-            <h2>Dónde trabajamos</h2>
-            <ul role="list" className={estilos.lista}>
-              {localidades.map(({ localidad, cantidad }) => (
-                <li key={localidad}>
-                  <Link to={urlCatalogo({ localidad })} className={estilos.fila}>
-                    <span className={iconos.redondel}>
-                      <IconoUbicacion />
-                    </span>
-                    <span className={estilos.filaNombre}>{localidad}</span>
-                    <span className={`numeros ${estilos.filaTotal}`}>
-                      {cantidad} {cantidad === 1 ? 'propiedad' : 'propiedades'}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {localidades.length > 0 && (
+            <section className={estilos.bloque}>
+              <h2>Dónde trabajamos</h2>
+              <ul role="list" className={estilos.lista}>
+                {localidades.map((localidad) => (
+                  <li key={localidad}>
+                    <Link to={urlCatalogo({ localidad })} className={estilos.fila}>
+                      <span className={iconos.redondel}>
+                        <IconoUbicacion />
+                      </span>
+                      <span className={estilos.filaNombre}>{localidad}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           <section className={estilos.bloque}>
             <h2>Qué ofrecemos</h2>
             <ul role="list" className={estilos.lista}>
-              {tipos.map(({ tipo, cantidad }) => (
+              {TIPOS_PROPIEDAD.map((tipo) => (
                 <li key={tipo}>
                   <Link to={urlCatalogo({ tipo })} className={estilos.fila}>
                     <span className={iconos.redondel}>
                       <IconoTipo tipo={tipo} />
                     </span>
                     <span className={estilos.filaNombre}>{ETIQUETA_TIPO_PLURAL[tipo]}</span>
-                    <span className={`numeros ${estilos.filaTotal}`}>
-                      {cantidad} {cantidad === 1 ? 'propiedad' : 'propiedades'}
-                    </span>
                   </Link>
                 </li>
               ))}

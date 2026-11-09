@@ -1,12 +1,12 @@
-import { useRef, type CSSProperties, type MouseEvent } from 'react'
+import { use, useEffect, useRef, useState, useTransition, type CSSProperties, type MouseEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { CONTACTO, tituloPagina } from '../../config.ts'
 import { useDescripcionPagina } from '../../compartido/useDescripcionPagina.ts'
 import Correo from '../../compartido/componentes/Correo.tsx'
-import { buscarPublicaciones, obtenerPublicacion } from '../catalogo.ts'
+import { listarPublicacionesCatalogo, obtenerPublicacionCatalogo } from '../catalogo.ts'
 import { urlCatalogo } from '../filtros.ts'
 import { listarCaracteristicas, partirPrecio, formatearPrecio } from '../formato.ts'
-import { ETIQUETA_ESTADO, ETIQUETA_OPERACION, ETIQUETA_TIPO, type PublicacionDetalle } from '../tipos.ts'
+import { ETIQUETA_ESTADO, ETIQUETA_OPERACION, ETIQUETA_TIPO, type PublicacionCatalogo, type PublicacionDetalle } from '../tipos.ts'
 import BarraConsulta from '../componentes/BarraConsulta.tsx'
 import CabeceraListado from '../componentes/CabeceraListado.tsx'
 import { CifrasPrincipales, ListaCaracteristicas } from '../componentes/FichaPropiedad.tsx'
@@ -28,6 +28,20 @@ function PropiedadNoEncontrada() {
       <Link to={urlCatalogo({})} className="boton boton-primario">
         Volver al catálogo
       </Link>
+    </section>
+  )
+}
+
+function FichaConError({ onReintentar, reintentando }: { onReintentar: () => void; reintentando: boolean }) {
+  return (
+    <section role="alert" className={`contenedor ${estilos.noEncontrada}`}>
+      <title>{tituloPagina('Propiedad')}</title>
+
+      <h1 className={estilos.noEncontradaTitulo}>No pudimos cargar esta propiedad</h1>
+      <p className={estilos.noEncontradaTexto}>Probá nuevamente en unos segundos.</p>
+      <button type="button" className="boton boton-primario" disabled={reintentando} onClick={onReintentar}>
+        {reintentando ? 'Reintentando…' : 'Reintentar'}
+      </button>
     </section>
   )
 }
@@ -54,14 +68,17 @@ function Detalle({ publicacion }: { publicacion: PublicacionDetalle }) {
   // El resumen abre la descripción, salvo que sea el mismo texto (o uno empiece con el otro)
   const resumenRepetido =
     publicacion.descripcion.startsWith(publicacion.resumen) || publicacion.resumen.startsWith(publicacion.descripcion)
-  // Las fotos de /demo son ilustrativas (ver CREDITOS.md): con fotos reales del storage la nota desaparece
-  const fotosIlustrativas = publicacion.imagenes.some((imagen) => imagen.url.startsWith('/demo/'))
-
-  // Otras propiedades del catálogo, con las de la misma operación primero
-  const otras = buscarPublicaciones({})
-    .filter((otra) => otra.id !== publicacion.id)
-    .sort((a, b) => Number(b.tipoOperacion === tipoOperacion) - Number(a.tipoOperacion === tipoOperacion))
-    .slice(0, 3)
+  // Otras propiedades de la misma operación: una página chica de las más nuevas, sin esta
+  const [otras, setOtras] = useState<PublicacionCatalogo[]>([])
+  useEffect(() => {
+    let vigente = true
+    listarPublicacionesCatalogo({ operacion: tipoOperacion }, 0, { tamano: 4, renovarError: true }).then((resultado) => {
+      if (vigente && resultado.ok) setOtras(resultado.datos.results.filter((otra) => otra.id !== publicacion.id).slice(0, 3))
+    })
+    return () => {
+      vigente = false
+    }
+  }, [tipoOperacion, publicacion.id])
 
   const parrafos = publicacion.descripcion.split('\n\n')
 
@@ -131,7 +148,6 @@ function Detalle({ publicacion }: { publicacion: PublicacionDetalle }) {
           id={publicacion.id}
           titulo={titulo}
           imagenes={publicacion.imagenes}
-          ilustrativas={fotosIlustrativas}
         />
 
         <div className={estilos.reserva}>
@@ -232,11 +248,24 @@ function Detalle({ publicacion }: { publicacion: PublicacionDetalle }) {
   )
 }
 
+// Espera la ficha (use + Suspense en LayoutPublico): desde el catálogo, la tarjeta queda hasta que
+// llegan los datos y su foto viaja a la ficha
+function FichaDesdeApi({ id }: { id: number }) {
+  const [intento, setIntento] = useState(0)
+  const [reintentando, iniciarReintento] = useTransition()
+  const resultado = use(obtenerPublicacionCatalogo(id, { intento }))
+
+  function reintentar() {
+    iniciarReintento(() => setIntento((n) => n + 1))
+  }
+
+  if (resultado.ok) return <Detalle publicacion={resultado.datos} />
+  return resultado.noExiste ? <PropiedadNoEncontrada /> : <FichaConError onReintentar={reintentar} reintentando={reintentando} />
+}
+
 // Ficha de una publicación: foto principal y datos sobre el plano pino, descripción, recorrido
-// de fotos, otras propiedades y lugar para la consulta. Los datos salen de catalogo.ts.
+// de fotos, otras propiedades y lugar para la consulta. Un id que no es un número no se pide.
 export default function DetallePagina() {
   const { id } = useParams()
-  const publicacion = id && /^\d+$/.test(id) ? obtenerPublicacion(Number(id)) : undefined
-
-  return publicacion ? <Detalle key={publicacion.id} publicacion={publicacion} /> : <PropiedadNoEncontrada />
+  return id && /^\d{1,15}$/.test(id) ? <FichaDesdeApi key={id} id={Number(id)} /> : <PropiedadNoEncontrada />
 }

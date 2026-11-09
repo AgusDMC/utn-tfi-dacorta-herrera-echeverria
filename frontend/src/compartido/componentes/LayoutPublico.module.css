@@ -12,6 +12,11 @@
   flex: 1;
 }
 
+.cargando {
+  padding-block: var(--espacio-16);
+  color: var(--color-texto-suave);
+}
+
 /* El foco programático del skip link no necesita contorno */
 .principal:focus {
   outline: none;
