@@ -4,7 +4,7 @@ import { tituloPagina } from '../../config.ts'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
 import EtiquetaEstado from '../componentes/EtiquetaEstado.tsx'
 import { listarConsultas } from '../consultas/consultas.ts'
-import { ESTADOS_CONSULTA, ETIQUETA_ESTADO, esEstadoConsulta, type Consulta } from '../consultas/tipos.ts'
+import { ESTADOS_CONSULTA, ETIQUETA_ESTADO, TONO_ESTADO, esEstadoConsulta, type Consulta } from '../consultas/tipos.ts'
 import { formatearFecha } from '../formato.ts'
 import estilos from './ConsultasPagina.module.css'
 
@@ -103,7 +103,7 @@ export default function ConsultasPagina() {
                     {formatearFecha(consulta.fechaCreacion)}
                   </time>
                   <span className={estilos.estado}>
-                    <EtiquetaEstado estado={consulta.estado} />
+                    <EtiquetaEstado texto={ETIQUETA_ESTADO[consulta.estado]} tono={TONO_ESTADO[consulta.estado]} />
                   </span>
                 </li>
               ))}

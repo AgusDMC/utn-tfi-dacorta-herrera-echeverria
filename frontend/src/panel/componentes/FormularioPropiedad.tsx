@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { flushSync } from 'react-dom'
 import { Link } from 'react-router'
 import { ETIQUETA_TIPO, TIPOS_PROPIEDAD } from '../../catalogo/tipos.ts'
 import type { DatosPropiedad } from '../propiedades/tipos.ts'
-import estilos from './FormularioPropiedad.module.css'
+import Campo from './Campo.tsx'
+import estilos from './FormularioPanel.module.css'
 
 type NombreCampo = keyof DatosPropiedad
 type Errores = Partial<Record<NombreCampo, string>>
@@ -91,29 +92,6 @@ function validar(formulario: HTMLFormElement) {
   return { errores, propiedad }
 }
 
-interface CampoProps {
-  nombre: NombreCampo
-  etiqueta: string
-  error?: string
-  children: ReactNode
-}
-
-function Campo({ nombre, etiqueta, error, children }: CampoProps) {
-  return (
-    <div className={estilos.campo}>
-      <label htmlFor={`propiedad-${nombre}`} className={estilos.etiqueta}>
-        {etiqueta}
-      </label>
-      {children}
-      {error && (
-        <p id={`propiedad-${nombre}-error`} className={estilos.aviso}>
-          {error}
-        </p>
-      )}
-    </div>
-  )
-}
-
 // El mismo formulario para el alta y la edición. Valida antes de entregar los datos a la página,
 // que es la que llama a la API.
 export default function FormularioPropiedad({ inicial, textoBoton, guardando, error, onGuardar }: Props) {
@@ -158,7 +136,7 @@ export default function FormularioPropiedad({ inicial, textoBoton, guardando, er
     <form className={estilos.formulario} noValidate onSubmit={alEnviar} onInput={alEscribir}>
       <fieldset className={estilos.grupo}>
         <legend className={estilos.leyenda}>Datos generales</legend>
-        <Campo nombre="tipoPropiedad" etiqueta="Tipo de propiedad" error={errores.tipoPropiedad}>
+        <Campo id="propiedad-tipoPropiedad" etiqueta="Tipo de propiedad" error={errores.tipoPropiedad}>
           <select {...control('tipoPropiedad')} required defaultValue={inicial?.tipoPropiedad ?? ''}>
             <option value="" disabled>
               Elegí un tipo
@@ -170,7 +148,7 @@ export default function FormularioPropiedad({ inicial, textoBoton, guardando, er
             ))}
           </select>
         </Campo>
-        <Campo nombre="resumen" etiqueta="Resumen" error={errores.resumen}>
+        <Campo id="propiedad-resumen" etiqueta="Resumen" error={errores.resumen}>
           <textarea {...control('resumen')} required maxLength={500} rows={4} defaultValue={inicial?.resumen} />
         </Campo>
       </fieldset>
@@ -178,10 +156,10 @@ export default function FormularioPropiedad({ inicial, textoBoton, guardando, er
       <fieldset className={estilos.grupo}>
         <legend className={estilos.leyenda}>Ubicación</legend>
         <div className={estilos.columnas}>
-          <Campo nombre="direccion" etiqueta="Dirección" error={errores.direccion}>
+          <Campo id="propiedad-direccion" etiqueta="Dirección" error={errores.direccion}>
             <input {...control('direccion')} required maxLength={200} defaultValue={inicial?.direccion} />
           </Campo>
-          <Campo nombre="localidad" etiqueta="Localidad" error={errores.localidad}>
+          <Campo id="propiedad-localidad" etiqueta="Localidad" error={errores.localidad}>
             <input {...control('localidad')} required maxLength={100} defaultValue={inicial?.localidad} />
           </Campo>
         </div>
@@ -190,16 +168,16 @@ export default function FormularioPropiedad({ inicial, textoBoton, guardando, er
       <fieldset className={estilos.grupo}>
         <legend className={estilos.leyenda}>Características</legend>
         <div className={estilos.cifras}>
-          <Campo nombre="cantAmbientes" etiqueta="Ambientes" error={errores.cantAmbientes}>
+          <Campo id="propiedad-cantAmbientes" etiqueta="Ambientes" error={errores.cantAmbientes}>
             <input {...control('cantAmbientes')} type="number" required min={1} step={1} defaultValue={inicial?.cantAmbientes} />
           </Campo>
-          <Campo nombre="cantDormitorios" etiqueta="Dormitorios" error={errores.cantDormitorios}>
+          <Campo id="propiedad-cantDormitorios" etiqueta="Dormitorios" error={errores.cantDormitorios}>
             <input {...control('cantDormitorios')} type="number" required min={0} step={1} defaultValue={inicial?.cantDormitorios} />
           </Campo>
-          <Campo nombre="cantBanios" etiqueta="Baños" error={errores.cantBanios}>
+          <Campo id="propiedad-cantBanios" etiqueta="Baños" error={errores.cantBanios}>
             <input {...control('cantBanios')} type="number" required min={1} step={1} defaultValue={inicial?.cantBanios} />
           </Campo>
-          <Campo nombre="superficieTotal" etiqueta="Superficie total (m²)" error={errores.superficieTotal}>
+          <Campo id="propiedad-superficieTotal" etiqueta="Superficie total (m²)" error={errores.superficieTotal}>
             <input
               {...control('superficieTotal')}
               type="number"
@@ -210,7 +188,7 @@ export default function FormularioPropiedad({ inicial, textoBoton, guardando, er
               defaultValue={inicial?.superficieTotal}
             />
           </Campo>
-          <Campo nombre="anioConstruccion" etiqueta="Año de construcción (opcional)" error={errores.anioConstruccion}>
+          <Campo id="propiedad-anioConstruccion" etiqueta="Año de construcción (opcional)" error={errores.anioConstruccion}>
             <input {...control('anioConstruccion')} type="number" min={1800} step={1} defaultValue={inicial?.anioConstruccion ?? ''} />
           </Campo>
         </div>

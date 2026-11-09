@@ -6,7 +6,7 @@ import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
 import CambioEstadoConsulta from '../componentes/CambioEstadoConsulta.tsx'
 import EtiquetaEstado from '../componentes/EtiquetaEstado.tsx'
 import { obtenerConsulta } from '../consultas/consultas.ts'
-import type { Consulta } from '../consultas/tipos.ts'
+import { ETIQUETA_ESTADO, TONO_ESTADO, type Consulta } from '../consultas/tipos.ts'
 import { formatearFecha } from '../formato.ts'
 import estilos from './ConsultaPagina.module.css'
 
@@ -93,7 +93,7 @@ export default function ConsultaPagina() {
         <h1 className={estilos.titulo}>
           {nombre} {apellido}
         </h1>
-        <EtiquetaEstado estado={consulta.estado} />
+        <EtiquetaEstado texto={ETIQUETA_ESTADO[consulta.estado]} tono={TONO_ESTADO[consulta.estado]} />
       </div>
 
       <dl className={estilos.datos}>

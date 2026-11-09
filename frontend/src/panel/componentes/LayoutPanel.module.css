@@ -17,9 +17,11 @@
   padding-block: var(--espacio-4);
 }
 
+/* Con cuatro secciones, en el celular angosto los enlaces pasan a una segunda línea */
 .navegacion {
   display: flex;
-  gap: var(--espacio-6);
+  flex-wrap: wrap;
+  gap: 0 var(--espacio-6);
 }
 
 /* La sección actual se marca con texto pino y un filete, no solo con el color */

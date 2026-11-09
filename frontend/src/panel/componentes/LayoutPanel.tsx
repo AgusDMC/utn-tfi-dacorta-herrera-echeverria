@@ -26,6 +26,9 @@ export default function LayoutPanel() {
             <NavLink to="/admin/propiedades" className={estilos.enlace}>
               Propiedades
             </NavLink>
+            <NavLink to="/admin/publicaciones" className={estilos.enlace}>
+              Publicaciones
+            </NavLink>
             <NavLink to="/admin/consultas" className={estilos.enlace}>
               Consultas
             </NavLink>

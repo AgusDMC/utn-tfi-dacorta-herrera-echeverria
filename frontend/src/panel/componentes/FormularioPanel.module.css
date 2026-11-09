@@ -69,6 +69,17 @@ textarea.control {
   font-weight: 600;
 }
 
+.ayuda {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+/* Un dato que se muestra pero no se edita */
+.dato {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
 .casilla {
   display: inline-flex;
   align-items: center;

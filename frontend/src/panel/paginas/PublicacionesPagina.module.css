@@ -1,0 +1,156 @@
+.cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-4) var(--espacio-8);
+}
+
+.titulo {
+  font-size: var(--titulo-md);
+  font-weight: 400;
+}
+
+.filtro {
+  display: grid;
+  gap: var(--espacio-1);
+  justify-items: start;
+  margin-top: var(--espacio-6);
+}
+
+.etiqueta {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+}
+
+.selector {
+  min-width: 12rem;
+  min-height: var(--alto-tactil);
+  padding: var(--espacio-2) var(--espacio-3);
+  border: 1px solid var(--color-texto-suave);
+  border-radius: var(--radio-sm);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.estado {
+  display: grid;
+  justify-items: start;
+  gap: var(--espacio-4);
+  margin-top: var(--espacio-8);
+  color: var(--color-texto-suave);
+}
+
+.cantidad {
+  margin-top: var(--espacio-6);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+/* Resultado de una acción: una nota al margen con filete */
+.resultado {
+  margin-top: var(--espacio-6);
+  padding-left: var(--espacio-4);
+  border-left: 2px solid var(--color-primario);
+  font-weight: 600;
+}
+
+.resultado[data-error] {
+  border-left-color: var(--color-error);
+}
+
+.resultado:focus {
+  outline: none;
+}
+
+.resultado:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 4px;
+}
+
+/* ---------- Lista: filas separadas por filetes ---------- */
+
+.lista {
+  margin: var(--espacio-3) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--color-texto);
+  list-style: none;
+}
+
+/* Celular: una publicación por bloque, con estados y acciones abajo */
+.item {
+  display: grid;
+  gap: var(--espacio-3);
+  padding-block: var(--espacio-4);
+  border-bottom: 1px solid var(--color-borde);
+}
+
+/* El historial (eliminadas) queda en segundo plano */
+.item[data-eliminada] .datos {
+  color: var(--color-texto-suave);
+}
+
+.datos {
+  display: grid;
+  gap: var(--espacio-1);
+  min-width: 0;
+}
+
+.nombre {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.detalle {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  overflow-wrap: anywhere;
+}
+
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}
+
+.acciones button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Dar de baja: con filete, sin el peso del botón principal */
+.baja {
+  border-color: var(--color-borde);
+  background: transparent;
+  color: var(--color-error);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .baja:hover:not(:disabled) {
+    border-color: var(--color-error);
+  }
+}
+
+/* Desde escritorio, una fila por publicación: datos, estados y acciones alineados. Las columnas
+   son proporcionales (sin auto) para que coincidan aunque una fila no tenga acciones. */
+@media (min-width: 1024px) {
+  .item {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr);
+    align-items: center;
+    gap: var(--espacio-6);
+    padding-inline: var(--espacio-3);
+  }
+
+  .acciones {
+    justify-content: flex-end;
+  }
+}
