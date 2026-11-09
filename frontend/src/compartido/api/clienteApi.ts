@@ -29,6 +29,12 @@ export function postJson(ruta: string, cuerpo: unknown) {
   })
 }
 
+// GET de las rutas públicas (catálogo): sin token
+export async function getJsonPublico<T>(ruta: string): Promise<T> {
+  const respuesta = await pedir(ruta, {})
+  return respuesta.json()
+}
+
 // GET autenticado de las rutas privadas. `senal` permite cancelarlo si la pantalla se desmonta.
 export async function getJson<T>(ruta: string, token: string, senal?: AbortSignal): Promise<T> {
   const respuesta = await pedir(ruta, { headers: { Authorization: `Bearer ${token}` }, signal: senal })

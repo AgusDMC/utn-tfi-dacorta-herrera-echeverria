@@ -1,4 +1,4 @@
-import type { Pagina } from '../../compartido/api/pagina.ts'
+import type { Pagina } from '../api/pagina.ts'
 import estilos from './Paginacion.module.css'
 
 interface Props {

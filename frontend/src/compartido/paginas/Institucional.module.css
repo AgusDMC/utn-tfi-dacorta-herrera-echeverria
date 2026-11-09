@@ -99,11 +99,6 @@
   font-weight: 500;
 }
 
-.filaTotal {
-  color: var(--color-texto-suave);
-  font-size: var(--texto-sm);
-}
-
 .fila:active {
   color: var(--color-primario);
 }

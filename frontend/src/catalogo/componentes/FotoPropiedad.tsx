@@ -5,7 +5,7 @@ import estilos from './FotoPropiedad.module.css'
 type Estado = 'cargando' | 'lista' | 'error'
 
 interface Props {
-  imagen: ImagenPublicacion
+  imagen: ImagenPublicacion | null // null: la propiedad no tiene fotos
   alt: string
   prioridad?: boolean // la foto principal se pide primero; el resto, a medida que se acerca
   ajuste?: 'cover' | 'contain' // contain: el visor muestra la foto entera sobre fondo oscuro
@@ -15,6 +15,14 @@ interface Props {
 // reserva la proporción), aparece con un fade y, si falla, avisa en lugar de quedar vacía.
 export default function FotoPropiedad({ imagen, alt, prioridad = false, ajuste = 'cover' }: Props) {
   const [estado, setEstado] = useState<Estado>('cargando')
+
+  if (!imagen) {
+    return (
+      <div className={`${estilos.foto} ${estilos[ajuste]}`}>
+        <p className={estilos.fallo}>Sin fotografías</p>
+      </div>
+    )
+  }
 
   return (
     <div className={`${estilos.foto} ${estilos[ajuste]}`} data-estado={estado}>

@@ -4,11 +4,11 @@ import { tituloPagina } from '../../config.ts'
 import type { Pagina } from '../../compartido/api/pagina.ts'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
 import EtiquetaEstado from '../componentes/EtiquetaEstado.tsx'
-import Paginacion from '../componentes/Paginacion.tsx'
+import Paginacion from '../../compartido/componentes/Paginacion.tsx'
 import { listarConsultas } from '../consultas/consultas.ts'
 import { ESTADOS_CONSULTA, ETIQUETA_ESTADO, TONO_ESTADO, esEstadoConsulta, type Consulta } from '../consultas/tipos.ts'
 import { contar, formatearFecha } from '../formato.ts'
-import { conPagina, leerPagina } from '../paginacion.ts'
+import { conPagina, leerPagina } from '../../compartido/paginacion.ts'
 import estilos from './ConsultasPagina.module.css'
 
 // Bandeja de consultas, de a una página. El backend todavía no filtra por estado: el filtro se

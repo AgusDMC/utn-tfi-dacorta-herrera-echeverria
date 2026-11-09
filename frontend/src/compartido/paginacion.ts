@@ -6,9 +6,11 @@ export function leerPagina(params: URLSearchParams) {
   return valor !== null && /^\d{1,7}$/.test(valor) ? Number(valor) : 0
 }
 
-// Los mismos parámetros con otra página: conserva los demás, como el filtro de estado
+// Los mismos parámetros con otra página: conserva los demás (filtros). La primera va sin `page`,
+// así cada página tiene una sola URL
 export function conPagina(params: URLSearchParams, pagina: number) {
   const nuevos = new URLSearchParams(params)
-  nuevos.set('page', String(pagina))
+  if (pagina > 0) nuevos.set('page', String(pagina))
+  else nuevos.delete('page')
   return nuevos
 }

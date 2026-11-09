@@ -131,11 +131,6 @@
   font-weight: 500;
 }
 
-.total {
-  color: var(--color-texto-suave);
-  font-size: var(--texto-sm);
-}
-
 .tipo:active {
   color: var(--color-primario);
 }
