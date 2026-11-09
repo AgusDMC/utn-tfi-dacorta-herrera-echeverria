@@ -1,8 +1,10 @@
 package com.tfi.inmobiliaria.catalogo.service;
 
+import com.tfi.inmobiliaria.catalogo.dto.FiltrosCatalogoDto;
 import com.tfi.inmobiliaria.catalogo.dto.PublicacionCatalogoDto;
 import com.tfi.inmobiliaria.catalogo.dto.PublicacionDetalleDto;
 import com.tfi.inmobiliaria.catalogo.mapper.CatalogoMapper;
+import com.tfi.inmobiliaria.catalogo.specification.CatalogoSpecification;
 import com.tfi.inmobiliaria.compartido.dto.PaginaResponseDto;
 import com.tfi.inmobiliaria.exceptions.RecursoNoEncontradoException;
 import com.tfi.inmobiliaria.imagenpropiedad.model.ImagenPropiedad;
@@ -27,15 +29,15 @@ public class CatalogoService {
     private final ImagenPropiedadRepository imagenPropiedadRepo;
 
     @Transactional(readOnly = true)
-    public PaginaResponseDto<PublicacionCatalogoDto> obtenerPublicaciones(Pageable pageable) {
+    public PaginaResponseDto<PublicacionCatalogoDto> obtenerPublicaciones(FiltrosCatalogoDto filtros, Pageable pageable) {
 
-        // PUBLICACIONES VISIBLES EN EL CATALOGO
-        Page<Publicacion> pagPublicaciones = publicacionRepo.findAllVisibleEnCatalogo(pageable);
+        Page<Publicacion> pagPublicaciones = publicacionRepo.findAll(CatalogoSpecification.crear(filtros), pageable);
 
         Map<Long, ImagenPropiedad> portadasPorPropiedad = obtenerPortadasPorPropiedad(pagPublicaciones.getContent());
 
         Page<PublicacionCatalogoDto> pagCatalogo = pagPublicaciones.map(publicacion ->
-                convertirPublicacionACatalogo(publicacion, portadasPorPropiedad));
+                convertirPublicacionACatalogo(publicacion, portadasPorPropiedad)
+        );
 
         return PaginaResponseDto.desde(pagCatalogo);
     }
