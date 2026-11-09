@@ -10,6 +10,9 @@
   font-size: var(--texto-lg);
 }
 
-.acceso {
+.accesos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
   margin-top: var(--espacio-8);
 }

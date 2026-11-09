@@ -9,11 +9,16 @@ export default function PanelPagina() {
       <title>{tituloPagina('Panel administrativo')}</title>
 
       <h1 className={estilos.titulo}>Panel administrativo</h1>
-      <p className={estilos.texto}>Desde acá se administran las consultas. Más adelante se van a sumar las propiedades.</p>
+      <p className={estilos.texto}>Desde acá se administran las propiedades y las consultas.</p>
 
-      <Link to="/admin/consultas" className={`boton boton-primario ${estilos.acceso}`}>
-        Ver consultas
-      </Link>
+      <div className={estilos.accesos}>
+        <Link to="/admin/propiedades" className="boton boton-primario">
+          Ver propiedades
+        </Link>
+        <Link to="/admin/consultas" className="boton boton-secundario">
+          Ver consultas
+        </Link>
+      </div>
     </>
   )
 }

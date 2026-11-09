@@ -1,0 +1,26 @@
+.volver {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-tactil);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+  text-underline-offset: 4px;
+}
+
+.titulo {
+  margin-top: var(--espacio-4);
+  font-size: var(--titulo-md);
+  font-weight: 400;
+}
+
+.aviso {
+  display: grid;
+  justify-items: start;
+  gap: var(--espacio-4);
+  color: var(--color-texto-suave);
+}
+
+.aviso .titulo {
+  margin-top: 0;
+  color: var(--color-texto);
+}

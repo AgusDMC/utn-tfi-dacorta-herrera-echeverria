@@ -12,6 +12,8 @@ import ConsultaPagina from './panel/paginas/ConsultaPagina.tsx'
 import ConsultasPagina from './panel/paginas/ConsultasPagina.tsx'
 import LoginPagina from './panel/paginas/LoginPagina.tsx'
 import PanelPagina from './panel/paginas/PanelPagina.tsx'
+import PropiedadesPagina from './panel/paginas/PropiedadesPagina.tsx'
+import PropiedadFormularioPagina from './panel/paginas/PropiedadFormularioPagina.tsx'
 
 export default function App() {
   return (
@@ -33,6 +35,9 @@ export default function App() {
       <Route path="admin" element={<RutaProtegida />}>
         <Route element={<LayoutPanel />}>
           <Route index element={<PanelPagina />} />
+          <Route path="propiedades" element={<PropiedadesPagina />} />
+          <Route path="propiedades/nueva" element={<PropiedadFormularioPagina />} />
+          <Route path="propiedades/:id/editar" element={<PropiedadFormularioPagina />} />
           <Route path="consultas" element={<ConsultasPagina />} />
           <Route path="consultas/:id" element={<ConsultaPagina />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />

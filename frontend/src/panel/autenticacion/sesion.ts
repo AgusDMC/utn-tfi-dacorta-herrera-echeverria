@@ -23,6 +23,12 @@ export function obtenerSesion(): Sesion | null {
   }
 }
 
+// Token para las rutas privadas. Sin sesión va vacío: el backend responde 401 y la pantalla
+// vuelve al login.
+export function tokenSesion() {
+  return obtenerSesion()?.token ?? ''
+}
+
 export function haySesion() {
   return obtenerSesion() !== null
 }
