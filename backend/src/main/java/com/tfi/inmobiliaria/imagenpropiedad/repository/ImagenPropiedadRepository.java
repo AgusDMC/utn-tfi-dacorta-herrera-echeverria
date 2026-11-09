@@ -1,6 +1,7 @@
 package com.tfi.inmobiliaria.imagenpropiedad.repository;
 
 import com.tfi.inmobiliaria.imagenpropiedad.model.ImagenPropiedad;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,4 +14,8 @@ public interface ImagenPropiedadRepository extends JpaRepository<ImagenPropiedad
     boolean existsByStorageKey(String storageKey);
 
     Optional<ImagenPropiedad> findFirstByPropiedadIdOrderByOrdenDesc(Long propiedadId);
+
+    // PARA CATALOGO
+    @EntityGraph(attributePaths = "propiedad")
+    List<ImagenPropiedad> findAllByPropiedadIdInOrderByPropiedadIdAscOrdenAsc(List<Long> propiedadesId);
 }

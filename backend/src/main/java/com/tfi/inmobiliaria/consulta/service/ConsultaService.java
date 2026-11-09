@@ -11,7 +11,6 @@ import com.tfi.inmobiliaria.consulta.repository.ConsultaRepository;
 import com.tfi.inmobiliaria.exceptions.ConsultaInvalidaException;
 import com.tfi.inmobiliaria.exceptions.RecursoNoEncontradoException;
 import com.tfi.inmobiliaria.notificacion.interfaces.NotificadorConsulta;
-import com.tfi.inmobiliaria.publicacion.model.EstadoPublicacion;
 import com.tfi.inmobiliaria.publicacion.model.Publicacion;
 import com.tfi.inmobiliaria.publicacion.repository.PublicacionRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +29,8 @@ public class ConsultaService {
 
     @Transactional
     public ConsultaDto crearConsulta(ConsultaCreateDto consultaCreateDto) {
-        Publicacion publicacion = publicacionRepo.findByIdAndEstadoPublicacion(consultaCreateDto.getPublicacionId(), EstadoPublicacion.ACTIVA)
-                .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró una publicación activa con el id: " + consultaCreateDto.getPublicacionId()));
+        Publicacion publicacion = publicacionRepo.findVisibleEnCatalogoPorId(consultaCreateDto.getPublicacionId())
+                .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró una publicación visible con el id: " + consultaCreateDto.getPublicacionId()));
 
         validarMedioDeContacto(consultaCreateDto);
 
