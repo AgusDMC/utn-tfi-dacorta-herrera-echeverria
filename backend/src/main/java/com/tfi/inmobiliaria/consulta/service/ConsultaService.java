@@ -1,5 +1,6 @@
 package com.tfi.inmobiliaria.consulta.service;
 
+import com.tfi.inmobiliaria.compartido.dto.PaginaResponseDto;
 import com.tfi.inmobiliaria.consulta.dto.ConsultaCreateDto;
 import com.tfi.inmobiliaria.consulta.dto.ConsultaDto;
 import com.tfi.inmobiliaria.consulta.dto.ConsultaEstadoUpdateDto;
@@ -14,10 +15,10 @@ import com.tfi.inmobiliaria.publicacion.model.EstadoPublicacion;
 import com.tfi.inmobiliaria.publicacion.model.Publicacion;
 import com.tfi.inmobiliaria.publicacion.repository.PublicacionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,11 +47,11 @@ public class ConsultaService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultaDto> obtenerConsultas() {
-        return consultaRepo.findAllByOrderByFechaCreacionDesc()
-                .stream()
-                .map(ConsultaMapper::convertirConsultaADto)
-                .toList();
+    public PaginaResponseDto<ConsultaDto> obtenerConsultas(Pageable pageable) {
+        Page<ConsultaDto> paginaConsultas = consultaRepo.findAll(pageable)
+                .map(ConsultaMapper::convertirConsultaADto);
+
+        return PaginaResponseDto.desde(paginaConsultas);
     }
 
     @Transactional(readOnly = true)

@@ -1,5 +1,6 @@
 package com.tfi.inmobiliaria.propiedad.service;
 
+import com.tfi.inmobiliaria.compartido.dto.PaginaResponseDto;
 import com.tfi.inmobiliaria.exceptions.PropiedadInvalidaException;
 import com.tfi.inmobiliaria.exceptions.RecursoNoEncontradoException;
 import com.tfi.inmobiliaria.propiedad.dto.PropiedadCreateDto;
@@ -8,11 +9,11 @@ import com.tfi.inmobiliaria.propiedad.dto.PropiedadUpdateDto;
 import com.tfi.inmobiliaria.propiedad.mapper.PropiedadMapper;
 import com.tfi.inmobiliaria.propiedad.model.Propiedad;
 import com.tfi.inmobiliaria.propiedad.repository.PropiedadRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +34,11 @@ public class PropiedadService {
     }
 
     @Transactional(readOnly = true)
-    public List<PropiedadDto> obtenerPropiedades() {
-        return propiedadRepo.findAllByActivaTrue()
-                .stream()
-                .map(PropiedadMapper::convertirPropiedadADto)
-                .toList();
+    public PaginaResponseDto<PropiedadDto> obtenerPropiedades(Pageable pageable) {
+        Page<PropiedadDto> paginaPropiedades = propiedadRepo.findAllByActivaTrue(pageable)
+                .map(PropiedadMapper::convertirPropiedadADto);
+
+        return PaginaResponseDto.desde(paginaPropiedades);
     }
 
     @Transactional(readOnly = true)
