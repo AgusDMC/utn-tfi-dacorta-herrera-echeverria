@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from 'react-router'
 import { tituloPagina } from '../../config.ts'
+import { useDescripcionPagina } from '../../compartido/useDescripcionPagina.ts'
 import { buscarPublicaciones, obtenerLocalidades } from '../catalogo.ts'
 import { hayFiltros, leerFiltros, urlCatalogo } from '../filtros.ts'
 import { ETIQUETA_TIPO_PLURAL, type FiltrosCatalogo, type TipoOperacion } from '../tipos.ts'
@@ -28,6 +29,8 @@ export default function CatalogoPagina() {
   const publicaciones = buscarPublicaciones(filtros)
   const cantidad = publicaciones.length
   const titulo = tituloListado(filtros)
+  const que = hayFiltros(filtros) ? titulo : 'Casas, departamentos, PH y dúplex en venta y alquiler'
+  useDescripcionPagina(`${que}. Precio, fotos y características de cada propiedad, con consulta directa desde su ficha.`)
 
   const detalle = cantidad > 0 && (
     <>
@@ -43,6 +46,8 @@ export default function CatalogoPagina() {
   return (
     <>
       <title>{tituloPagina(titulo)}</title>
+      {/* Una búsqueda sin resultados (por ejemplo, una localidad que no existe) no se indexa */}
+      {cantidad === 0 && <meta name="robots" content="noindex" />}
 
       <EncabezadoBusqueda titulo={titulo} detalle={detalle || undefined}>
         {/* El key reinicia el formulario cuando cambian los filtros de la URL (por ejemplo, desde el header) */}

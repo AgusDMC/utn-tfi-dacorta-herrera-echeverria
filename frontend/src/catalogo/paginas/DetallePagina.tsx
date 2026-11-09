@@ -20,6 +20,7 @@ function PropiedadNoEncontrada() {
   return (
     <section className={`contenedor ${estilos.noEncontrada}`}>
       <title>{tituloPagina('Propiedad no encontrada')}</title>
+      <meta name="robots" content="noindex" />
 
       <h1 className={estilos.noEncontradaTitulo}>No encontramos esta propiedad</h1>
       <p className={estilos.noEncontradaTexto}>Puede que ya no esté publicada o que el enlace tenga un error.</p>

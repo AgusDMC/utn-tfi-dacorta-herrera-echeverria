@@ -15,6 +15,8 @@ export default function LayoutPanel() {
 
   return (
     <div className={estilos.pagina}>
+      <meta name="robots" content="noindex, nofollow" />
+
       <header className={estilos.barra}>
         <div className={`contenedor ${estilos.barraContenido}`}>
           <Marca />

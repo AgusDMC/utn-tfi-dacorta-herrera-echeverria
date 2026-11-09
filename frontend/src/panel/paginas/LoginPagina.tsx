@@ -84,6 +84,7 @@ export default function LoginPagina() {
   return (
     <main className={estilos.pagina}>
       <title>{tituloPagina('Acceso administración')}</title>
+      <meta name="robots" content="noindex, nofollow" />
 
       <div className={estilos.tarjeta}>
         <Marca />
