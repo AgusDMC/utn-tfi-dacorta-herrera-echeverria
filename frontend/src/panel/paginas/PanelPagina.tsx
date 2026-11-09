@@ -1,39 +1,19 @@
-import { useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import { tituloPagina } from '../../config.ts'
-import Marca from '../../compartido/componentes/Marca.tsx'
-import { cerrarSesion, obtenerSesion } from '../autenticacion/sesion.ts'
 import estilos from './PanelPagina.module.css'
 
-// Inicio del panel. Por ahora solo confirma la sesión; las secciones de gestión llegan después.
+// Inicio del panel: una entrada a cada sección que ya existe
 export default function PanelPagina() {
-  const navigate = useNavigate()
-  const sesion = obtenerSesion()
-
-  function salir() {
-    cerrarSesion()
-    navigate('/admin/login', { replace: true, state: { sesionCerrada: true } })
-  }
-
   return (
-    <div className={estilos.pagina}>
+    <>
       <title>{tituloPagina('Panel administrativo')}</title>
 
-      <header className={estilos.barra}>
-        <div className={`contenedor ${estilos.barraContenido}`}>
-          <Marca />
-          <div className={estilos.sesion}>
-            <p className={estilos.email}>{sesion?.email}</p>
-            <button type="button" className="boton boton-secundario" onClick={salir}>
-              Cerrar sesión
-            </button>
-          </div>
-        </div>
-      </header>
+      <h1 className={estilos.titulo}>Panel administrativo</h1>
+      <p className={estilos.texto}>Desde acá se administran las consultas. Más adelante se van a sumar las propiedades.</p>
 
-      <main className={`contenedor ${estilos.contenido}`}>
-        <h1 className={estilos.titulo}>Panel administrativo</h1>
-        <p className={estilos.texto}>Desde este panel se van a administrar las propiedades y las consultas.</p>
-      </main>
-    </div>
+      <Link to="/admin/consultas" className={`boton boton-primario ${estilos.acceso}`}>
+        Ver consultas
+      </Link>
+    </>
   )
 }

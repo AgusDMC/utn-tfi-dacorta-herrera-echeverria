@@ -1,0 +1,143 @@
+.cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espacio-4) var(--espacio-8);
+}
+
+.titulo {
+  font-size: var(--titulo-md);
+  font-weight: 400;
+}
+
+.filtro {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.etiqueta {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+}
+
+.selector {
+  min-width: 12rem;
+  min-height: var(--alto-tactil);
+  padding: var(--espacio-2) var(--espacio-3);
+  border: 1px solid var(--color-texto-suave);
+  border-radius: var(--radio-sm);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.aviso {
+  display: grid;
+  justify-items: start;
+  gap: var(--espacio-4);
+  margin-top: var(--espacio-8);
+  color: var(--color-texto-suave);
+}
+
+.cantidad {
+  margin-top: var(--espacio-8);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+/* ---------- Lista: filas separadas por filetes ---------- */
+
+.lista {
+  margin: var(--espacio-3) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--color-texto);
+  list-style: none;
+}
+
+/* Celular: nombre y estado arriba; publicación y fecha abajo */
+.item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'persona estado'
+    'publicacion publicacion'
+    'fecha fecha';
+  gap: var(--espacio-1) var(--espacio-4);
+  padding-block: var(--espacio-4);
+  border-bottom: 1px solid var(--color-borde);
+  transition: background-color var(--duracion-rapida) var(--curva);
+}
+
+.persona {
+  grid-area: persona;
+  color: var(--color-texto);
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+/* El enlace cubre toda la fila */
+.persona::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.persona:focus-visible {
+  outline: none;
+}
+
+.item:has(.persona:focus-visible) {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+}
+
+.publicacion {
+  grid-area: publicacion;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.fecha {
+  grid-area: fecha;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.estado {
+  grid-area: estado;
+  justify-self: end;
+}
+
+.item:active {
+  background: var(--color-arena);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .item:hover {
+    background: var(--color-superficie);
+  }
+
+  .item:hover .persona {
+    color: var(--color-primario);
+  }
+}
+
+/* Desde tablet, una fila por consulta con columnas alineadas */
+@media (min-width: 768px) {
+  .item {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.4fr) 7rem;
+    grid-template-areas: 'persona publicacion fecha estado';
+    align-items: center;
+    padding-inline: var(--espacio-3);
+  }
+
+  .estado {
+    justify-self: start;
+  }
+}
