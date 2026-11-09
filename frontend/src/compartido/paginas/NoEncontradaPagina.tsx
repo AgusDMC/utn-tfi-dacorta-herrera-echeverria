@@ -6,6 +6,7 @@ export default function NoEncontradaPagina() {
   return (
     <section className={`contenedor ${estilos.pagina}`}>
       <title>{tituloPagina('Página no encontrada')}</title>
+      <meta name="robots" content="noindex" />
 
       <p className="antetitulo">Error 404</p>
       <h1 className={estilos.titulo}>No encontramos esta página</h1>

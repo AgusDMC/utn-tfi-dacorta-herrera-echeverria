@@ -1,4 +1,5 @@
-import { CONTACTO, tituloPagina } from '../../config.ts'
+import { CONTACTO, NOMBRE_INMOBILIARIA, tituloPagina } from '../../config.ts'
+import { useDescripcionPagina } from '../useDescripcionPagina.ts'
 import { IconoCorreo, IconoMatricula, IconoReloj, IconoTelefono, IconoUbicacion } from '../componentes/Iconos.tsx'
 import { IlustracionPuerta } from '../componentes/Ilustraciones.tsx'
 import iconos from '../componentes/Iconos.module.css'
@@ -7,6 +8,9 @@ import estilos from './Institucional.module.css'
 export default function ContactoPagina() {
   const { telefono, email, direccion, horario, matricula } = CONTACTO
   const telefonoLimpio = telefono?.replace(/[^\d+]/g, '')
+  useDescripcionPagina(
+    `Medios de contacto de ${NOMBRE_INMOBILIARIA} para consultar por propiedades en venta y alquiler, o por cualquier otra duda sobre la inmobiliaria.`,
+  )
 
   return (
     <section className={`contenedor ${estilos.pagina} ${estilos.contacto}`}>

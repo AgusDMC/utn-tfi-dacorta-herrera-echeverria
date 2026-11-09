@@ -3,6 +3,7 @@ import { NOMBRE_INMOBILIARIA, tituloPagina } from '../../config.ts'
 import { buscarPublicaciones, obtenerLocalidades } from '../../catalogo/catalogo.ts'
 import { urlCatalogo } from '../../catalogo/filtros.ts'
 import { ETIQUETA_TIPO_PLURAL, TIPOS_PROPIEDAD } from '../../catalogo/tipos.ts'
+import { useDescripcionPagina } from '../useDescripcionPagina.ts'
 import BandaContacto from '../componentes/BandaContacto.tsx'
 import { IconoCartel, IconoMensaje, IconoTipo, IconoUbicacion } from '../componentes/Iconos.tsx'
 import { IlustracionBarrio } from '../componentes/Ilustraciones.tsx'
@@ -28,6 +29,9 @@ const VALORES = [
 ]
 
 export default function NosotrosPagina() {
+  useDescripcionPagina(
+    `${NOMBRE_INMOBILIARIA} es una inmobiliaria de Santa Rosa, La Pampa, dedicada a la venta y el alquiler de casas, departamentos, PH y dúplex.`,
+  )
   const localidades = obtenerLocalidades().map((localidad) => ({
     localidad,
     cantidad: buscarPublicaciones({ localidad }).length,
