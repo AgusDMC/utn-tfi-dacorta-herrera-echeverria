@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/publicaciones")
@@ -28,6 +29,11 @@ public class CatalogoPublicoController {
         filtrosValidator.validarFiltros(filtros);
 
         return catalogoService.obtenerPublicaciones(filtros, pageable);
+    }
+
+    @GetMapping("/localidades")
+    public List<String> obtenerLocalidades() {
+        return catalogoService.obtenerLocalidades();
     }
 
     @GetMapping("/{id}")
