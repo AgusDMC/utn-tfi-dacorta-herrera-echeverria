@@ -9,6 +9,7 @@ import { ETIQUETA_ESTADO, ETIQUETA_OPERACION, ETIQUETA_TIPO, type PublicacionDet
 import BarraConsulta from '../componentes/BarraConsulta.tsx'
 import CabeceraListado from '../componentes/CabeceraListado.tsx'
 import { CifrasPrincipales, ListaCaracteristicas } from '../componentes/FichaPropiedad.tsx'
+import FormularioConsulta from '../componentes/FormularioConsulta.tsx'
 import GaleriaPropiedad from '../componentes/GaleriaPropiedad.tsx'
 import GrillaPublicaciones from '../componentes/GrillaPublicaciones.tsx'
 import estilos from './DetallePagina.module.css'
@@ -189,43 +190,37 @@ function Detalle({ publicacion }: { publicacion: PublicacionDetalle }) {
           </section>
         )}
 
-        {/* Hasta que exista el formulario, la consulta se hace por teléfono o correo */}
         <section id="consulta" className={estilos.consulta} aria-labelledby="titulo-consulta">
           <h2 id="titulo-consulta" tabIndex={-1} className={estilos.tituloSeccion}>
             Consultar por esta propiedad
           </h2>
           <div className={estilos.cuerpo}>
-            <p className={estilos.texto}>Llamanos o escribinos y te contamos todo sobre esta propiedad.</p>
-            <ul role="list" className={estilos.medios}>
-              {telefono && (
-                <li className={estilos.medio}>
-                  <span className={estilos.medioEtiqueta}>Teléfono</span>
-                  <a href={`tel:${telefonoLimpio}`} className={estilos.medioValor}>
-                    {telefono}
-                  </a>
-                </li>
-              )}
-              {correo && (
-                <li className={estilos.medio}>
-                  <span className={estilos.medioEtiqueta}>Correo electrónico</span>
-                  <a href={correo} className={estilos.medioValor}>
-                    {email}
-                  </a>
-                </li>
-              )}
-            </ul>
-            <div className={estilos.acciones}>
-              {telefono && (
-                <a href={`tel:${telefonoLimpio}`} className={`boton ${estilos.llamar}`}>
-                  Llamar
-                </a>
-              )}
-              {correo && (
-                <a href={correo} className={`boton ${estilos.escribir}`}>
-                  Escribir
-                </a>
-              )}
-            </div>
+            <FormularioConsulta publicacionId={publicacion.id} />
+
+            {/* El teléfono y el correo de la inmobiliaria, como alternativa al formulario */}
+            {(telefono || correo) && (
+              <div className={estilos.alternativa}>
+                <p className={estilos.texto}>También podés comunicarte directamente.</p>
+                <ul role="list" className={estilos.medios}>
+                  {telefono && (
+                    <li className={estilos.medio}>
+                      <span className={estilos.medioEtiqueta}>Teléfono</span>
+                      <a href={`tel:${telefonoLimpio}`} className={estilos.medioValor}>
+                        {telefono}
+                      </a>
+                    </li>
+                  )}
+                  {correo && (
+                    <li className={estilos.medio}>
+                      <span className={estilos.medioEtiqueta}>Correo electrónico</span>
+                      <a href={correo} className={estilos.medioValor}>
+                        {email}
+                      </a>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
           </div>
         </section>
       </article>

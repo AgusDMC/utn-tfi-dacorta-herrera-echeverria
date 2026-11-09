@@ -1,0 +1,159 @@
+/* Formulario de consulta. Vive sobre el plano pino del cierre de la ficha: campos subrayados
+   con un filete hueso, sin cajas. Una columna en celular; desde 640 px, dos por fila. */
+
+.formulario {
+  display: grid;
+  gap: var(--espacio-6);
+}
+
+.fila {
+  display: grid;
+  gap: var(--espacio-6);
+}
+
+.campo {
+  display: grid;
+  gap: var(--espacio-1);
+  align-content: start;
+}
+
+.etiqueta {
+  color: var(--color-sobre-primario-suave);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+}
+
+.control {
+  width: 100%;
+  min-height: var(--alto-tactil);
+  padding: var(--espacio-2) 0;
+  border: 0;
+  border-bottom: 1px solid rgb(250 248 245 / 0.6);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-sobre-primario);
+  font: inherit;
+  font-size: 1.0625rem; /* 17 px: el celular no hace zoom al enfocar */
+  line-height: 1.5;
+  transition: border-color var(--duracion-rapida) var(--curva);
+}
+
+textarea.control {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--color-fondo);
+  outline-offset: 2px;
+  border-bottom-color: var(--color-fondo);
+}
+
+/* Un campo con aviso se marca con el filete entero y más grueso, no solo con el texto */
+.control[aria-invalid='true'] {
+  padding-bottom: calc(var(--espacio-2) - 1px);
+  border-bottom: 2px solid var(--color-fondo);
+}
+
+/* El autocompletado del navegador pinta el campo de claro: se vuelve a pintar de pino */
+.control:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-sobre-primario);
+  caret-color: var(--color-sobre-primario);
+  box-shadow: 0 0 0 100px var(--color-primario) inset;
+}
+
+.contacto {
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.ayuda,
+.aviso {
+  font-size: var(--texto-sm);
+}
+
+.ayuda {
+  color: var(--color-sobre-primario-suave);
+}
+
+.aviso {
+  color: var(--color-sobre-primario);
+  font-weight: 600;
+}
+
+/* ---------- Envío ---------- */
+
+.enviar {
+  width: 100%;
+  min-height: 3.25rem;
+  background: var(--color-fondo);
+  color: var(--color-primario);
+}
+
+.enviar:focus-visible {
+  outline-color: var(--color-fondo);
+}
+
+.enviar:active {
+  transform: scale(0.98);
+  transition-duration: 120ms;
+}
+
+.enviar:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* ---------- Resultado ---------- */
+
+.exito:focus,
+.fallo:focus {
+  outline: none;
+}
+
+.exito:focus-visible,
+.fallo:focus-visible {
+  outline: 2px solid var(--color-fondo);
+  outline-offset: 4px;
+}
+
+.exito {
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.exitoTitulo {
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.5rem, 1.2rem + 0.9vw, 1.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.exitoTexto {
+  color: var(--color-sobre-primario-suave);
+}
+
+/* Filete vertical hueso: el error se lee como una nota al margen, no como una alerta de color */
+.fallo {
+  padding-left: var(--espacio-4);
+  border-left: 2px solid var(--color-fondo);
+  font-weight: 600;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .enviar:hover:not(:disabled) {
+    background: var(--color-arena);
+  }
+}
+
+@media (min-width: 640px) {
+  .fila {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .enviar {
+    width: auto;
+    justify-self: start;
+    padding-inline: var(--espacio-12);
+  }
+}
