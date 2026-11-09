@@ -1,3 +1,5 @@
+import type { TonoEstado } from '../componentes/EtiquetaEstado.tsx'
+
 // Consultas tal como las devuelve el backend (ConsultaDto y el enum EstadoConsulta)
 
 export type EstadoConsulta = 'NUEVA' | 'CONTACTADA' | 'EN_GESTION' | 'CERRADA' | 'DESCARTADA'
@@ -10,6 +12,14 @@ export const ETIQUETA_ESTADO: Record<EstadoConsulta, string> = {
   EN_GESTION: 'En gestión',
   CERRADA: 'Cerrada',
   DESCARTADA: 'Descartada',
+}
+
+export const TONO_ESTADO: Record<EstadoConsulta, TonoEstado> = {
+  NUEVA: 'destacado',
+  CONTACTADA: 'en-curso',
+  EN_GESTION: 'en-curso',
+  CERRADA: 'final',
+  DESCARTADA: 'final',
 }
 
 // Regla R11: la consulta avanza NUEVA → CONTACTADA → EN_GESTION → CERRADA y desde cualquier

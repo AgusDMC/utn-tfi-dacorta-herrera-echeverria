@@ -1,4 +1,4 @@
-/* Nueva en pino lleno (pide atención), en curso con filete pino, finales en gris suave */
+/* Destacado en pino lleno, en curso con filete pino, final en gris suave */
 .etiqueta {
   display: inline-block;
   padding: 0.125rem var(--espacio-2);
@@ -11,14 +11,13 @@
   white-space: nowrap;
 }
 
-.etiqueta[data-estado='NUEVA'] {
+.etiqueta[data-tono='destacado'] {
   border-color: var(--color-primario);
   background: var(--color-primario);
   color: var(--color-sobre-primario);
 }
 
-.etiqueta[data-estado='CONTACTADA'],
-.etiqueta[data-estado='EN_GESTION'] {
+.etiqueta[data-tono='en-curso'] {
   border-color: var(--color-primario);
   color: var(--color-primario);
 }

@@ -14,6 +14,8 @@ import LoginPagina from './panel/paginas/LoginPagina.tsx'
 import PanelPagina from './panel/paginas/PanelPagina.tsx'
 import PropiedadesPagina from './panel/paginas/PropiedadesPagina.tsx'
 import PropiedadFormularioPagina from './panel/paginas/PropiedadFormularioPagina.tsx'
+import PublicacionesPagina from './panel/paginas/PublicacionesPagina.tsx'
+import PublicacionFormularioPagina from './panel/paginas/PublicacionFormularioPagina.tsx'
 
 export default function App() {
   return (
@@ -38,6 +40,9 @@ export default function App() {
           <Route path="propiedades" element={<PropiedadesPagina />} />
           <Route path="propiedades/nueva" element={<PropiedadFormularioPagina />} />
           <Route path="propiedades/:id/editar" element={<PropiedadFormularioPagina />} />
+          <Route path="publicaciones" element={<PublicacionesPagina />} />
+          <Route path="publicaciones/nueva" element={<PublicacionFormularioPagina />} />
+          <Route path="publicaciones/:id/editar" element={<PublicacionFormularioPagina />} />
           <Route path="consultas" element={<ConsultasPagina />} />
           <Route path="consultas/:id" element={<ConsultaPagina />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />

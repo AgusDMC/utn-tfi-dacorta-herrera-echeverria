@@ -35,12 +35,14 @@ export async function getJson<T>(ruta: string, token: string, senal?: AbortSigna
   return respuesta.json()
 }
 
-// POST, PUT o PATCH autenticado con cuerpo JSON; devuelve el JSON de la respuesta
+// POST, PUT o PATCH autenticado; devuelve el JSON de la respuesta. Sin cuerpo (undefined) no
+// se envía body, como en las acciones que no necesitan datos.
 export async function enviarJson<T>(metodo: 'POST' | 'PUT' | 'PATCH', ruta: string, cuerpo: unknown, token: string): Promise<T> {
+  const conCuerpo = cuerpo !== undefined
   const respuesta = await pedir(ruta, {
     method: metodo,
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify(cuerpo),
+    headers: conCuerpo ? { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } : { Authorization: `Bearer ${token}` },
+    body: conCuerpo ? JSON.stringify(cuerpo) : undefined,
   })
   return respuesta.json()
 }
