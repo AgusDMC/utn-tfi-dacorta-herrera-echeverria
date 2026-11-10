@@ -71,21 +71,14 @@ export function obtenerPublicacionCatalogo(id: number, opciones?: Opciones) {
   return pedir<PublicacionDetalle>(`/api/publicaciones/${id}`, opciones)
 }
 
-// Localidades con publicaciones visibles, para el selector del buscador.
-// PROVISORIO hasta que exista GET /api/publicaciones/localidades: una sola página de 100 (el
-// máximo del backend). Si hay más de 100 publicaciones puede faltar alguna localidad, pero
-// nunca se muestra una que no tenga publicaciones. La lista se arma una vez por respuesta.
-let localidades: { base: Promise<Resultado<Pagina<PublicacionCatalogo>>>; lista: Promise<string[]> } | null = null
+// Localidades con publicaciones visibles, ordenadas por el backend; si el pedido falla, ninguna.
+// La misma respuesta se convierte una sola vez: use() necesita recibir siempre la misma promesa.
+let localidades: { respuesta: Promise<Resultado<string[]>>; lista: Promise<string[]> } | null = null
 
 export function listarLocalidades(opciones?: Opciones) {
-  const base = listarPublicacionesCatalogo({}, 0, { tamano: 100, ...opciones })
-  if (localidades?.base !== base) {
-    const lista = base.then((resultado) => {
-      if (!resultado.ok) return []
-      const distintas = new Set(resultado.datos.results.map((publicacion) => publicacion.localidad))
-      return [...distintas].sort((a, b) => a.localeCompare(b, 'es'))
-    })
-    localidades = { base, lista }
+  const respuesta = pedir<string[]>('/api/publicaciones/localidades', opciones)
+  if (localidades?.respuesta !== respuesta) {
+    localidades = { respuesta, lista: respuesta.then((resultado) => (resultado.ok ? resultado.datos : [])) }
   }
   return localidades.lista
 }
