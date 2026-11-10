@@ -21,10 +21,11 @@ public class CatalogoPublicoController {
     private final CatalogoService catalogoService;
     private final FiltrosCatalogoValidator filtrosValidator;
 
+
     @GetMapping
     public PaginaResponseDto<PublicacionCatalogoDto> obtenerPublicaciones(@ModelAttribute FiltrosCatalogoDto filtros, @PageableDefault(
             size = 12,
-            sort = "fechaPublicacion",
+            sort = {"fechaPublicacion", "id"},
             direction = Sort.Direction.DESC) Pageable pageable) {
         filtrosValidator.validarFiltros(filtros);
 
