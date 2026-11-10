@@ -73,7 +73,7 @@ SELECT pg_temp.debe_fallar('Dos imágenes con el mismo orden (se valida al COMMI
 -- Esto SÍ tiene que funcionar: intercambiar portada (orden 1 <-> 2)
 -- gracias a que la restricción es DEFERRABLE.
 UPDATE imagen_propiedad SET orden = 2 WHERE storage_key = 'demo/propiedad-1/frente';
-UPDATE imagen_propiedad SET orden = 1 WHERE storage_key = 'demo/propiedad-1/patio';
+UPDATE imagen_propiedad SET orden = 1 WHERE storage_key = 'demo/propiedad-1/living';
 SET CONSTRAINTS ALL IMMEDIATE;   -- fuerza la validación ahora
 SELECT 'OK     -> Reordenar imágenes (swap 1<->2) dentro de una transacción' AS resultado;
 
