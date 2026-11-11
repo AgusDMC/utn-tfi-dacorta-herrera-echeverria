@@ -24,7 +24,17 @@ Incluye un catálogo público con filtros, ficha de detalle con galería de imá
 - **Backend:** Spring Boot (Java) — API REST, Spring Security + JWT, Spring Data JPA, Flyway
 - **Base de datos:** PostgreSQL
 - **Servicios externos:** storage de imágenes (Cloudinary) y correo transaccional
-- **Despliegue:** Frontend en Vercel · Backend en Render · Base de datos en Railway
+- **Despliegue:** Frontend en Vercel · Backend y base de datos en Railway
+
+## Sistema desplegado
+
+| Componente | Dónde | Enlace |
+|---|---|---|
+| API REST (backend) | Railway | [`/api/publicaciones`](https://utn-tfi-dacorta-herrera-echeverria-production-db107b99.up.railway.app/api/publicaciones) |
+| Base de datos PostgreSQL | Railway (mismo proyecto que el backend, sin acceso público) | — |
+| Frontend | Vercel | Pendiente |
+
+La base de producción tiene los datos demo cargados. El usuario administrador no es el de los datos demo: sus credenciales se comparten por privado, no están en el repositorio.
 
 ## Estructura del repositorio
 
@@ -70,11 +80,38 @@ sudo -u postgres createdb -O inmobiliaria inmobiliaria
 cp backend/.env.example backend/.env
 cd backend && ./mvnw spring-boot:run      # Flyway aplica database/migrations
 
-# En otra terminal, desde la raíz: datos de ejemplo (opcional)
+# En otra terminal, desde la raíz: datos de ejemplo y pruebas de la base (opcional)
 psql -h localhost -U inmobiliaria -d inmobiliaria -f database/seeds/datos_demo.sql
+psql -h localhost -U inmobiliaria -d inmobiliaria -f database/tests/pruebas_reglas.sql
 ```
 
+- **Migraciones:** las tablas las crea **Flyway** al arrancar el backend, a partir de `database/migrations`. No hay que cargar `V1__esquema_inicial.sql` a mano: si el esquema ya existe sin la tabla `flyway_schema_history`, el backend no arranca.
+- **Datos demo:** 9 propiedades, 11 publicaciones (9 visibles en el catálogo) y consultas en todos los estados. Admin de prueba: `admin@demo.local` / `Demo1234!` (solo local).
+- **Pruebas:** `pruebas_reglas.sql` intenta romper las 14 reglas que garantiza la base y muestra `OK` en cada una. Corre en una transacción que se deshace, así que no deja cambios.
+
 Más detalles en [`database/README.md`](database/README.md).
+
+### Variables de entorno
+
+El backend las toma de `backend/.env` en local (plantilla en [`backend/.env.example`](backend/.env.example)) y de las variables del servicio en Railway.
+
+| Variable | Para qué | Local |
+|---|---|---|
+| `DB_URL` | URL JDBC de la base | Opcional: por defecto `localhost:5432/inmobiliaria` |
+| `DB_USERNAME`, `DB_PASSWORD` | Usuario y clave de la base | `inmobiliaria` / `inmobiliaria` |
+| `FLYWAY_LOCATIONS` | Carpeta de las migraciones | Opcional: por defecto `../database/migrations` |
+| `JWT_SECRET` | Clave para firmar los tokens | Generar con `openssl rand -base64 48` |
+| `MAIL_USERNAME`, `MAIL_PASSWORD`, `EMAIL_REMITENTE`, `NOMBRE_REMITENTE`, `EMAIL_DESTINATARIO` | Envío de correos (Brevo) | Sin credenciales reales falla el alta de consultas |
+| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Almacenamiento de imágenes | Necesarias para subir fotos |
+| `PORT` | Puerto del servidor | Opcional: por defecto `8080` |
+
+El frontend usa `VITE_API_URL` (URL del backend). Ningún valor real se sube al repositorio.
+
+### Despliegue en Railway
+
+- El backend se construye con el [`Dockerfile`](Dockerfile) de la raíz. La imagen incluye `database/migrations` y define `FLYWAY_LOCATIONS`, así que Flyway crea y actualiza el esquema en cada deploy.
+- La base es un servicio PostgreSQL en el mismo proyecto. `DB_URL`, `DB_USERNAME` y `DB_PASSWORD` del backend son referencias a sus variables (`jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}`, etc.), y la conexión va por la red interna de Railway.
+- Los datos demo se cargaron con `psql` después del primer deploy. Luego se borró el admin de prueba y se creó el de producción con `pgcrypto` (`crypt(clave, gen_salt('bf', 10))`).
 
 ### Backend y frontend
 
