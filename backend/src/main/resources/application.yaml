@@ -1,6 +1,10 @@
 spring:
   application:
     name: inmobiliaria-api
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
   datasource:
     # Por defecto la base local
@@ -39,3 +43,8 @@ app:
     remitente: ${EMAIL_REMITENTE}
     nombre-remitente: ${NOMBRE_REMITENTE}
     destinatario: ${EMAIL_DESTINATARIO}
+
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME}
+    api-key: ${CLOUDINARY_API_KEY}
+    api-secret: ${CLOUDINARY_API_SECRET}

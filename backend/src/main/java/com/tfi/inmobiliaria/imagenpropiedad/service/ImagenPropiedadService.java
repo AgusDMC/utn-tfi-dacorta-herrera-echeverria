@@ -2,6 +2,8 @@ package com.tfi.inmobiliaria.imagenpropiedad.service;
 
 import com.tfi.inmobiliaria.exceptions.ImagenPropiedadInvalidaException;
 import com.tfi.inmobiliaria.exceptions.RecursoNoEncontradoException;
+import com.tfi.inmobiliaria.imagenpropiedad.almacenamiento.AlmacenamientoImagen;
+import com.tfi.inmobiliaria.imagenpropiedad.almacenamiento.ImagenAlmacenada;
 import com.tfi.inmobiliaria.imagenpropiedad.dto.ImagenPropiedadCreateDto;
 import com.tfi.inmobiliaria.imagenpropiedad.dto.ImagenPropiedadDto;
 import com.tfi.inmobiliaria.imagenpropiedad.dto.ImagenPropiedadUpdateDto;
@@ -22,26 +24,38 @@ public class ImagenPropiedadService {
 
     private final ImagenPropiedadRepository imagenPropiedadRepo;
     private final PropiedadRepository propiedadRepo;
+    private final AlmacenamientoImagen almacenamientoImagen;
 
     @Transactional
     public ImagenPropiedadDto crearImagenPropiedad(ImagenPropiedadCreateDto imagenCreateDto) {
+
+        // VALIDO LA IMAGEN
+        validarArchivo(imagenCreateDto);
 
         // VALIDO QUE LA PROPIEDAD ASOCIADA A LA IMAGEN EXISTA
         Propiedad propiedad = propiedadRepo.findByIdAndActivaTrue(imagenCreateDto.getPropiedadId())
                 .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró una propiedad activa con el id: " + imagenCreateDto.getPropiedadId()));
 
-        // VALIDO QUE EL STORAGE KEY NO ESTE ASOCIADO A OTRA IMAGEN
-        if (imagenPropiedadRepo.existsByStorageKey(imagenCreateDto.getStorageKey())) {
-            throw new ImagenPropiedadInvalidaException("Ya existe una imagen con el storage key indicado.");
-        }
+        ImagenAlmacenada imagenAlmacenada = almacenamientoImagen.subirImagen(imagenCreateDto.getArchivo(), propiedad.getId());
 
-        ImagenPropiedad imagenPropiedad = ImagenPropiedadMapper.convertirCreateDtoAImagenPropiedad(imagenCreateDto, propiedad);
+        ImagenPropiedad imagenPropiedad = ImagenPropiedadMapper.convertirCreateDtoAImagenPropiedad(imagenCreateDto, propiedad, imagenAlmacenada);
 
         imagenPropiedad.setOrden(obtenerSiguienteOrden(propiedad.getId()));
 
-        ImagenPropiedad imagenGuardada = imagenPropiedadRepo.save(imagenPropiedad);
+        try {
+            ImagenPropiedad imagenGuardada = imagenPropiedadRepo.save(imagenPropiedad);
 
-        return ImagenPropiedadMapper.convertirImagenPropiedadADto(imagenGuardada);
+            return ImagenPropiedadMapper.convertirImagenPropiedadADto(imagenGuardada);
+
+        } catch (RuntimeException excepcion) {
+            try {
+                almacenamientoImagen.eliminarImagen(imagenAlmacenada.storageKey());
+            } catch (RuntimeException errorAlEliminarArchivo) {
+                excepcion.addSuppressed(errorAlEliminarArchivo);
+            }
+
+            throw excepcion;
+        }
     }
 
     @Transactional(readOnly = true)
@@ -79,6 +93,8 @@ public class ImagenPropiedadService {
     public void eliminarImagenPropiedad(Long id) {
         ImagenPropiedad imagenPropiedad = obtenerEntidadPorId(id);
 
+        almacenamientoImagen.eliminarImagen(imagenPropiedad.getStorageKey());
+
         imagenPropiedadRepo.delete(imagenPropiedad);
     }
 
@@ -92,5 +108,18 @@ public class ImagenPropiedadService {
                 .findFirstByPropiedadIdOrderByOrdenDesc(propiedadId)
                 .map(imagen -> (short) (imagen.getOrden() + 1))
                 .orElse((short) 1);
+    }
+
+    private void validarArchivo(ImagenPropiedadCreateDto imagenCreateDto) {
+
+        if (imagenCreateDto.getArchivo() == null || imagenCreateDto.getArchivo().isEmpty()) {
+            throw new ImagenPropiedadInvalidaException("Debe seleccionar una imagen con contenido.");
+        }
+
+        String tipoContenido = imagenCreateDto.getArchivo().getContentType();
+
+        if (!"image/jpeg".equals(tipoContenido) && !"image/png".equals(tipoContenido) && !"image/webp".equals(tipoContenido)) {
+            throw new ImagenPropiedadInvalidaException("El archivo debe ser una imagen JPG, PNG o WEBP.");
+        }
     }
 }

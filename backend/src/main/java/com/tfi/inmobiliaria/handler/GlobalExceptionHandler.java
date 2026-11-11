@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,6 +38,9 @@ public class GlobalExceptionHandler {
             case FiltroInvalidoException ex ->
                 crearProblema(HttpStatus.BAD_REQUEST, "Filtros inválidos", excepcion.getMessage());
 
+            case MaxUploadSizeExceededException ex ->
+                crearProblema(HttpStatus.PAYLOAD_TOO_LARGE, "Archivo demasiado grande", "La imagen no puede superar los 5MB.");
+
             case MethodArgumentNotValidException errorValidacion ->
                     crearProblema(HttpStatus.BAD_REQUEST, "Error de validación", obtenerDetalleValidacion(errorValidacion));
 
@@ -44,6 +49,12 @@ public class GlobalExceptionHandler {
 
             case CredencialesInvalidasException ex ->
                     crearProblema(HttpStatus.UNAUTHORIZED, "Credenciales inválidas", excepcion.getMessage());
+
+            case AlmacenamientoImagenException ex -> {
+                log.error("Error en el almacenamiento de imagenes", ex);
+
+                yield crearProblema(HttpStatus.BAD_GATEWAY, "Error de almacenamiento", ex.getMessage());
+            }
 
             default -> {
                 log.error("Error no controlado", excepcion);

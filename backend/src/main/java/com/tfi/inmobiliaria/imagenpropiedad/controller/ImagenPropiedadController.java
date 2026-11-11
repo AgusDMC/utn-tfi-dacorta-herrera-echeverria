@@ -7,6 +7,7 @@ import com.tfi.inmobiliaria.imagenpropiedad.service.ImagenPropiedadService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +18,9 @@ import java.util.List;
 public class ImagenPropiedadController {
     private final ImagenPropiedadService imagenPropiedadService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ImagenPropiedadDto crearImagenPropiedad(@Valid @RequestBody ImagenPropiedadCreateDto imagenCreateDto) {
+    public ImagenPropiedadDto crearImagenPropiedad(@Valid @ModelAttribute ImagenPropiedadCreateDto imagenCreateDto) {
         return imagenPropiedadService.crearImagenPropiedad(imagenCreateDto);
     }
 
