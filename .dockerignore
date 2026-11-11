@@ -1,0 +1,17 @@
+# Git e IDE
+.git
+.idea
+**/.idea
+*.iml
+
+# Archivos con secretos
+.env
+**/.env
+
+# Artefactos generados localmente
+**/target
+frontend/node_modules
+frontend/dist
+
+# Logs
+*.log
