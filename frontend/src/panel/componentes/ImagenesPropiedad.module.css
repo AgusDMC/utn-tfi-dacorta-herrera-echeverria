@@ -1,0 +1,206 @@
+/* La sección abre con un filete y su título, como los grupos del formulario de la propiedad */
+.seccion {
+  display: grid;
+  gap: var(--espacio-4);
+  max-width: 48rem;
+  margin-top: var(--espacio-12);
+  padding-top: var(--espacio-6);
+  border-top: 1px solid var(--color-texto);
+}
+
+.titulo {
+  font-size: var(--titulo-sm);
+  font-weight: 400;
+}
+
+.subtitulo {
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-base);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.estado {
+  display: grid;
+  justify-items: start;
+  gap: var(--espacio-4);
+  color: var(--color-texto-suave);
+}
+
+/* Resultado de una acción: una nota al margen con filete */
+.resultado {
+  padding-left: var(--espacio-4);
+  border-left: 2px solid var(--color-primario);
+  font-weight: 600;
+}
+
+.resultado[data-error] {
+  border-left-color: var(--color-error);
+}
+
+.resultado:focus {
+  outline: none;
+}
+
+.resultado:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 4px;
+}
+
+/* ---------- Lista: una fila por imagen, separadas por filetes ---------- */
+
+.lista {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-borde);
+  list-style: none;
+}
+
+/* En el celular, la miniatura y los datos van lado a lado y las acciones debajo */
+.item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--espacio-4);
+  padding-block: var(--espacio-4);
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.miniatura {
+  display: grid;
+  place-items: center;
+  width: 6.5rem;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radio-sm);
+  background: var(--color-arena);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-xs);
+  text-align: center;
+}
+
+.miniatura img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.datos {
+  display: grid;
+  gap: var(--espacio-1);
+  align-content: center;
+  min-width: 0;
+}
+
+.orden {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: 500;
+}
+
+.descripcion {
+  overflow-wrap: anywhere;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  grid-column: 1 / -1;
+  gap: var(--espacio-3);
+}
+
+.edicion {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: var(--espacio-4);
+  min-width: 0;
+}
+
+.seccion button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Eliminar: con filete, sin el peso del botón principal */
+.eliminar {
+  border-color: var(--color-borde);
+  background: transparent;
+  color: var(--color-error);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .eliminar:hover:not(:disabled) {
+    border-color: var(--color-error);
+  }
+}
+
+/* ---------- Carga ---------- */
+
+.carga {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espacio-6);
+  margin-top: var(--espacio-4);
+}
+
+/* El selector nativo no se achica solo: ocupa el ancho de la columna y recorta el nombre */
+.archivo {
+  width: 100%;
+  font: inherit;
+}
+
+/* Su botón, con el aspecto del botón secundario del panel */
+.archivo::file-selector-button {
+  min-height: var(--alto-tactil);
+  margin-right: var(--espacio-3);
+  padding: var(--espacio-2) var(--espacio-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-sm);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .archivo::file-selector-button:hover {
+    border-color: var(--color-primario);
+    color: var(--color-primario);
+  }
+}
+
+/* En el celular, el nombre del archivo va debajo del botón: al lado quedaba recortado */
+@media (max-width: 639.98px) {
+  .archivo::file-selector-button {
+    display: block;
+    margin: 0 0 var(--espacio-2);
+  }
+}
+
+/* En los celulares más angostos, los dos botones entran en una línea con menos relleno */
+@media (max-width: 359.98px) {
+  .acciones button {
+    padding-inline: var(--espacio-3);
+  }
+}
+
+/* Desde tablet, una fila por imagen: miniatura, datos y acciones */
+@media (min-width: 640px) {
+  .item {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .miniatura {
+    width: 9rem;
+  }
+
+  .acciones {
+    grid-column: auto;
+  }
+
+  .edicion {
+    grid-column: 2 / -1;
+  }
+}

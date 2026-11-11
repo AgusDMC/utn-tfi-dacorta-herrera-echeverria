@@ -4,6 +4,7 @@ import { tituloPagina } from '../../config.ts'
 import { ErrorApi } from '../../compartido/api/clienteApi.ts'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
 import FormularioPropiedad from '../componentes/FormularioPropiedad.tsx'
+import ImagenesPropiedad from '../componentes/ImagenesPropiedad.tsx'
 import { actualizarPropiedad, crearPropiedad, obtenerPropiedad } from '../propiedades/propiedades.ts'
 import type { DatosPropiedad, Propiedad } from '../propiedades/tipos.ts'
 import estilos from './PropiedadFormularioPagina.module.css'
@@ -131,6 +132,8 @@ function EdicionOAlta({ id }: { id: string | undefined }) {
         error={error}
         onGuardar={guardar}
       />
+      {/* Las imágenes necesitan una propiedad que ya exista: solo en la edición */}
+      {idPropiedad !== null && <ImagenesPropiedad propiedadId={idPropiedad} />}
     </>
   )
 }
