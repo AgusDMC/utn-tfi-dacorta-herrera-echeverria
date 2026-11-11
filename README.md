@@ -105,7 +105,7 @@ El backend las toma de `backend/.env` en local (plantilla en [`backend/.env.exam
 | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Almacenamiento de imágenes | Necesarias para subir fotos |
 | `PORT` | Puerto del servidor | Opcional: por defecto `8080` |
 
-El frontend usa `VITE_API_URL` (URL del backend). Ningún valor real se sube al repositorio.
+La configuración del frontend (`VITE_API_URL`) queda pendiente hasta cerrar su despliegue en Vercel. Ningún valor real se sube al repositorio.
 
 ### Despliegue en Railway
 
