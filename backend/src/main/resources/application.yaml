@@ -2,6 +2,10 @@ spring:
   application:
     name: inmobiliaria-api
 
+  # En local lee las variables de backend/.env (si existe)
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     # Por defecto la base local
     url: ${DB_URL:jdbc:postgresql://localhost:5432/inmobiliaria}
