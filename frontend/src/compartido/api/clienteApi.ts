@@ -53,6 +53,13 @@ export async function enviarJson<T>(metodo: 'POST' | 'PUT' | 'PATCH', ruta: stri
   return respuesta.json()
 }
 
+// POST autenticado de un formulario con archivos (multipart/form-data). No se define Content-Type:
+// el navegador lo arma con el separador de las partes.
+export async function enviarFormulario<T>(ruta: string, formulario: FormData, token: string): Promise<T> {
+  const respuesta = await pedir(ruta, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: formulario })
+  return respuesta.json()
+}
+
 // DELETE autenticado. La respuesta exitosa no trae cuerpo (204).
 export async function borrar(ruta: string, token: string) {
   await pedir(ruta, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
