@@ -16,14 +16,22 @@ El diseño completo (DER, reglas de negocio, decisiones y diccionario de datos) 
 
 ## Crear la base en local
 
-Requisitos: PostgreSQL 15+ y Java 21. Antes de arrancar el backend, copiar `backend/.env.example` como `backend/.env` y completarlo.
+Requisitos: PostgreSQL 15+ y Java 21. Antes de arrancar el backend, copiar `backend/.env.example` como `backend/.env` y completarlo. El backend lo lee solo al arrancar.
 
 ```bash
-createdb -O inmobiliaria inmobiliaria                     # base vacía
-cd backend && ./mvnw spring-boot:run                      # Flyway aplica las migraciones
-psql -d inmobiliaria -f database/seeds/datos_demo.sql     # desde la raíz, opcional
-psql -d inmobiliaria -f database/tests/pruebas_reglas.sql # opcional, no deja cambios
+# Usuario y base vacía (una sola vez)
+sudo -u postgres psql -c "CREATE ROLE inmobiliaria LOGIN PASSWORD 'inmobiliaria';"
+sudo -u postgres createdb -O inmobiliaria inmobiliaria
+
+# Desde backend/: Flyway aplica las migraciones
+./mvnw spring-boot:run
+
+# En otra terminal, desde la raíz (opcional)
+psql -h localhost -U inmobiliaria -d inmobiliaria -f database/seeds/datos_demo.sql
+psql -h localhost -U inmobiliaria -d inmobiliaria -f database/tests/pruebas_reglas.sql
 ```
+
+`psql` pide la clave del usuario `inmobiliaria` (la misma de `backend/.env`).
 
 Las tablas las crea **Flyway**, no `psql -f` sobre la migración: si el esquema ya existe sin la tabla `flyway_schema_history`, el backend no arranca.
 
