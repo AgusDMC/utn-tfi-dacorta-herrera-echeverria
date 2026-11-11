@@ -56,12 +56,22 @@ README.md       -> Este archivo
 
 ### Base de datos
 
+Requisitos: PostgreSQL 15+ y Java 21. Las tablas las crea Flyway al arrancar el backend.
+
 ```bash
 git clone https://github.com/AgusDMC/utn-tfi-dacorta-herrera-echeverria.git
 cd utn-tfi-dacorta-herrera-echeverria
-createdb inmobiliaria
-psql -d inmobiliaria -f database/migrations/V1__esquema_inicial.sql
-psql -d inmobiliaria -f database/seeds/datos_demo.sql   # datos de ejemplo (opcional)
+
+# Usuario y base vacía (una sola vez)
+sudo -u postgres psql -c "CREATE ROLE inmobiliaria LOGIN PASSWORD 'inmobiliaria';"
+sudo -u postgres createdb -O inmobiliaria inmobiliaria
+
+# Variables: el backend lee backend/.env al arrancar
+cp backend/.env.example backend/.env
+cd backend && ./mvnw spring-boot:run      # Flyway aplica database/migrations
+
+# En otra terminal, desde la raíz: datos de ejemplo (opcional)
+psql -h localhost -U inmobiliaria -d inmobiliaria -f database/seeds/datos_demo.sql
 ```
 
 Más detalles en [`database/README.md`](database/README.md).
