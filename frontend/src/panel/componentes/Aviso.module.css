@@ -1,0 +1,40 @@
+/* Una nota con filete al margen: pino si salió bien, rojo si falló */
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-3);
+  max-width: 48rem;
+  padding: var(--espacio-3) var(--espacio-4);
+  border-left: 2px solid var(--color-primario);
+  background: var(--color-superficie);
+  font-weight: 600;
+}
+
+.aviso svg {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-primario);
+}
+
+.aviso span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.aviso[data-error] {
+  border-left-color: var(--color-error);
+}
+
+.aviso[data-error] svg {
+  color: var(--color-error);
+}
+
+.aviso:focus {
+  outline: none;
+}
+
+.aviso:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 4px;
+}

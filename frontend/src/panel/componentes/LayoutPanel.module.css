@@ -66,3 +66,32 @@
 .contenido {
   padding-block: var(--espacio-12);
 }
+
+/* ---------- Botones del panel ----------
+   Se suman a .boton solo acá adentro: el sitio público no cambia. */
+
+/* Ícono que acompaña al texto de un botón */
+.pagina :global(.boton) svg {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Mientras se guarda, los botones quedan deshabilitados */
+.pagina :global(.boton):disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Acción destructiva (eliminar, dar de baja): con filete, sin el peso del botón principal */
+.pagina :global(.boton-peligro) {
+  border-color: var(--color-borde);
+  background: transparent;
+  color: var(--color-error);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pagina :global(.boton-peligro):hover:not(:disabled) {
+    border-color: var(--color-error);
+  }
+}

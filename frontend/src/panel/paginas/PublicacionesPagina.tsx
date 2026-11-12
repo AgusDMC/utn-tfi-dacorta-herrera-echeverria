@@ -4,7 +4,10 @@ import { tituloPagina } from '../../config.ts'
 import { ETIQUETA_OPERACION } from '../../catalogo/tipos.ts'
 import { ErrorApi } from '../../compartido/api/clienteApi.ts'
 import type { Pagina } from '../../compartido/api/pagina.ts'
+import { IconoLapiz, IconoMas, IconoPapelera } from '../../compartido/componentes/Iconos.tsx'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
+import Aviso, { type Resultado } from '../componentes/Aviso.tsx'
+import DialogoConfirmacion from '../componentes/DialogoConfirmacion.tsx'
 import EtiquetaEstado from '../componentes/EtiquetaEstado.tsx'
 import Paginacion from '../../compartido/componentes/Paginacion.tsx'
 import { contar, describirPropiedad, formatearImporte } from '../formato.ts'
@@ -25,11 +28,6 @@ import estilos from './PublicacionesPagina.module.css'
 
 type Accion = 'activar' | 'pausar' | 'baja'
 
-interface Aviso {
-  texto: string
-  error?: boolean
-}
-
 const ERROR_ACCION: Record<Accion, string> = {
   activar: 'No pudimos activar la publicación.',
   pausar: 'No pudimos pausar la publicación.',
@@ -43,7 +41,7 @@ const RESULTADO_ACCION: Record<Accion, string> = {
 }
 
 // El formulario vuelve al listado con { aviso: 'Publicación agregada.' } o similar
-function avisoDeLlegada(estado: unknown): Aviso | null {
+function avisoDeLlegada(estado: unknown): Resultado | null {
   if (typeof estado !== 'object' || estado === null || !('aviso' in estado)) return null
   return typeof estado.aviso === 'string' ? { texto: estado.aviso } : null
 }
@@ -62,7 +60,8 @@ export default function PublicacionesPagina() {
   const [propiedades, setPropiedades] = useState<Propiedad[]>([])
   const [falloEn, setFalloEn] = useState<number | null>(null) // la página que no se pudo cargar
   const [intento, setIntento] = useState(0)
-  const [aviso, setAviso] = useState<Aviso | null>(() => avisoDeLlegada(state))
+  const [aviso, setAviso] = useState<Resultado | null>(() => avisoDeLlegada(state))
+  const [porDarDeBaja, setPorDarDeBaja] = useState<Publicacion | null>(null) // espera la confirmación
   const [enCurso, setEnCurso] = useState<number | null>(null)
   const tituloRef = useRef<HTMLHeadingElement>(null)
   const avisoRef = useRef<HTMLParagraphElement>(null)
@@ -140,9 +139,8 @@ export default function PublicacionesPagina() {
   }
 
   async function ejecutar(publicacion: Publicacion, accion: Accion) {
+    setPorDarDeBaja(null)
     if (accionEnCursoRef.current) return
-    if (accion === 'baja' && !window.confirm(`¿Querés dar de baja esta publicación?\n\n${publicacion.titulo}`)) return
-
     accionEnCursoRef.current = true
     setEnCurso(publicacion.id)
     setAviso(null)
@@ -183,6 +181,7 @@ export default function PublicacionesPagina() {
           Publicaciones
         </h1>
         <Link to="/admin/publicaciones/nueva" className="boton boton-primario">
+          <IconoMas />
           Agregar publicación
         </Link>
       </div>
@@ -204,9 +203,9 @@ export default function PublicacionesPagina() {
       )}
 
       {aviso && (
-        <p ref={avisoRef} tabIndex={-1} className={estilos.resultado} data-error={aviso.error || undefined}>
+        <Aviso ref={avisoRef} error={aviso.error} className={estilos.resultado}>
           {aviso.texto}
-        </p>
+        </Aviso>
       )}
 
       {falloEn === pagina ? (
@@ -260,6 +259,7 @@ export default function PublicacionesPagina() {
                     {!eliminada && (
                       <div className={estilos.acciones}>
                         <Link to={{ pathname: `/admin/publicaciones/${id}/editar`, search }} className="boton boton-secundario">
+                          <IconoLapiz />
                           Editar<span className="sr-only"> {titulo}</span>
                         </Link>
                         {estadoPublicacion === 'ACTIVA' && (
@@ -274,7 +274,8 @@ export default function PublicacionesPagina() {
                             <span className="sr-only"> {titulo}</span>
                           </button>
                         )}
-                        <button type="button" className={`boton ${estilos.baja}`} disabled={bloqueada} onClick={() => ejecutar(publicacion, 'baja')}>
+                        <button type="button" className="boton boton-peligro" disabled={bloqueada} onClick={() => setPorDarDeBaja(publicacion)}>
+                          <IconoPapelera />
                           Dar de baja<span className="sr-only"> {titulo}</span>
                         </button>
                       </div>
@@ -287,6 +288,18 @@ export default function PublicacionesPagina() {
 
           <Paginacion pagina={cargada} onCambiar={irAPagina} />
         </>
+      )}
+
+      {porDarDeBaja && (
+        <DialogoConfirmacion
+          titulo="¿Dar de baja esta publicación?"
+          detalle={porDarDeBaja.titulo}
+          textoConfirmar="Dar de baja"
+          onConfirmar={() => ejecutar(porDarDeBaja, 'baja')}
+          onCancelar={() => setPorDarDeBaja(null)}
+        >
+          Deja de mostrarse en el sitio y queda en el historial como eliminada. No se puede volver a activar.
+        </DialogoConfirmacion>
       )}
     </>
   )

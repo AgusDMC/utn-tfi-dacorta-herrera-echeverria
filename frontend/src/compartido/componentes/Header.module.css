@@ -113,6 +113,75 @@
   font-weight: 500;
 }
 
+/* Ingresar (acceso al panel): un enlace más de la barra. Donde no entra el texto queda el
+   ícono, con el texto solo para lectores de pantalla. */
+.acceso svg {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.accesoTexto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* En el celular va pegado a Alquilar, sin la separación de la barra */
+@media (max-width: 639.98px) {
+  .acceso {
+    margin-left: calc(-1 * var(--espacio-2));
+  }
+}
+
+/* En los celulares más angostos los tres enlaces no entran al lado de la marca: la barra pasa a
+   dos filas, con la marca arriba y los enlaces abajo. Ahí Ingresar tiene lugar para su texto y
+   va a la derecha. El alto de las dos filas es --alto-header (global.css). */
+@media (max-width: 359.98px) {
+  .barra {
+    flex-wrap: wrap;
+    align-content: center;
+    row-gap: 0;
+    padding-top: var(--espacio-2);
+  }
+
+  /* El margen negativo alinea el texto de los enlaces con la marca y con el borde derecho */
+  .navegacion {
+    flex: 1 0 100%;
+    margin-inline: calc(-1 * var(--espacio-3));
+  }
+
+  .acceso {
+    margin-left: auto;
+  }
+}
+
+/* En tablet la barra ya lleva todos los enlaces: el ícono va pegado al botón y sin relleno de más */
+@media (min-width: 640px) and (max-width: 1023.98px) {
+  .enlace.acceso {
+    margin-left: calc(-1 * var(--espacio-4));
+    padding-inline: var(--espacio-3);
+  }
+}
+
+/* Con lugar para el texto (escritorio, y la segunda fila de los celulares más angostos) */
+@media (max-width: 359.98px), (min-width: 1024px) {
+  .acceso svg {
+    display: none;
+  }
+
+  .accesoTexto {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+}
+
 /* Foco: el mismo contorno en los enlaces y en el botón */
 .enlace:focus-visible,
 .todas:focus-visible {

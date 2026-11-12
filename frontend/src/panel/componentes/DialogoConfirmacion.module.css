@@ -1,0 +1,87 @@
+/* La página no se desplaza mientras hay una confirmación abierta */
+:global(html):has(.dialogo[open]) {
+  overflow: hidden;
+}
+
+.dialogo {
+  width: min(100% - 2 * var(--margen-lateral), 28rem);
+  max-height: calc(100dvh - 2 * var(--margen-lateral));
+  padding: 0;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  box-shadow: 0 24px 64px rgb(28 27 25 / 0.24);
+  /* Solo se anima la entrada: al responder, el diálogo se desmonta */
+  transition:
+    opacity 180ms var(--ease-out),
+    translate 180ms var(--ease-out);
+}
+
+@starting-style {
+  .dialogo[open] {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+.dialogo::backdrop {
+  background: rgb(28 27 25 / 0.5);
+}
+
+.contenido {
+  display: grid;
+  gap: var(--espacio-3);
+  padding: var(--espacio-6);
+}
+
+.titulo {
+  font-size: var(--titulo-sm);
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+/* Lo que se va a eliminar, destacado para que no haya dudas */
+.detalle {
+  padding-left: var(--espacio-3);
+  border-left: 2px solid var(--color-error);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.texto {
+  color: var(--color-texto-suave);
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-3);
+}
+
+.confirmar {
+  background: var(--color-error);
+  color: var(--color-sobre-acento);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .confirmar:hover {
+    background: color-mix(in srgb, var(--color-error) 88%, black);
+  }
+}
+
+/* En el celular los dos botones ocupan el ancho, con Cancelar abajo */
+@media (max-width: 479.98px) {
+  .acciones {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialogo {
+    transition: none;
+    translate: none;
+  }
+}

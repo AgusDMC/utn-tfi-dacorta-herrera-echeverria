@@ -1,5 +1,6 @@
 .cambio {
-  margin-top: var(--espacio-12);
+  display: grid;
+  gap: var(--espacio-4);
   padding-top: var(--espacio-6);
   border-top: 1px solid var(--color-texto);
 }
@@ -10,65 +11,68 @@
 }
 
 .texto {
-  margin-top: var(--espacio-3);
   color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
 }
 
 .formulario {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
+  display: grid;
+  justify-items: start;
   gap: var(--espacio-4);
-  margin-top: var(--espacio-4);
 }
 
-.campo {
+.opciones {
   display: grid;
-  gap: var(--espacio-1);
-  flex: 1 1 12rem;
-  max-width: 18rem;
+  gap: var(--espacio-2);
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 .etiqueta {
+  margin-bottom: var(--espacio-2);
+  padding: 0;
   color: var(--color-texto-suave);
   font-size: var(--texto-sm);
   font-weight: 500;
 }
 
-.selector {
+/* Cada estado posible es una fila que se elige entera; la elegida se marca en pino */
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
   min-height: var(--alto-tactil);
   padding: var(--espacio-2) var(--espacio-3);
-  border: 1px solid var(--color-texto-suave);
+  border: 1px solid var(--color-borde);
   border-radius: var(--radio-sm);
   background: var(--color-superficie);
-  color: var(--color-texto);
-  font: inherit;
-  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color var(--duracion-rapida) var(--curva);
 }
 
-.guardar:disabled,
-.selector:disabled {
-  opacity: 0.7;
+.opcion input {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0;
+  accent-color: var(--color-primario);
+}
+
+.opcion:has(input:checked) {
+  border-color: var(--color-primario);
+  box-shadow: inset 0 0 0 1px var(--color-primario);
+}
+
+.opcion:has(input:disabled) {
+  opacity: 0.6;
   cursor: progress;
 }
 
-/* Confirmación o error, con un filete al margen */
-.resultado {
-  margin-top: var(--espacio-4);
-  padding-left: var(--espacio-4);
-  border-left: 2px solid var(--color-primario);
-  font-weight: 600;
-}
-
-.resultado[data-error] {
-  border-left-color: var(--color-error);
-}
-
-.resultado:focus {
-  outline: none;
-}
-
-.resultado:focus-visible {
-  outline: 2px solid var(--color-primario);
-  outline-offset: 4px;
+@media (hover: hover) and (pointer: fine) {
+  .opcion:hover:not(:has(input:disabled)) {
+    border-color: var(--color-primario);
+  }
 }

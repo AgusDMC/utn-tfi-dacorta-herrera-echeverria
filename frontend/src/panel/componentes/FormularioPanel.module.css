@@ -1,7 +1,7 @@
 .formulario {
   display: grid;
   gap: var(--espacio-8);
-  max-width: 48rem;
+  max-width: 60rem;
   margin-top: var(--espacio-8);
 }
 
@@ -49,10 +49,31 @@
   padding: var(--espacio-2) var(--espacio-3);
   border: 1px solid var(--color-texto-suave);
   border-radius: var(--radio-sm);
-  background: var(--color-superficie);
+  background-color: var(--color-superficie);
   color: var(--color-texto);
   font: inherit;
   font-size: 1.0625rem; /* 17 px: el celular no hace zoom al enfocar */
+  transition: border-color var(--duracion-rapida) var(--curva);
+}
+
+.control::placeholder {
+  color: var(--color-texto-suave);
+  opacity: 0.8;
+}
+
+.control:disabled {
+  background-color: var(--color-arena);
+  cursor: progress;
+}
+
+/* Los desplegables llevan la misma flecha que el buscador del sitio, en lugar de la nativa */
+select.control {
+  padding-right: var(--espacio-8);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%231f4d3f' stroke-width='1.5'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--espacio-3) center;
+  background-size: 1rem;
+  appearance: none;
 }
 
 textarea.control {
@@ -61,6 +82,12 @@ textarea.control {
 
 .control[aria-invalid='true'] {
   border-color: var(--color-error);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .control:hover:not(:disabled, [aria-invalid='true']) {
+    border-color: var(--color-primario);
+  }
 }
 
 .aviso {
@@ -96,31 +123,16 @@ textarea.control {
   accent-color: var(--color-primario);
 }
 
-/* Error al guardar: una nota al margen con filete */
-.error {
-  padding-left: var(--espacio-4);
-  border-left: 2px solid var(--color-error);
-  font-weight: 600;
-}
-
-.error:focus {
-  outline: none;
-}
-
-.error:focus-visible {
-  outline: 2px solid var(--color-primario);
-  outline-offset: 4px;
-}
-
 .acciones {
   display: flex;
   flex-wrap: wrap;
   gap: var(--espacio-3);
 }
 
-.acciones button:disabled {
-  opacity: 0.7;
-  cursor: progress;
+/* Guardar y Cancelar cierran el formulario, separados de los campos por un filete */
+.formulario > .acciones {
+  padding-top: var(--espacio-6);
+  border-top: 1px solid var(--color-borde);
 }
 
 @media (min-width: 640px) {
@@ -130,5 +142,26 @@ textarea.control {
 
   .cifras {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* En escritorio, el título de cada grupo queda a la izquierda y sus campos a la derecha */
+@media (min-width: 1024px) {
+  .grupo {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    column-gap: var(--espacio-8);
+  }
+
+  .leyenda {
+    grid-area: 1 / 1;
+  }
+
+  .grupo > :not(.leyenda) {
+    grid-column: 2;
+  }
+
+  /* El aviso de error y las acciones siguen la columna de los campos */
+  .formulario > :not(.grupo) {
+    margin-left: calc(14rem + var(--espacio-8));
   }
 }

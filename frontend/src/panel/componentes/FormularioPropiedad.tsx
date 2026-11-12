@@ -3,6 +3,7 @@ import { flushSync } from 'react-dom'
 import { Link, useLocation } from 'react-router'
 import { ETIQUETA_TIPO, TIPOS_PROPIEDAD } from '../../catalogo/tipos.ts'
 import type { DatosPropiedad } from '../propiedades/tipos.ts'
+import Aviso from './Aviso.tsx'
 import Campo from './Campo.tsx'
 import estilos from './FormularioPanel.module.css'
 
@@ -201,9 +202,9 @@ export default function FormularioPropiedad({ inicial, textoBoton, guardando, er
       </fieldset>
 
       {error && (
-        <p ref={errorRef} tabIndex={-1} className={estilos.error}>
+        <Aviso ref={errorRef} error>
           {error}
-        </p>
+        </Aviso>
       )}
 
       <div className={estilos.acciones}>

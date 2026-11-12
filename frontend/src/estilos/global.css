@@ -67,6 +67,13 @@
   --duracion-media: 300ms;           /* interfaz */
 }
 
+/* En los celulares más angostos el header ocupa dos filas (Header.module.css) */
+@media (max-width: 359.98px) {
+  :root {
+    --alto-header: 6rem;
+  }
+}
+
 @media (min-width: 640px) {
   :root {
     --margen-lateral: 1.5rem;

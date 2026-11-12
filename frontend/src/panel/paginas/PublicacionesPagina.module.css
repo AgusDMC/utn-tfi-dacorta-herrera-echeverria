@@ -50,25 +50,9 @@
   font-size: var(--texto-sm);
 }
 
-/* Resultado de una acción: una nota al margen con filete */
+/* El aviso del resultado de una acción (componente Aviso) */
 .resultado {
   margin-top: var(--espacio-6);
-  padding-left: var(--espacio-4);
-  border-left: 2px solid var(--color-primario);
-  font-weight: 600;
-}
-
-.resultado[data-error] {
-  border-left-color: var(--color-error);
-}
-
-.resultado:focus {
-  outline: none;
-}
-
-.resultado:focus-visible {
-  outline: 2px solid var(--color-primario);
-  outline-offset: 4px;
 }
 
 /* ---------- Lista: filas separadas por filetes ---------- */
@@ -120,24 +104,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--espacio-2);
-}
-
-.acciones button:disabled {
-  opacity: 0.6;
-  cursor: progress;
-}
-
-/* Dar de baja: con filete, sin el peso del botón principal */
-.baja {
-  border-color: var(--color-borde);
-  background: transparent;
-  color: var(--color-error);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .baja:hover:not(:disabled) {
-    border-color: var(--color-error);
-  }
 }
 
 /* Desde escritorio, una fila por publicación: datos, estados y acciones alineados. Las columnas

@@ -1,11 +1,18 @@
 /* La sección abre con un filete y su título, como los grupos del formulario de la propiedad */
 .seccion {
   display: grid;
-  gap: var(--espacio-4);
-  max-width: 48rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espacio-6);
+  max-width: 60rem;
   margin-top: var(--espacio-12);
   padding-top: var(--espacio-6);
   border-top: 1px solid var(--color-texto);
+}
+
+.encabezado {
+  display: grid;
+  align-content: start;
+  gap: var(--espacio-2);
 }
 
 .titulo {
@@ -13,11 +20,11 @@
   font-weight: 400;
 }
 
-.subtitulo {
-  font-family: var(--fuente-texto);
-  font-size: var(--texto-base);
-  font-weight: 600;
-  letter-spacing: 0;
+.cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espacio-4);
+  min-width: 0;
 }
 
 .estado {
@@ -27,180 +34,148 @@
   color: var(--color-texto-suave);
 }
 
-/* Resultado de una acción: una nota al margen con filete */
-.resultado {
-  padding-left: var(--espacio-4);
-  border-left: 2px solid var(--color-primario);
-  font-weight: 600;
-}
+/* ---------- Galería: una tarjeta por imagen, con la foto como protagonista ---------- */
 
-.resultado[data-error] {
-  border-left-color: var(--color-error);
-}
-
-.resultado:focus {
-  outline: none;
-}
-
-.resultado:focus-visible {
-  outline: 2px solid var(--color-primario);
-  outline-offset: 4px;
-}
-
-/* ---------- Lista: una fila por imagen, separadas por filetes ---------- */
-
-.lista {
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-4) var(--espacio-3);
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--color-borde);
   list-style: none;
 }
 
-/* En el celular, la miniatura y los datos van lado a lado y las acciones debajo */
-.item {
+.tarjeta {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: var(--espacio-4);
-  padding-block: var(--espacio-4);
-  border-bottom: 1px solid var(--color-borde);
+  grid-template-rows: auto 1fr;
+  gap: var(--espacio-3);
+  min-width: 0;
+  transition: opacity var(--duracion-rapida) var(--curva);
 }
 
-.miniatura {
+.tarjeta[data-eliminando] {
+  opacity: 0.5;
+}
+
+/* Al editar la descripción, la tarjeta ocupa toda la fila para que el campo tenga lugar */
+.tarjeta[data-edicion] {
+  grid-column: 1 / -1;
+  grid-template-rows: auto;
+  padding: var(--espacio-3);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background: var(--color-superficie);
+}
+
+.foto {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 6.5rem;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-radius: var(--radio-sm);
+  border-radius: var(--radio-md);
   background: var(--color-arena);
-  color: var(--color-texto-suave);
-  font-size: var(--texto-xs);
-  text-align: center;
 }
 
-.miniatura img {
+.tarjeta[data-edicion] .foto {
+  width: min(100%, 12rem);
+}
+
+.foto img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.datos {
+.sinFoto {
+  padding: var(--espacio-2);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-xs);
+  text-align: center;
+}
+
+/* Número de orden sobre la foto; la portada va en pino lleno */
+.sello {
+  position: absolute;
+  top: var(--espacio-2);
+  left: var(--espacio-2);
+  padding: 0.125rem var(--espacio-2);
+  border-radius: var(--radio-sm);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+
+.sello[data-portada] {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+/* La descripción arriba y las acciones siempre al pie, alineadas entre tarjetas */
+.pie {
   display: grid;
-  gap: var(--espacio-1);
-  align-content: center;
+  grid-template-rows: 1fr auto;
+  gap: var(--espacio-3);
   min-width: 0;
 }
 
-.orden {
-  color: var(--color-texto-suave);
-  font-size: var(--texto-sm);
-  font-weight: 500;
-}
-
 .descripcion {
+  font-size: var(--texto-sm);
   overflow-wrap: anywhere;
 }
 
 .acciones {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  grid-column: 1 / -1;
-  gap: var(--espacio-3);
+  gap: var(--espacio-2);
+}
+
+.editar {
+  flex: 1;
+  min-width: 0;
+  padding-inline: var(--espacio-2);
+}
+
+.eliminar {
+  flex: none;
+  width: var(--alto-tactil);
+  padding: 0;
 }
 
 .edicion {
   display: grid;
-  grid-column: 1 / -1;
   gap: var(--espacio-4);
   min-width: 0;
 }
 
-.seccion button:disabled {
-  opacity: 0.6;
-  cursor: progress;
-}
-
-/* Eliminar: con filete, sin el peso del botón principal */
-.eliminar {
-  border-color: var(--color-borde);
-  background: transparent;
-  color: var(--color-error);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .eliminar:hover:not(:disabled) {
-    border-color: var(--color-error);
-  }
-}
-
-/* ---------- Carga ---------- */
-
-.carga {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--espacio-6);
-  margin-top: var(--espacio-4);
-}
-
-/* El selector nativo no se achica solo: ocupa el ancho de la columna y recorta el nombre */
-.archivo {
-  width: 100%;
-  font: inherit;
-}
-
-/* Su botón, con el aspecto del botón secundario del panel */
-.archivo::file-selector-button {
-  min-height: var(--alto-tactil);
-  margin-right: var(--espacio-3);
-  padding: var(--espacio-2) var(--espacio-4);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-sm);
-  background: var(--color-superficie);
-  color: var(--color-texto);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .archivo::file-selector-button:hover {
-    border-color: var(--color-primario);
-    color: var(--color-primario);
-  }
-}
-
-/* En el celular, el nombre del archivo va debajo del botón: al lado quedaba recortado */
-@media (max-width: 639.98px) {
-  .archivo::file-selector-button {
-    display: block;
-    margin: 0 0 var(--espacio-2);
-  }
-}
-
-/* En los celulares más angostos, los dos botones entran en una línea con menos relleno */
+/* En los celulares más angostos, Editar va sin ícono para que entre junto a la papelera */
 @media (max-width: 359.98px) {
-  .acciones button {
-    padding-inline: var(--espacio-3);
+  .editar svg {
+    display: none;
   }
 }
 
-/* Desde tablet, una fila por imagen: miniatura, datos y acciones */
+/* Desde tablet, tres por fila; la tarjeta en edición pone la foto al lado del campo */
 @media (min-width: 640px) {
-  .item {
-    grid-template-columns: auto minmax(0, 1fr) auto;
+  .galeria {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--espacio-6) var(--espacio-4);
   }
 
-  .miniatura {
-    width: 9rem;
+  .tarjeta[data-edicion] {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: var(--espacio-4);
+    padding: var(--espacio-4);
   }
+}
 
-  .acciones {
-    grid-column: auto;
-  }
-
-  .edicion {
-    grid-column: 2 / -1;
+/* En escritorio, el título queda a la izquierda y el contenido a la derecha, como los grupos
+   del formulario */
+@media (min-width: 1024px) {
+  .seccion {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: var(--espacio-8);
   }
 }

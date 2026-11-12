@@ -13,6 +13,7 @@ import {
   type Publicacion,
   type ValoresPublicacion,
 } from '../publicaciones/tipos.ts'
+import Aviso from './Aviso.tsx'
 import Campo from './Campo.tsx'
 import estilos from './FormularioPanel.module.css'
 
@@ -253,9 +254,9 @@ export default function FormularioPublicacion({ propiedades, inicial, textoBoton
       </fieldset>
 
       {error && (
-        <p ref={errorRef} tabIndex={-1} className={estilos.error}>
+        <Aviso ref={errorRef} error>
           {error}
-        </p>
+        </Aviso>
       )}
 
       <div className={estilos.acciones}>
