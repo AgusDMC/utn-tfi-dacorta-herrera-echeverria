@@ -32,7 +32,7 @@ Incluye un catálogo público con filtros, ficha de detalle con galería de imá
 |---|---|---|
 | API REST (backend) | Railway | [`/api/publicaciones`](https://utn-tfi-dacorta-herrera-echeverria-production-db107b99.up.railway.app/api/publicaciones) |
 | Base de datos PostgreSQL | Railway (mismo proyecto que el backend, sin acceso público) | — |
-| Frontend | Vercel | Pendiente |
+| Frontend | Vercel | https://nexo-inmobiliaria-theta.vercel.app/ |
 
 La base de producción tiene los datos demo cargados. El usuario administrador no es el de los datos demo: sus credenciales se comparten por privado, no están en el repositorio.
 
@@ -105,7 +105,7 @@ El backend las toma de `backend/.env` en local (plantilla en [`backend/.env.exam
 | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Almacenamiento de imágenes | Necesarias para subir fotos |
 | `PORT` | Puerto del servidor | Opcional: por defecto `8080` |
 
-La configuración del frontend (`VITE_API_URL`) queda pendiente hasta cerrar su despliegue en Vercel. Ningún valor real se sube al repositorio.
+El frontend no necesita `VITE_API_URL` en producción: [`frontend/vercel.json`](frontend/vercel.json) redirige `/api` al backend de Railway. En desarrollo, Vite reenvía `/api` al backend local (`http://localhost:8080`) por defecto; para usar el de Railway se define `API_PROXY` en `frontend/.env.local`, que Git ignora. Ningún valor real se sube al repositorio.
 
 ### Despliegue en Railway
 
@@ -115,14 +115,14 @@ La configuración del frontend (`VITE_API_URL`) queda pendiente hasta cerrar su 
 
 ### Backend y frontend
 
-Pendiente: se completará cuando el código esté disponible.
+Cada aplicación se ejecuta en su propia terminal, desde la raíz del repositorio:
 
 ```bash
-# Backend
+# Terminal 1: backend
 cd backend
 ./mvnw spring-boot:run
 
-# Frontend
+# Terminal 2: frontend
 cd frontend
 npm install
 npm run dev
