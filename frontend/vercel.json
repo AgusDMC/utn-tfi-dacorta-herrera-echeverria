@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://utn-tfi-dacorta-herrera-echeverria-production-db107b99.up.railway.app/api/:path*"
+    },
+    {
+      "source": "/((?!api(?:/|$)|assets/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

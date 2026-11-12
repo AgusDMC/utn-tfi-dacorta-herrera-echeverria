@@ -81,7 +81,8 @@ export default function Footer() {
           © {anio} {NOMBRE_INMOBILIARIA}
           {matricula && <> · Matrícula {matricula}</>}
         </p>
-        <Link to="/admin/login">Acceso administración</Link>
+        {/* Con sesión entra al panel; sin sesión, la ruta protegida lleva al login */}
+        <Link to="/admin">Administración</Link>
       </div>
     </footer>
   )

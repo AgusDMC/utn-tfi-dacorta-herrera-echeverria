@@ -1,0 +1,156 @@
+.subida {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espacio-4);
+  margin-top: var(--espacio-4);
+  padding-top: var(--espacio-6);
+  border-top: 1px solid var(--color-borde);
+}
+
+.subtitulo {
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-base);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.selector {
+  display: grid;
+  justify-items: start;
+  gap: var(--espacio-2);
+}
+
+/* El foco del selector oculto se dibuja sobre su botón */
+.entrada:focus-visible + .elegir {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 3px;
+}
+
+.entrada:disabled + .elegir {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Archivos que no pasaron la revisión: una nota con filete rojo */
+.rechazados {
+  display: grid;
+  gap: var(--espacio-1);
+  padding-left: var(--espacio-4);
+  border-left: 2px solid var(--color-error);
+  font-size: var(--texto-sm);
+}
+
+.rechazados p {
+  font-weight: 600;
+}
+
+.rechazados ul {
+  margin: 0;
+  padding-left: var(--espacio-4);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Cola: una fila por imagen elegida ---------- */
+
+.cola {
+  display: grid;
+  gap: var(--espacio-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Celular: miniatura, nombre y quitar arriba; la descripción ocupa todo el ancho abajo */
+.pendiente {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background: var(--color-superficie);
+}
+
+.pendiente[data-subiendo] {
+  border-color: var(--color-primario);
+}
+
+.vista {
+  width: 4.5rem;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radio-sm);
+  background: var(--color-arena);
+  object-fit: cover;
+}
+
+.datos {
+  display: grid;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.nombre {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quitar {
+  width: var(--alto-tactil);
+  padding: 0;
+}
+
+.descripcion {
+  grid-column: 1 / -1;
+}
+
+.progreso {
+  display: grid;
+  gap: var(--espacio-2);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.progreso progress {
+  width: 100%;
+  height: 0.375rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-borde);
+  accent-color: var(--color-primario);
+  appearance: none;
+}
+
+.progreso progress::-webkit-progress-bar {
+  border-radius: 999px;
+  background: var(--color-borde);
+}
+
+.progreso progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: var(--color-primario);
+  transition: inline-size var(--duracion-media) var(--curva);
+}
+
+.progreso progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: var(--color-primario);
+}
+
+/* Desde tablet, todo en una fila: miniatura, nombre, descripción y quitar */
+@media (min-width: 640px) {
+  .pendiente {
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.4fr) auto;
+  }
+
+  .quitar {
+    order: 1;
+  }
+
+  .descripcion {
+    grid-column: auto;
+  }
+}

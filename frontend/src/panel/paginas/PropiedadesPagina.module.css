@@ -19,25 +19,9 @@
   color: var(--color-texto-suave);
 }
 
-/* Resultado de una acción: una nota al margen con filete */
+/* El aviso del resultado de una acción (componente Aviso) */
 .resultado {
   margin-top: var(--espacio-6);
-  padding-left: var(--espacio-4);
-  border-left: 2px solid var(--color-primario);
-  font-weight: 600;
-}
-
-.resultado[data-error] {
-  border-left-color: var(--color-error);
-}
-
-.resultado:focus {
-  outline: none;
-}
-
-.resultado:focus-visible {
-  outline: 2px solid var(--color-primario);
-  outline-offset: 4px;
 }
 
 .cantidad {
@@ -92,24 +76,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--espacio-2);
-}
-
-/* Dar de baja: botón de texto con filete, sin el peso del botón principal */
-.baja {
-  border-color: var(--color-borde);
-  background: transparent;
-  color: var(--color-error);
-}
-
-.baja:disabled {
-  opacity: 0.6;
-  cursor: progress;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .baja:hover:not(:disabled) {
-    border-color: var(--color-error);
-  }
 }
 
 /* Desde tablet, una fila por propiedad: ubicación, cifras y acciones alineadas */

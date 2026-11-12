@@ -5,7 +5,10 @@ import { formatearSuperficie } from '../../catalogo/formato.ts'
 import { ETIQUETA_TIPO } from '../../catalogo/tipos.ts'
 import { ErrorApi } from '../../compartido/api/clienteApi.ts'
 import type { Pagina } from '../../compartido/api/pagina.ts'
+import { IconoLapiz, IconoMas, IconoPapelera } from '../../compartido/componentes/Iconos.tsx'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
+import Aviso, { type Resultado } from '../componentes/Aviso.tsx'
+import DialogoConfirmacion from '../componentes/DialogoConfirmacion.tsx'
 import Paginacion from '../../compartido/componentes/Paginacion.tsx'
 import { contar } from '../formato.ts'
 import { conPagina, leerPagina } from '../../compartido/paginacion.ts'
@@ -13,13 +16,8 @@ import { darDeBajaPropiedad, listarPaginaPropiedades } from '../propiedades/prop
 import type { Propiedad } from '../propiedades/tipos.ts'
 import estilos from './PropiedadesPagina.module.css'
 
-interface Aviso {
-  texto: string
-  error?: boolean
-}
-
 // El formulario vuelve al listado con { aviso: 'Propiedad agregada.' } o similar
-function avisoDeLlegada(estado: unknown): Aviso | null {
+function avisoDeLlegada(estado: unknown): Resultado | null {
   if (typeof estado !== 'object' || estado === null || !('aviso' in estado)) return null
   return typeof estado.aviso === 'string' ? { texto: estado.aviso } : null
 }
@@ -33,7 +31,8 @@ export default function PropiedadesPagina() {
   const [respuesta, setRespuesta] = useState<Pagina<Propiedad> | null>(null)
   const [falloEn, setFalloEn] = useState<number | null>(null) // la página que no se pudo cargar
   const [intento, setIntento] = useState(0)
-  const [aviso, setAviso] = useState<Aviso | null>(() => avisoDeLlegada(state))
+  const [aviso, setAviso] = useState<Resultado | null>(() => avisoDeLlegada(state))
+  const [porDarDeBaja, setPorDarDeBaja] = useState<Propiedad | null>(null) // espera la confirmación
   const [dandoDeBaja, setDandoDeBaja] = useState<number | null>(null)
   const tituloRef = useRef<HTMLHeadingElement>(null)
   const avisoRef = useRef<HTMLParagraphElement>(null)
@@ -90,9 +89,8 @@ export default function PropiedadesPagina() {
   }
 
   async function darDeBaja(propiedad: Propiedad) {
+    setPorDarDeBaja(null)
     if (bajaEnCursoRef.current) return
-    if (!window.confirm(`¿Querés dar de baja esta propiedad?\n\n${propiedad.direccion}, ${propiedad.localidad}`)) return
-
     bajaEnCursoRef.current = true
     setDandoDeBaja(propiedad.id)
     setAviso(null)
@@ -124,14 +122,15 @@ export default function PropiedadesPagina() {
           Propiedades
         </h1>
         <Link to="/admin/propiedades/nueva" className="boton boton-primario">
+          <IconoMas />
           Agregar propiedad
         </Link>
       </div>
 
       {aviso && (
-        <p ref={avisoRef} tabIndex={-1} className={estilos.resultado} data-error={aviso.error || undefined}>
+        <Aviso ref={avisoRef} error={aviso.error} className={estilos.resultado}>
           {aviso.texto}
-        </p>
+        </Aviso>
       )}
 
       {falloEn === pagina ? (
@@ -167,14 +166,16 @@ export default function PropiedadesPagina() {
                   </p>
                   <div className={estilos.acciones}>
                     <Link to={{ pathname: `/admin/propiedades/${propiedad.id}/editar`, search }} className="boton boton-secundario">
+                      <IconoLapiz />
                       Editar<span className="sr-only"> {lugar}</span>
                     </Link>
                     <button
                       type="button"
-                      className={`boton ${estilos.baja}`}
+                      className="boton boton-peligro"
                       disabled={dandoDeBaja !== null}
-                      onClick={() => darDeBaja(propiedad)}
+                      onClick={() => setPorDarDeBaja(propiedad)}
                     >
+                      <IconoPapelera />
                       {dandoDeBaja === propiedad.id ? 'Dando de baja…' : 'Dar de baja'}
                       <span className="sr-only"> {lugar}</span>
                     </button>
@@ -185,6 +186,18 @@ export default function PropiedadesPagina() {
           </ul>
           <Paginacion pagina={cargada} onCambiar={irAPagina} />
         </>
+      )}
+
+      {porDarDeBaja && (
+        <DialogoConfirmacion
+          titulo="¿Dar de baja esta propiedad?"
+          detalle={`${ETIQUETA_TIPO[porDarDeBaja.tipoPropiedad]} · ${porDarDeBaja.direccion}, ${porDarDeBaja.localidad}`}
+          textoConfirmar="Dar de baja"
+          onConfirmar={() => darDeBaja(porDarDeBaja)}
+          onCancelar={() => setPorDarDeBaja(null)}
+        >
+          Deja de aparecer en el panel y no se puede volver a activar desde acá.
+        </DialogoConfirmacion>
       )}
     </>
   )

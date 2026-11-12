@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router'
 import { tituloPagina } from '../../config.ts'
 import { ErrorApi } from '../../compartido/api/clienteApi.ts'
+import { IconoCorreo, IconoTelefono } from '../../compartido/componentes/Iconos.tsx'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
 import CambioEstadoConsulta from '../componentes/CambioEstadoConsulta.tsx'
 import EtiquetaEstado from '../componentes/EtiquetaEstado.tsx'
@@ -98,49 +99,60 @@ export default function ConsultaPagina() {
         <EtiquetaEstado texto={ETIQUETA_ESTADO[consulta.estado]} tono={TONO_ESTADO[consulta.estado]} />
       </div>
 
-      <dl className={estilos.datos}>
-        <div className={estilos.dato}>
-          <dt>Publicación</dt>
-          <dd>Publicación #{consulta.publicacionId}</dd>
-        </div>
-        {email && (
-          <div className={estilos.dato}>
-            <dt>Email</dt>
-            <dd>
-              <a href={`mailto:${email}`}>{email}</a>
-            </dd>
-          </div>
-        )}
-        {telefono && (
-          <div className={estilos.dato}>
-            <dt>Teléfono</dt>
-            <dd>
-              <a href={`tel:${telefono.replace(/[^\d+]/g, '')}`}>{telefono}</a>
-            </dd>
-          </div>
-        )}
-        <div className={estilos.dato}>
-          <dt>Recibida</dt>
-          <dd>
-            <time dateTime={consulta.fechaCreacion}>{formatearFecha(consulta.fechaCreacion)}</time>
-          </dd>
-        </div>
-        <div className={estilos.dato}>
-          <dt>Última actualización</dt>
-          <dd>
-            <time dateTime={consulta.fechaUltActualizacion}>{formatearFecha(consulta.fechaUltActualizacion)}</time>
-          </dd>
-        </div>
-      </dl>
+      {/* En escritorio, el mensaje a la izquierda y los datos con el cambio de estado al costado */}
+      <div className={estilos.cuerpo}>
+        <section className={estilos.mensaje} aria-labelledby="titulo-mensaje">
+          <h2 id="titulo-mensaje" className={estilos.subtitulo}>
+            Mensaje
+          </h2>
+          <p className={estilos.texto}>{consulta.mensaje}</p>
+        </section>
 
-      <section className={estilos.mensaje} aria-labelledby="titulo-mensaje">
-        <h2 id="titulo-mensaje" className={estilos.subtitulo}>
-          Mensaje
-        </h2>
-        <p className={estilos.texto}>{consulta.mensaje}</p>
-      </section>
+        <div className={estilos.lateral}>
+          <dl className={estilos.datos}>
+            {email && (
+              <div className={estilos.dato}>
+                <dt>Email</dt>
+                <dd>
+                  <a href={`mailto:${email}`} className={estilos.contacto}>
+                    <IconoCorreo />
+                    {email}
+                  </a>
+                </dd>
+              </div>
+            )}
+            {telefono && (
+              <div className={estilos.dato}>
+                <dt>Teléfono</dt>
+                <dd>
+                  <a href={`tel:${telefono.replace(/[^\d+]/g, '')}`} className={estilos.contacto}>
+                    <IconoTelefono />
+                    {telefono}
+                  </a>
+                </dd>
+              </div>
+            )}
+            <div className={estilos.dato}>
+              <dt>Publicación</dt>
+              <dd>Publicación #{consulta.publicacionId}</dd>
+            </div>
+            <div className={estilos.dato}>
+              <dt>Recibida</dt>
+              <dd>
+                <time dateTime={consulta.fechaCreacion}>{formatearFecha(consulta.fechaCreacion)}</time>
+              </dd>
+            </div>
+            <div className={estilos.dato}>
+              <dt>Última actualización</dt>
+              <dd>
+                <time dateTime={consulta.fechaUltActualizacion}>{formatearFecha(consulta.fechaUltActualizacion)}</time>
+              </dd>
+            </div>
+          </dl>
 
-      <CambioEstadoConsulta consulta={consulta} onActualizada={setConsulta} />
+          <CambioEstadoConsulta consulta={consulta} onActualizada={setConsulta} />
+        </div>
+      </div>
     </>
   )
 }

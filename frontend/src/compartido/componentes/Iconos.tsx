@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { TipoPropiedad } from '../../catalogo/tipos.ts'
 
 // Íconos propios de 24 px: trazo de 1,5 px y color heredado (currentColor). Son decorativos: el
-// texto que los acompaña ya dice lo mismo.
+// texto que los acompaña (visible o solo para lectores de pantalla) ya dice lo mismo.
 interface Props {
   className?: string
 }
@@ -126,6 +126,73 @@ export function IconoMensaje(props: Props) {
   return (
     <Icono {...props}>
       <path d="M4 5.500h16v11H10l-4.500 3.500v-3.500H4z" />
+    </Icono>
+  )
+}
+
+// ---------- Acciones del panel ----------
+
+export function IconoPapelera(props: Props) {
+  return (
+    <Icono {...props}>
+      <path d="M4.500 7h15" />
+      <path d="M9.500 7V4.500h5V7" />
+      <path d="m6.500 7 1 12.500h9l1-12.500" />
+      <path d="M10.500 10.500v6M13.500 10.500v6" />
+    </Icono>
+  )
+}
+
+export function IconoLapiz(props: Props) {
+  return (
+    <Icono {...props}>
+      <path d="M4.500 19.500 5.500 15 16 4.500l3.500 3.500L9 18.500z" />
+      <path d="m14 6.500 3.500 3.500" />
+    </Icono>
+  )
+}
+
+export function IconoMas(props: Props) {
+  return (
+    <Icono {...props}>
+      <path d="M12 5v14M5 12h14" />
+    </Icono>
+  )
+}
+
+export function IconoCerrar(props: Props) {
+  return (
+    <Icono {...props}>
+      <path d="m6 6 12 12M18 6 6 18" />
+    </Icono>
+  )
+}
+
+export function IconoSubir(props: Props) {
+  return (
+    <Icono {...props}>
+      <path d="M12 15.500V4.500" />
+      <path d="m7.500 9 4.500-4.500L16.500 9" />
+      <path d="M4.500 15.500v4h15v-4" />
+    </Icono>
+  )
+}
+
+export function IconoListo(props: Props) {
+  return (
+    <Icono {...props}>
+      <circle cx="12" cy="12" r="8.500" />
+      <path d="m8.500 12.500 2.500 2.500 4.500-5.500" />
+    </Icono>
+  )
+}
+
+export function IconoAlerta(props: Props) {
+  return (
+    <Icono {...props}>
+      <circle cx="12" cy="12" r="8.500" />
+      <path d="M12 7.500v5.500" />
+      <path d="M12 16.250v.010" />
     </Icono>
   )
 }

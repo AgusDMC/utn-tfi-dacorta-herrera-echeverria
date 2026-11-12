@@ -1,57 +1,43 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
-import { flushSync } from 'react-dom'
 import { ErrorApi } from '../../compartido/api/clienteApi.ts'
+import { IconoLapiz, IconoPapelera } from '../../compartido/componentes/Iconos.tsx'
 import { useSalirSiVencio } from '../autenticacion/useSalirSiVencio.ts'
-import { cambiarDescripcionImagen, eliminarImagen, listarImagenes, subirImagen } from '../imagenes/imagenes.ts'
-import type { ImagenPropiedad } from '../imagenes/tipos.ts'
+import { cambiarDescripcionImagen, eliminarImagen, listarImagenes } from '../imagenes/imagenes.ts'
+import { LARGO_DESCRIPCION, type ImagenPropiedad } from '../imagenes/tipos.ts'
+import Aviso, { type Resultado } from './Aviso.tsx'
+import DialogoConfirmacion from './DialogoConfirmacion.tsx'
 import formulario from './FormularioPanel.module.css'
 import estilos from './ImagenesPropiedad.module.css'
-
-// Los mismos límites que valida el backend, para avisar antes de subir
-const TIPOS_ACEPTADOS = ['image/jpeg', 'image/png', 'image/webp']
-const PESO_MAXIMO = 5 * 1024 * 1024
-const LARGO_DESCRIPCION = 200
-
-const ARCHIVO_INVALIDO = 'Elegí una imagen JPG, PNG o WEBP.'
-const ARCHIVO_GRANDE = 'La imagen no puede superar los 5 MB.'
-
-interface Aviso {
-  texto: string
-  error?: boolean
-}
+import SubidaImagenes from './SubidaImagenes.tsx'
 
 // La acción en curso: mientras dura, las demás quedan deshabilitadas
 type Accion = { tipo: 'subir' } | { tipo: 'guardar' | 'eliminar'; id: number }
 
-// Si la miniatura no carga, queda un recuadro con un aviso en lugar de la imagen rota
-function Miniatura({ url, alt }: { url: string; alt: string }) {
+// Si la foto no carga, queda un recuadro con un aviso en lugar de la imagen rota
+function Foto({ url, alt }: { url: string; alt: string }) {
   const [fallo, setFallo] = useState(false)
-  return (
-    <div className={estilos.miniatura}>
-      {fallo ? <span>No se pudo cargar</span> : <img src={url} alt={alt} loading="lazy" onError={() => setFallo(true)} />}
-    </div>
-  )
+  return fallo ? <span className={estilos.sinFoto}>No se pudo cargar</span> : <img src={url} alt={alt} loading="lazy" onError={() => setFallo(true)} />
 }
 
-// Imágenes de una propiedad dentro de su pantalla de edición: se listan en el orden del sitio,
-// se suben de a una y se les puede cambiar la descripción o eliminarlas. Cada cambio se guarda
-// en el momento, aparte del formulario de la propiedad. La página lo monta de nuevo al cambiar
-// de propiedad (key), así que no hace falta reiniciar su estado.
+// Imágenes de una propiedad dentro de su pantalla de edición: una galería en el orden del sitio,
+// con la descripción y la baja de cada una, y debajo la subida de imágenes nuevas. Cada cambio se
+// guarda en el momento, aparte del formulario de la propiedad. La página lo monta de nuevo al
+// cambiar de propiedad (key), así que no hace falta reiniciar su estado.
 export default function ImagenesPropiedad({ propiedadId }: { propiedadId: number }) {
   const salirSiVencio = useSalirSiVencio()
   const id = useId()
   const [imagenes, setImagenes] = useState<ImagenPropiedad[] | null>(null)
   const [falloCarga, setFalloCarga] = useState(false)
   const [intento, setIntento] = useState(0)
-  const [aviso, setAviso] = useState<Aviso | null>(null)
-  const [errorArchivo, setErrorArchivo] = useState<string | null>(null)
+  const [aviso, setAviso] = useState<Resultado | null>(null)
   const [editando, setEditando] = useState<number | null>(null)
+  const [porEliminar, setPorEliminar] = useState<ImagenPropiedad | null>(null) // espera la confirmación
   const [accion, setAccion] = useState<Accion | null>(null)
   const seccionRef = useRef<HTMLElement>(null)
   const avisoRef = useRef<HTMLParagraphElement>(null)
   // El estado tarda un render en reflejarse; el ref corta en el acto una segunda acción
   const ocupadoRef = useRef(false)
-  // Al salir de la edición, el foco vuelve al botón "Editar descripción" de esa imagen
+  // Al salir de la edición, el foco vuelve al botón "Editar" de esa imagen
   const devolverFocoRef = useRef<number | null>(null)
 
   useEffect(() => {
@@ -88,47 +74,10 @@ export default function ImagenesPropiedad({ propiedadId }: { propiedadId: number
     }
   }
 
-  // Una imagen que ya no existe (se eliminó desde otra pestaña) se saca de la lista
+  // Una imagen que ya no existe (se eliminó desde otra pestaña) se saca de la galería
   function quitar(imagenId: number) {
     setImagenes((actuales) => actuales && actuales.filter((imagen) => imagen.id !== imagenId))
     setEditando((actual) => (actual === imagenId ? null : actual))
-  }
-
-  function alSubir(evento: FormEvent<HTMLFormElement>) {
-    evento.preventDefault()
-    const form = evento.currentTarget
-    const datos = new FormData(form)
-    const archivo = datos.get('archivo')
-    const descripcion = String(datos.get('descripcion') ?? '').trim()
-
-    let invalido: string | null = null
-    if (!(archivo instanceof File) || archivo.size === 0 || !TIPOS_ACEPTADOS.includes(archivo.type)) invalido = ARCHIVO_INVALIDO
-    else if (archivo.size > PESO_MAXIMO) invalido = ARCHIVO_GRANDE
-    if (invalido || !(archivo instanceof File)) {
-      // Se actualiza el DOM antes de mover el foco, para que el lector de pantalla lea el aviso
-      flushSync(() => {
-        setErrorArchivo(invalido)
-        setAviso(null)
-      })
-      form.querySelector<HTMLInputElement>('input[type="file"]')?.focus()
-      return
-    }
-
-    void ejecutar({ tipo: 'subir' }, async () => {
-      try {
-        const nueva = await subirImagen(propiedadId, archivo, descripcion)
-        setImagenes((actuales) => [...(actuales ?? []), nueva])
-        form.reset()
-        setAviso({ texto: 'Imagen agregada.' })
-      } catch (error) {
-        if (salirSiVencio(error)) return
-        const estado = error instanceof ErrorApi ? error.estado : null
-        // 413: supera el límite del servidor; 400: el backend no la aceptó como imagen
-        if (estado === 413) setAviso({ texto: ARCHIVO_GRANDE, error: true })
-        else if (estado === 400) setAviso({ texto: ARCHIVO_INVALIDO, error: true })
-        else setAviso({ texto: 'No pudimos subir la imagen. Probá nuevamente.', error: true })
-      }
-    })
   }
 
   function alGuardarDescripcion(evento: FormEvent<HTMLFormElement>, imagen: ImagenPropiedad) {
@@ -155,7 +104,7 @@ export default function ImagenesPropiedad({ propiedadId }: { propiedadId: number
   }
 
   function alEliminar(imagen: ImagenPropiedad) {
-    if (ocupadoRef.current || !window.confirm('¿Querés eliminar esta imagen?')) return
+    setPorEliminar(null)
 
     void ejecutar({ tipo: 'eliminar', id: imagen.id }, async () => {
       try {
@@ -180,157 +129,150 @@ export default function ImagenesPropiedad({ propiedadId }: { propiedadId: number
   }
 
   const ocupado = accion !== null
+  const posicionPorEliminar = porEliminar && imagenes ? imagenes.findIndex((imagen) => imagen.id === porEliminar.id) : -1
 
   return (
     <section ref={seccionRef} className={estilos.seccion} aria-labelledby={`${id}-titulo`}>
-      <h2 id={`${id}-titulo`} className={estilos.titulo}>
-        Imágenes
-      </h2>
-      <p className={formulario.ayuda}>
-        La primera es la portada en el sitio. Cada imagen se guarda en el momento, aparte de los datos de la propiedad.
-      </p>
+      <div className={estilos.encabezado}>
+        <h2 id={`${id}-titulo`} className={estilos.titulo}>
+          Imágenes
+        </h2>
+        <p className={formulario.ayuda}>La primera es la portada en el sitio. Cada cambio se guarda en el momento, aparte de los datos de la propiedad.</p>
+      </div>
 
-      {aviso && (
-        <p ref={avisoRef} tabIndex={-1} className={estilos.resultado} data-error={aviso.error || undefined}>
-          {aviso.texto}
-        </p>
-      )}
+      <div className={estilos.cuerpo}>
+        {aviso && (
+          <Aviso ref={avisoRef} error={aviso.error}>
+            {aviso.texto}
+          </Aviso>
+        )}
 
-      {falloCarga ? (
-        <div role="alert" className={estilos.estado}>
-          <p>No pudimos cargar las imágenes.</p>
-          <button
-            type="button"
-            className="boton boton-secundario"
-            onClick={() => {
-              setFalloCarga(false)
-              setIntento((n) => n + 1)
-            }}
-          >
-            Reintentar
-          </button>
-        </div>
-      ) : !imagenes ? (
-        <p role="status" className={estilos.estado}>
-          Cargando imágenes…
-        </p>
-      ) : imagenes.length === 0 ? (
-        <p className={estilos.estado}>Esta propiedad todavía no tiene imágenes.</p>
-      ) : (
-        <ul role="list" className={estilos.lista}>
-          {imagenes.map((imagen, indice) => {
-            const nombre = `Imagen ${indice + 1}`
-            return (
-              <li key={imagen.id} className={estilos.item}>
-                <Miniatura url={imagen.url} alt={imagen.descripcion || `${nombre} de la propiedad`} />
-
-                {editando === imagen.id ? (
-                  <form className={estilos.edicion} onSubmit={(evento) => alGuardarDescripcion(evento, imagen)}>
-                    <div className={formulario.campo}>
-                      <label htmlFor={`${id}-descripcion-${imagen.id}`} className={formulario.etiqueta}>
-                        Descripción de la {nombre.toLowerCase()}
-                      </label>
-                      <input
-                        id={`${id}-descripcion-${imagen.id}`}
-                        name="descripcion"
-                        type="text"
-                        maxLength={LARGO_DESCRIPCION}
-                        defaultValue={imagen.descripcion ?? ''}
-                        autoFocus
-                        className={formulario.control}
-                      />
-                    </div>
-                    <div className={formulario.acciones}>
-                      <button type="submit" className="boton boton-primario" disabled={ocupado}>
-                        {accion?.tipo === 'guardar' ? 'Guardando…' : 'Guardar'}
-                      </button>
-                      <button type="button" className="boton boton-secundario" disabled={ocupado} onClick={() => cancelarEdicion(imagen.id)}>
-                        Cancelar
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <>
-                    <div className={estilos.datos}>
-                      <p className={estilos.orden}>
-                        {nombre}
-                        {indice === 0 && ' · Portada'}
-                      </p>
-                      <p className={imagen.descripcion ? estilos.descripcion : formulario.ayuda}>{imagen.descripcion || 'Sin descripción'}</p>
-                    </div>
-                    <div className={estilos.acciones}>
-                      <button
-                        ref={(boton) => {
-                          if (boton && devolverFocoRef.current === imagen.id) {
-                            devolverFocoRef.current = null
-                            boton.focus()
-                          }
-                        }}
-                        type="button"
-                        className="boton boton-secundario"
-                        disabled={ocupado}
-                        onClick={() => setEditando(imagen.id)}
-                      >
-                        Editar descripción<span className="sr-only"> de la {nombre.toLowerCase()}</span>
-                      </button>
-                      <button type="button" className={`boton ${estilos.eliminar}`} disabled={ocupado} onClick={() => alEliminar(imagen)}>
-                        {accion?.tipo === 'eliminar' && accion.id === imagen.id ? 'Eliminando…' : 'Eliminar'}
-                        <span className="sr-only"> {nombre.toLowerCase()}</span>
-                      </button>
-                    </div>
-                  </>
-                )}
-              </li>
-            )
-          })}
-        </ul>
-      )}
-
-      {imagenes && (
-        <form className={estilos.carga} noValidate onSubmit={alSubir}>
-          <h3 className={estilos.subtitulo}>Agregar una imagen</h3>
-          <div className={formulario.campo}>
-            <label htmlFor={`${id}-archivo`} className={formulario.etiqueta}>
-              Archivo
-            </label>
-            <input
-              id={`${id}-archivo`}
-              name="archivo"
-              type="file"
-              accept={TIPOS_ACEPTADOS.join(',')}
-              required
-              aria-invalid={Boolean(errorArchivo) || undefined}
-              aria-describedby={`${id}-archivo-ayuda${errorArchivo ? ` ${id}-archivo-error` : ''}`}
-              className={estilos.archivo}
-              onChange={() => setErrorArchivo(null)}
-            />
-            <p id={`${id}-archivo-ayuda`} className={formulario.ayuda}>
-              JPG, PNG o WEBP, de hasta 5 MB.
-            </p>
-            {errorArchivo && (
-              <p id={`${id}-archivo-error`} className={formulario.aviso}>
-                {errorArchivo}
-              </p>
-            )}
-          </div>
-          <div className={formulario.campo}>
-            <label htmlFor={`${id}-descripcion`} className={formulario.etiqueta}>
-              Descripción (opcional)
-            </label>
-            <input id={`${id}-descripcion`} name="descripcion" type="text" maxLength={LARGO_DESCRIPCION} aria-describedby={`${id}-descripcion-ayuda`} className={formulario.control} />
-            <p id={`${id}-descripcion-ayuda`} className={formulario.ayuda}>
-              Qué se ve en la foto, por ejemplo &ldquo;Frente de la casa&rdquo;. La usan los lectores de pantalla.
-            </p>
-          </div>
-          <div className={formulario.acciones}>
-            <button type="submit" className="boton boton-primario" disabled={ocupado}>
-              {accion?.tipo === 'subir' ? 'Subiendo…' : 'Subir imagen'}
+        {falloCarga ? (
+          <div role="alert" className={estilos.estado}>
+            <p>No pudimos cargar las imágenes.</p>
+            <button
+              type="button"
+              className="boton boton-secundario"
+              onClick={() => {
+                setFalloCarga(false)
+                setIntento((n) => n + 1)
+              }}
+            >
+              Reintentar
             </button>
           </div>
-          <p className="sr-only" aria-live="polite">
-            {accion?.tipo === 'subir' ? 'Subiendo…' : ''}
+        ) : !imagenes ? (
+          <p role="status" className={estilos.estado}>
+            Cargando imágenes…
           </p>
-        </form>
+        ) : imagenes.length === 0 ? (
+          <p className={estilos.estado}>Esta propiedad todavía no tiene imágenes.</p>
+        ) : (
+          <ul role="list" className={estilos.galeria}>
+            {imagenes.map((imagen, indice) => {
+              const nombre = `imagen ${indice + 1}`
+              const enEdicion = editando === imagen.id
+              const eliminando = accion?.tipo === 'eliminar' && accion.id === imagen.id
+              return (
+                <li key={imagen.id} className={estilos.tarjeta} data-edicion={enEdicion || undefined} data-eliminando={eliminando || undefined}>
+                  <div className={estilos.foto}>
+                    <Foto url={imagen.url} alt={imagen.descripcion || `Imagen ${indice + 1} de la propiedad`} />
+                    <p className={estilos.sello} data-portada={indice === 0 || undefined}>
+                      <span className="sr-only">Imagen </span>
+                      {indice + 1}
+                      {indice === 0 && ' · Portada'}
+                    </p>
+                  </div>
+
+                  {enEdicion ? (
+                    <form className={estilos.edicion} onSubmit={(evento) => alGuardarDescripcion(evento, imagen)}>
+                      <div className={formulario.campo}>
+                        <label htmlFor={`${id}-descripcion-${imagen.id}`} className={formulario.etiqueta}>
+                          Descripción de la {nombre}
+                        </label>
+                        <input
+                          id={`${id}-descripcion-${imagen.id}`}
+                          name="descripcion"
+                          type="text"
+                          maxLength={LARGO_DESCRIPCION}
+                          defaultValue={imagen.descripcion ?? ''}
+                          autoFocus
+                          aria-describedby={`${id}-descripcion-${imagen.id}-ayuda`}
+                          className={formulario.control}
+                        />
+                        <p id={`${id}-descripcion-${imagen.id}-ayuda`} className={formulario.ayuda}>
+                          Qué se ve en la foto, por ejemplo &ldquo;Frente de la casa&rdquo;. La usan los lectores de pantalla.
+                        </p>
+                      </div>
+                      <div className={formulario.acciones}>
+                        <button type="submit" className="boton boton-primario" disabled={ocupado}>
+                          {accion?.tipo === 'guardar' ? 'Guardando…' : 'Guardar'}
+                        </button>
+                        <button type="button" className="boton boton-secundario" disabled={ocupado} onClick={() => cancelarEdicion(imagen.id)}>
+                          Cancelar
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className={estilos.pie}>
+                      <p className={imagen.descripcion ? estilos.descripcion : formulario.ayuda}>{imagen.descripcion || 'Sin descripción'}</p>
+                      <div className={estilos.acciones}>
+                        <button
+                          ref={(boton) => {
+                            if (boton && devolverFocoRef.current === imagen.id) {
+                              devolverFocoRef.current = null
+                              boton.focus()
+                            }
+                          }}
+                          type="button"
+                          className={`boton boton-secundario ${estilos.editar}`}
+                          disabled={ocupado}
+                          onClick={() => setEditando(imagen.id)}
+                        >
+                          <IconoLapiz />
+                          Editar<span className="sr-only"> la descripción de la {nombre}</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={`boton boton-peligro ${estilos.eliminar}`}
+                          disabled={ocupado}
+                          aria-label={eliminando ? `Eliminando la ${nombre}…` : `Eliminar la ${nombre}`}
+                          title="Eliminar"
+                          onClick={() => setPorEliminar(imagen)}
+                        >
+                          <IconoPapelera />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        )}
+
+        {imagenes && (
+          <SubidaImagenes
+            propiedadId={propiedadId}
+            ocupado={ocupado}
+            ejecutar={(tarea) => ejecutar({ tipo: 'subir' }, tarea)}
+            onSubida={(nueva) => setImagenes((actuales) => [...(actuales ?? []), nueva])}
+            onResultado={setAviso}
+          />
+        )}
+      </div>
+
+      {porEliminar && (
+        <DialogoConfirmacion
+          titulo="¿Eliminar esta imagen?"
+          detalle={`Imagen ${posicionPorEliminar + 1}${porEliminar.descripcion ? ` · ${porEliminar.descripcion}` : ''}`}
+          textoConfirmar="Eliminar"
+          onConfirmar={() => alEliminar(porEliminar)}
+          onCancelar={() => setPorEliminar(null)}
+        >
+          {posicionPorEliminar === 0 && imagenes && imagenes.length > 1 && 'Es la portada: la imagen siguiente va a ocupar su lugar. '}
+          Deja de verse en el sitio y no se puede recuperar.
+        </DialogoConfirmacion>
       )}
     </section>
   )
