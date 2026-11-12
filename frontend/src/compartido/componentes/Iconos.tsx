@@ -130,6 +130,15 @@ export function IconoMensaje(props: Props) {
   )
 }
 
+export function IconoPersona(props: Props) {
+  return (
+    <Icono {...props}>
+      <circle cx="12" cy="8.500" r="3.500" />
+      <path d="M5 19.500c.500-3.500 3.300-5.500 7-5.500s6.500 2 7 5.500" />
+    </Icono>
+  )
+}
+
 // ---------- Acciones del panel ----------
 
 export function IconoPapelera(props: Props) {

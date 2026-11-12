@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router'
 import { leerFiltros, urlCatalogo } from '../../catalogo/filtros.ts'
 import { ACCION_OPERACION, TIPOS_OPERACION } from '../../catalogo/tipos.ts'
+import { IconoPersona } from './Iconos.tsx'
 import Marca from './Marca.tsx'
 import estilos from './Header.module.css'
 
@@ -57,6 +58,12 @@ export default function Header() {
             aria-current={pathname === '/propiedades' && !operacionActual ? 'page' : undefined}
           >
             Ver propiedades
+          </Link>
+          {/* Acceso al panel: con sesión entra directo; sin sesión, la ruta protegida lleva al login.
+              Donde no entra el texto queda el ícono, con el mismo nombre para lectores de pantalla. */}
+          <Link to="/admin" className={`${estilos.enlace} ${estilos.acceso}`} title="Ingresar">
+            <IconoPersona />
+            <span className={estilos.accesoTexto}>Ingresar</span>
           </Link>
         </nav>
       </div>
