@@ -14,6 +14,7 @@ import com.tfi.inmobiliaria.notificacion.interfaces.NotificadorConsulta;
 import com.tfi.inmobiliaria.publicacion.model.Publicacion;
 import com.tfi.inmobiliaria.publicacion.repository.PublicacionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ConsultaService {
 
     private final ConsultaRepository consultaRepo;
@@ -40,7 +42,11 @@ public class ConsultaService {
 
         Consulta consultaGuardada = consultaRepo.saveAndFlush(consulta);
 
-        notificadorConsulta.notificarNuevaConsulta(consultaGuardada);
+        try {
+            notificadorConsulta.notificarNuevaConsulta(consultaGuardada);
+        } catch (RuntimeException excepcion) {
+            log.error("No se pudo enviar la notificación de la consulta con id: {}", consultaGuardada.getId(), excepcion);
+        }
 
         return ConsultaMapper.convertirConsultaADto(consultaGuardada);
     }
