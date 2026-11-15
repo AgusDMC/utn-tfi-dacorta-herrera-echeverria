@@ -1,6 +1,14 @@
-# Sistema Web de Gestión Inmobiliaria
+# Nexo Inmobiliaria — Sistema Web de Gestión Inmobiliaria
 
-Trabajo Final Integrador — Tecnicatura Universitaria en Programación
+Trabajo Final Integrador — Tecnicatura Universitaria en Programación a Distancia (UTN) · Grupo 139
+
+## Entrega final
+
+| | Enlace |
+|---|---|
+| Informe final (PDF) | [`docs/entrega-final/Informe_Final_Nexo_Inmobiliaria.pdf`](docs/entrega-final/Informe_Final_Nexo_Inmobiliaria.pdf) |
+| Video de presentación | Pendiente: se agrega cuando esté publicado |
+| Sistema desplegado | https://nexo-inmobiliaria-theta.vercel.app/ |
 
 ## Descripción
 
@@ -13,7 +21,7 @@ Incluye un catálogo público con filtros, ficha de detalle con galería de imá
 | Integrante | Área a cargo |
 |---|---|
 | Franco Leonel Herrera | Backend (Spring Boot, API REST, lógica de negocio) |
-| Manuel Da Corta | Frontend (React + TypeScript, catálogo y panel) |
+| Manuel Da Cortá | Frontend (React + TypeScript, catálogo y panel) |
 | Agustín Echeverría Araya | Base de datos (diseño del esquema PostgreSQL, persistencia) |
 
 **Tutora:** Sofía Carnevale
@@ -45,6 +53,7 @@ La base de producción tiene los datos demo cargados. El usuario administrador n
 /docs           -> Documentación de cada entrega
    /entrega-1   -> Propuesta de proyecto
    /entrega-2   -> Arquitectura y módulos: modelo de datos, módulos y arquitectura
+   /entrega-final -> Informe final en PDF y diagrama de la arquitectura final
 README.md       -> Este archivo
 ```
 
@@ -54,13 +63,14 @@ README.md       -> Este archivo
 |---|---|---|
 | 1.ª Entrega — Propuesta y repositorio (paso 2 de la hoja de ruta) | ✅ Entregada | [`docs/entrega-1`](docs/entrega-1/propuesta_TFI_inmobiliaria.pdf) |
 | 2.ª Entrega — Arquitectura y módulos (paso 3 de la hoja de ruta) | ✅ Entregada | [`docs/entrega-2`](docs/entrega-2/README.md) |
-| Entrega final — Informe, video y despliegue (paso 4 de la hoja de ruta) | 🚧 Próximo hito (14/11) | — |
+| Entrega final — Informe, video y despliegue (paso 4 de la hoja de ruta) | ✅ Entregada | [Informe PDF](docs/entrega-final/Informe_Final_Nexo_Inmobiliaria.pdf) · Video: pendiente |
 
 ## Diseño (resumen)
 
 - **Modelo de datos:** 5 tablas (`usuario`, `propiedad`, `publicacion`, `imagen_propiedad`, `consulta`). → [DER y reglas](docs/entrega-2/01-modelo-de-datos.md)
 - **Módulos:** Autenticación y usuarios · Propiedades e imágenes · Publicaciones · Catálogo público · Consultas · Notificaciones. → [Detalle](docs/entrega-2/02-modulos.md)
 - **Arquitectura:** capas de presentación, aplicación, dominio e infraestructura. → [Diagramas](docs/entrega-2/03-arquitectura.md)
+- **Arquitectura final desplegada:** frontend en Vercel, backend y base en Railway, Cloudinary y Brevo. → [Diagrama](docs/entrega-final/arquitectura.png)
 
 ## Instalación
 
@@ -101,7 +111,7 @@ El backend las toma de `backend/.env` en local (plantilla en [`backend/.env.exam
 | `DB_USERNAME`, `DB_PASSWORD` | Usuario y clave de la base | `inmobiliaria` / `inmobiliaria` |
 | `FLYWAY_LOCATIONS` | Carpeta de las migraciones | Opcional: por defecto `../database/migrations` |
 | `JWT_SECRET` | Clave para firmar los tokens | Generar con `openssl rand -base64 48` |
-| `MAIL_USERNAME`, `MAIL_PASSWORD`, `EMAIL_REMITENTE`, `NOMBRE_REMITENTE`, `EMAIL_DESTINATARIO` | Envío de correos (Brevo) | Sin credenciales reales falla el alta de consultas |
+| `MAIL_USERNAME`, `MAIL_PASSWORD`, `EMAIL_REMITENTE`, `NOMBRE_REMITENTE`, `EMAIL_DESTINATARIO` | Envío de correos (Brevo) | Sin credenciales reales no se envía el aviso, pero la consulta se guarda igual |
 | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Almacenamiento de imágenes | Necesarias para subir fotos |
 | `PORT` | Puerto del servidor | Opcional: por defecto `8080` |
 
@@ -127,3 +137,18 @@ cd frontend
 npm install
 npm run dev
 ```
+
+## Pruebas
+
+- **Base de datos:** `database/tests/pruebas_reglas.sql` verifica las 14 reglas que garantiza la base (ver [Instalación](#base-de-datos)). Se ejecutó en local y en la base de producción: 14 de 14 OK.
+- **API:** pruebas funcionales manuales con Postman, en local y sobre el backend de Railway (autenticación, propiedades, publicaciones, catálogo, filtros, paginación, imágenes y consultas). El detalle está en el informe final.
+- **Frontend:** `npm run build` (compilación con TypeScript) y `npm run lint`, más pruebas manuales en distintas resoluciones y sobre la versión publicada en Vercel.
+
+## Limitaciones conocidas
+
+- **Correo en producción:** el plan de Railway utilizado bloquea las conexiones SMTP salientes. En producción la consulta se registra y se ve en el panel, pero el correo de aviso no llega. En local el envío con Brevo funciona.
+- **Un solo rol:** solo existe el administrador. No hay registro de usuarios ni recuperación de contraseña.
+- **Filtros:** la interfaz filtra por tipo de operación, tipo de propiedad y localidad. La API admite además moneda, rango de precio, ambientes, dormitorios y patio, que todavía no están en la interfaz.
+- **Pruebas automatizadas:** las reglas de la base tienen pruebas automatizadas; el backend y el frontend se probaron de forma manual.
+- **Datos:** la inmobiliaria es ficticia. La base de producción tiene datos de demostración.
+- **Dependencias externas:** Cloudinary (imágenes), Brevo (correo), Railway y Vercel, todos en planes gratuitos.
